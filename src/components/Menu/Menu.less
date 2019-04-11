@@ -1,0 +1,23 @@
+.menu {
+    height: calc(100vh - 173px);
+    width: 248px;
+    border: none !important;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar,
+    &::-webkit-scrollbar-thumb,
+    &::-webkit-scrollbar-track {
+        width: 0px;
+        visibility: hidden;
+    }
+
+    .ant-menu-submenu-title {
+        padding-left: 10px !important;
+        margin: 0 !important;
+    }
+
+    .ant-menu-item {
+        padding-left: 30px !important;
+        margin: 0 !important;
+    }
+}

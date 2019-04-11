@@ -1,5 +1,27 @@
-.menuWrapper{
+.menuWrapper {
     height: calc(100vh - 113px);
     background: white;
     border-right: 1px solid #e8e8e8;
+    overflow-y: auto;
+    position: relative;
+    width: 250px !important;
+    flex: 0 0 250px !important;
+    max-width: 250px !important;
+    min-width: 250px !important;
+
+    &::-webkit-scrollbar,
+    &::-webkit-scrollbar-thumb,
+    &::-webkit-scrollbar-track {
+        width: 0px;
+        visibility: hidden;
+    }
+
+    .palyingSong {
+        border-top: 1px solid #e8e8e8;
+        position: fixed;
+        height: 60px;
+        bottom: 60px;
+        width: 250px;
+        z-index: 100;
+    }
 }
