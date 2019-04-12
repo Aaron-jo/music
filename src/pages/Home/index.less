@@ -1,0 +1,49 @@
+.HomeTabs {
+    .personalTab {
+        display: flex;
+        justify-content: center;
+    }
+
+    .songListCard {
+        overflow: hidden;
+        margin-bottom: 30px;
+        .hangInfo {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.25);
+            color: white;
+            position: absolute;
+            top: -70px;
+            padding: 8px 5px;
+            transition: top 0.5s;
+            transition-delay: 0.3s;
+        }
+        &:hover .hangInfo{
+            top: 0px;
+        }
+    }
+
+    .ant-tabs-nav .ant-tabs-tab:hover {
+        color: #903030;
+    }
+
+    .ant-tabs-tab-active {
+        color: #903030;
+    }
+
+    .ant-tabs-ink-bar {
+        background-color: #903030;
+    }
+
+    .ant-carousel .slick-slide {
+        text-align: center;
+        width: 80%;
+        height: 250px;
+        line-height: 250px;
+        background: #364d79;
+        overflow: hidden;
+    }
+
+    .ant-carousel .slick-slide h3 {
+        color: #fff;
+    }
+}
