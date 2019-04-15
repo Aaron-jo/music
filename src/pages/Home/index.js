@@ -58,7 +58,7 @@ class Home extends Component {
         return (
             <div style={{ padding: '10px 100px' }} className='HomeTabs'>
                 <Tabs onChange={this.TabsChange.bind(this)} tabBarStyle={{textAlign: 'center'}}>
-                    <Tabs.TabPane tab="个性推荐" key="1">
+                    <Tabs.TabPane tab="个性推荐" key="1" className='personalized'>
                         <Suspense fallback={<Spin tip='加载中...' spinning={true} />}>
                             <PersonalityRecommendation />
                         </Suspense>

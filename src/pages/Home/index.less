@@ -7,6 +7,7 @@
     .songListCard {
         overflow: hidden;
         margin-bottom: 30px;
+
         .hangInfo {
             width: 100%;
             background: rgba(0, 0, 0, 0.25);
@@ -17,7 +18,8 @@
             transition: top 0.5s;
             transition-delay: 0.3s;
         }
-        &:hover .hangInfo{
+
+        &:hover .hangInfo {
             top: 0px;
         }
     }
@@ -37,13 +39,26 @@
     .ant-carousel .slick-slide {
         text-align: center;
         width: 80%;
-        height: 250px;
-        line-height: 250px;
+        height: 400px;
+        line-height: 400px;
         background: #364d79;
         overflow: hidden;
     }
 
     .ant-carousel .slick-slide h3 {
         color: #fff;
+    }
+
+    .personalized {
+        .cameraIconCotainer {
+            i {
+                color: white;
+            }
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 2px 10px;
+            background: #903030;
+        }
     }
 }

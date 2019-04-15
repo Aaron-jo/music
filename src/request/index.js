@@ -3,7 +3,7 @@ import 'axios-response-logger';
 
 const axiosInstans = axios.create({
     baseURL: 'http://localhost:4000',
-    timeout: 2500,
+    timeout: 5000,
 });
 
 // 添加拦截器
@@ -24,5 +24,5 @@ axiosInstans.interceptors.response.use(function (response) {
     // 对响应错误做些什么
     return Promise.reject(error);
 });
-window.axios = axiosInstans
-// export default axiosInstans;
+// window.axios = axiosInstans
+export default axiosInstans;
