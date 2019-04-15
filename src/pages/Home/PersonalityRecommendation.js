@@ -127,14 +127,18 @@ class PersonalityRecommendation extends Component {
                             {
                                 privatecontent.map((item, index) => (
                                     <Col key={item.id} span={8}>
-                                        <Card cover={<img alt={item.name} src={`${item.sPicUrl}?param=471y265`} />}
+                                        <Card cover={
+                                            <div style={{ position: 'relative' }}>
+                                                <img alt={item.name} src={`${item.sPicUrl}?param=471y265`} />
+                                                <div style={{ position: 'absolute', borderRadius: '50%', border: '1px solid white', background: 'rgba(0,0,0,0.5)', top: '5px', left: '5px', width: '30px', height: '30px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                                    <Icon type="video-camera" style={{ color: 'white' }} />
+                                                </div>
+                                            </div>
+                                        }
                                             bordered={false} bodyStyle={{ padding: '10px 0 0 0' }}
                                             style={{ cursor: 'pointer', position: 'relative' }}
                                             className='songListCard'
                                         >
-                                            {/* <div className='hangInfo'>
-                                                悬挂信息
-                                            </div> */}
                                             {item.name}
                                         </Card>
                                     </Col>
@@ -157,10 +161,10 @@ class PersonalityRecommendation extends Component {
                                                             <List.Item.Meta
                                                                 avatar={<div style={{ paddingLeft: '10px', fontSize: '12px' }}>
                                                                     <span style={{ width: 32, height: 32, lineHeight: '32px', color: '#b7b9bb', marginRight: 10 }}>0{index + 1}</span>
-                                                                    <img style={{ width: 48, height: 48 }} alt='图片' src={`${item.song.album.picUrl}?param=48y48&quality=100`} />
+                                                                    <span style={{ position: 'relative' }}><img style={{ width: 48, height: 48 }} alt='图片' src={`${item.song.album.picUrl}?param=48y48&quality=100`} /><Icon type="play-circle" style={{ position: 'absolute', top: '0px', right: '13px', fontSize: '20px', color: 'white', cursor: 'pointer' }} /></span>
                                                                 </div>}
                                                                 title={<div><span>{item.song.name}</span><span style={{ color: '#b7b9bb', fontSize: '12px' }}>{item.song.alias.length > 0 && `（${item.song.alias.join('')}）`}</span></div>}
-                                                                description={item.song.artists.map(item => item.name).join('/')}
+                                                                description={<div><span style={{ cursor: 'pointer', verticalAlign: 'center' }}>{item.song.mvid ? <Icon type="youtube" style={{ color: '#903030', marginRight: 10, fontSize: '18px', lineHeight: '18px' }} /> : ''}</span>{item.song.artists.map(item => item.name).join('/')}</div>}
                                                             />
                                                         </List.Item>
                                                     ) : (
@@ -179,10 +183,10 @@ class PersonalityRecommendation extends Component {
                                                             <List.Item.Meta
                                                                 avatar={<div style={{ paddingLeft: '10px', fontSize: '12px' }}>
                                                                     <span style={{ width: 32, height: 32, lineHeight: '32px', color: '#b7b9bb', marginRight: 10 }}>{index >= 9 ? index + 1 : `0${index + 1}`}</span>
-                                                                    <img style={{ width: 48, height: 48 }} alt='图片' src={`${item.song.album.picUrl}?param=48y48&quality=100`} />
+                                                                    <span style={{ position: 'relative' }}><img style={{ width: 48, height: 48 }} alt='图片' src={`${item.song.album.picUrl}?param=48y48&quality=100`} /><Icon type="play-circle" style={{ position: 'absolute', top: '0px', right: '13px', fontSize: '20px', color: 'white', cursor: 'pointer' }} /></span>
                                                                 </div>}
                                                                 title={<div><span>{item.song.name}</span><span style={{ color: '#b7b9bb', fontSize: '12px' }}>{item.song.alias.length > 0 && `（${item.song.alias.join('')}）`}</span></div>}
-                                                                description={item.song.artists.map(item => item.name).join('/')}
+                                                                description={<div><span style={{ cursor: 'pointer', verticalAlign: 'center' }}>{item.song.mvid && <Icon type="youtube" style={{ color: '#903030', marginRight: 10, fontSize: '18px', lineHeight: '18px' }} />}</span>{item.song.artists.map(item => item.name).join('/')}</div>}
                                                             />
                                                         </List.Item>
                                                     ) : (
@@ -201,7 +205,7 @@ class PersonalityRecommendation extends Component {
                             {
                                 mv.map((item, index) => (
                                     <Col span={6} key={item.id}>
-                                        <Card cover={<div style={{ position: 'relative' }}>
+                                        <Card cover={<div style={{ position: 'relative', minHeight: 212 }}>
                                             <img alt={item.name} src={`${item.picUrl}?param=349y212`} />
                                             <div className='cameraIconCotainer'>
                                                 <Icon type="video-camera" />
@@ -214,7 +218,8 @@ class PersonalityRecommendation extends Component {
                                             <div className='hangInfo'>
                                                 {item.copywriter}
                                             </div>
-                                            {item.artists.map(item => item.name).join('/')}
+                                            <div>{item.name}</div>
+                                            <div style={{ color: '#b7b9bb' }}>{item.artists.map(item => item.name).join('/')}</div>
                                         </Card>
                                     </Col>
                                 ))
