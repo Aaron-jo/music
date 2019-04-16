@@ -1,8 +1,14 @@
-body::-webkit-scrollbar,
-body::-webkit-scrollbar-thumb,
-body::-webkit-scrollbar-track {
-    width: 0px;
-    visibility: hidden;
+main::-webkit-scrollbar{
+    width: 5px;
+    height: 100%;
+}
+main::-webkit-scrollbar-thumb{
+    width: 5px;
+    border-radius: 2px;
+    background-color: #903030;
+}
+main::-webkit-scrollbar-track {
+    width: 5px;
 }
 
 .menuWrapper {
@@ -19,8 +25,8 @@ body::-webkit-scrollbar-track {
     &::-webkit-scrollbar,
     &::-webkit-scrollbar-thumb,
     &::-webkit-scrollbar-track {
-        width: 0px;
-        visibility: hidden;
+        width: 0px !important;
+        visibility: hidden !important;
     }
 
     .palyingSong {

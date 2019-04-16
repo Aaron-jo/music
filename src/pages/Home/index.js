@@ -57,13 +57,13 @@ class Home extends Component {
     render() {
         return (
             <div style={{ padding: '10px 100px' }} className='HomeTabs'>
-                <Tabs onChange={this.TabsChange.bind(this)} tabBarStyle={{textAlign: 'center'}}>
+                <Tabs onChange={this.TabsChange.bind(this)} tabBarStyle={{ textAlign: 'center' }} defaultActiveKey='2'>
                     <Tabs.TabPane tab="个性推荐" key="1" className='personalized'>
                         <Suspense fallback={<Spin tip='加载中...' spinning={true} />}>
                             <PersonalityRecommendation />
                         </Suspense>
                     </Tabs.TabPane>
-                    <Tabs.TabPane tab="歌单" key="2">
+                    <Tabs.TabPane tab="歌单" key="2" className='songlist'>
                         <Suspense fallback={<Spin tip='加载中...' spinning={true} />}>
                             <SongList />
                         </Suspense>
