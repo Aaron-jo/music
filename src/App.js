@@ -8,12 +8,12 @@ import './App.less';
 // 路由懒加载--划重点：https://zh-hans.reactjs.org/docs/code-splitting.html
 
 const { Header, Sider, Content, Footer } = Layout;
-const Home = lazy(() => import('./pages/Home/index'))
+const Home = lazy(() => import('./pages/Home/index'));
 
 class App extends Component {
     state = {
         data: true
-    }
+    };
 
     componentWillMount() {
         // window.axios.get('/login/cellphone', {

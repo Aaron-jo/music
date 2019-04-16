@@ -1,26 +1,31 @@
 import React, {Component, Fragment} from 'react';
-import {Button, Popover, Icon, Radio, Row, Col, Tag, Pagination, Card} from "antd";
+import {Button, Popover, Icon, Radio, Row, Col, Tag, Spin, Card} from "antd";
 import axios from '../../request/index';
 import './index.less';
 
 class SongList extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
             catlist: null,
             hotTag: [],
             hotTagChecked: [],
             playlist: {},
-            currentPage: 1,
-            limit: 6
+            limit: 18,
+            spinning: false,
+            loadingMore: false,
+            loadTimes: 1,
         }
     }
 
-    componentWillMount () {
+    componentWillMount() {
 
     }
 
-    componentDidMount () {
+    componentDidMount() {
+        this.setState({
+            spinning: true
+        });
         axios.get('/playlist/catlist').then((response) => {
             this.setState({
                 catlist: response.data,
@@ -31,14 +36,15 @@ class SongList extends Component {
                 hotTag: response.data.tags
             })
         });
-        axios.get('/top/playlist', { params: { limit: this.state.limit } }).then((response) => {
+        axios.get('/top/playlist', {params: {limit: this.state.limit}}).then((response) => {
             this.setState({
-                playlist: response.data
+                playlist: response.data,
+                spinning: false
             })
         });
     }
 
-    componentWillReceiveProps (nextProps) {
+    componentWillReceiveProps(nextProps) {
 
     }
 
@@ -46,19 +52,19 @@ class SongList extends Component {
 
     // }
 
-    componentWillUpdate (nextProps, nextState) {
+    componentWillUpdate(nextProps, nextState) {
 
     }
 
-    componentDidUpdate (prevProps, prevState) {
+    componentDidUpdate(prevProps, prevState) {
 
     }
 
-    componentWillUnmount () {
+    componentWillUnmount() {
 
     }
 
-    handleTagChange (tag, checked) {
+    handleTagChange(tag, checked) {
         const nextSelectedTags = [];
         checked && nextSelectedTags.push(tag);
         this.setState({
@@ -66,24 +72,30 @@ class SongList extends Component {
         })
     }
 
-    onPaginationChange(page) {
+    onPaginationChange() {
         this.setState({
-            currentPage: page
+            loadingMore: true
         });
-        axios.get('/top/playlist', { params: { limit: this.state.limit } }).then((response) => {
+        this.state.loadTimes += 1;
+        axios.get('/top/playlist', {params: {limit: this.state.limit * this.state.loadTimes}}).then((response) => {
             this.setState({
-                playlist: response.data
-            })
+                playlist: response.data,
+                loadingMore: false
+            }, () => {
+                setTimeout(() => {
+                    document.querySelector('#loadMore').scrollIntoView(true)
+                }, 200)
+            });
         });
     }
 
-    render () {
+    render() {
         const RadioButton = Radio.Button;
         const RadioGroup = Radio.Group;
         const CheckableTag = Tag.CheckableTag;
-        const { catlist, hotTag, hotTagChecked, playlist, currentPage } = this.state;
+        const {catlist, hotTag, hotTagChecked, playlist, spinning, loadingMore} = this.state;
 
-        function getContent () {
+        function getContent() {
             if (!catlist) return <div>全部歌单</div>;
             const allElem = (<RadioButton key='全部歌单' style={{
                 borderRadius: 0,
@@ -100,7 +112,7 @@ class SongList extends Component {
                     {
                         categories.map((category, categoryIndex) => {
                             return (
-                                <Row key={category} style={{ width: 550, marginTop: 15 }}>
+                                <Row key={category} style={{width: 550, marginTop: 15}}>
                                     <Col span={4}>{category}</Col>
                                     <Col span={20}>
                                         {
@@ -123,53 +135,63 @@ class SongList extends Component {
 
         return (
             <Fragment>
-                <Row>
-                    <Popover content={getContent()} title="添加标签" trigger="click" overlayClassName='categoryPop'
-                             placement='bottomLeft'>
-                        <Button>全部歌单 <Icon type="down"/></Button>
-                    </Popover>
-                </Row>
-                <Row style={{ marginTop: 15 }}>
-                    <span>热门标签：</span>
-                    {
-                        hotTag.map(tag => (
-                            <CheckableTag
-                                key={tag.id}
-                                checked={hotTagChecked.indexOf(tag) > -1}
-                                onChange={checked => this.handleTagChange(tag, checked)}
-                            >
-                                {tag.name}
-                            </CheckableTag>
-                        ))
-                    }
-                </Row>
-                <Row type='flex' style={{ marginTop: 15 }} gutter={16}>
-                    {
-                        playlist.playlists && playlist.playlists.map((item, index) => (
-                            <Col span={4} key={index}>
-                                <Card
-                                    cover={
-                                        <div style={{ position: 'relative', Height: 231, border: '1px solid #e8e8e8' }}>
-                                            <img alt={item.name} src={`${item.coverImgUrl}?param=230y244`}/>
-                                            <div className='cameraIconCotainer'>
-                                                <Icon type="customer-service"/>
-                                                {item.playCount > 10000 ? Math.ceil(item.playCount / 1000) + '万' : item.playCount}
-                                            </div>
-                                        </div>
-                                    }
-                                    bordered={false} bodyStyle={{ padding: '10px 0 10px 0' }}
-                                    style={{ cursor: 'pointer', position: 'relative' }}
-                                    className='songListCard'
+                <Spin spinning={spinning} tip='加载中...'>
+                    <Row>
+                        <Popover content={getContent()} title="添加标签" trigger="click" overlayClassName='categoryPop'
+                                 placement='bottomLeft'>
+                            <Button>全部歌单 <Icon type="down"/></Button>
+                        </Popover>
+                    </Row>
+                    <Row style={{marginTop: 15}}>
+                        <span>热门标签：</span>
+                        {
+                            hotTag.map(tag => (
+                                <CheckableTag
+                                    key={tag.id}
+                                    checked={hotTagChecked.indexOf(tag) > -1}
+                                    onChange={checked => this.handleTagChange(tag, checked)}
                                 >
-                                    {item.name}
-                                </Card>
-                            </Col>
-                        ))
-                    }
-                </Row>
-                <Row style={{ marginTop: 15, textAlign: 'right' }}>
-                    <Pagination total={playlist.total && playlist.total} current={currentPage} onChange={this.onPaginationChange.bind(this)}/>
-                </Row>
+                                    {tag.name}
+                                </CheckableTag>
+                            ))
+                        }
+                    </Row>
+                    <Row type='flex' style={{marginTop: 15}} gutter={16}>
+                        {
+                            playlist.playlists && playlist.playlists.map((item, index) => (
+                                <Col span={4} key={index}>
+                                    <Card
+                                        cover={
+                                            <div style={{
+                                                position: 'relative',
+                                                Height: 231,
+                                                border: '1px solid #e8e8e8'
+                                            }}>
+                                                <img alt={item.name} src={`${item.coverImgUrl}?param=230y244`}/>
+                                                <div className='cameraIconCotainer'>
+                                                    <Icon type="customer-service"/>
+                                                    {item.playCount > 10000 ? Math.ceil(item.playCount / 1000) + '万' : item.playCount}
+                                                </div>
+                                            </div>
+                                        }
+                                        bordered={false} bodyStyle={{padding: '10px 0 10px 0'}}
+                                        style={{cursor: 'pointer', position: 'relative'}}
+                                        className='songListCard'
+                                    >
+                                        {item.name}
+                                    </Card>
+                                </Col>
+                            ))
+                        }
+                    </Row>
+                    <Row style={{marginTop: 15, textAlign: 'center'}}>
+                        {
+                            loadingMore ? <Icon type="loading" style={{fontSize: '30px', color: '#c62f2f'}}/> :
+                                <Icon id='loadMore' type="cloud-download" style={{fontSize: '30px', color: '#c62f2f'}}
+                                      title='加载更多' onClick={this.onPaginationChange.bind(this)}/>
+                        }
+                    </Row>
+                </Spin>
             </Fragment>
         );
     }

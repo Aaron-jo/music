@@ -8,6 +8,7 @@ class NetMenu extends Component {
         return (
             <Menu
                 defaultSelectedKeys={['1']}
+                defaultOpenKeys={['sub1', 'sub2', 'sub3', 'sub4']}
                 mode='inline'
                 className='menu'
             >

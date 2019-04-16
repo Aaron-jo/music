@@ -78,7 +78,7 @@ class PersonalityRecommendation extends Component {
         return (
             <Fragment>
                 <div style={{ width: '100%', textAlign: 'center' }}>
-                    <Carousel autoplay>
+                    <Carousel autoplay={false}>
                         {
                             banners.map((banner, index) => (
                                 <div key={banner.imageUrl}><img src={banner.imageUrl} alt={banner.typeTitle}/></div>
@@ -239,7 +239,7 @@ class PersonalityRecommendation extends Component {
                                                                     cursor: 'pointer',
                                                                     verticalAlign: 'center'
                                                                 }}>{item.song.mvid ? <Icon type="youtube" style={{
-                                                                    color: '#903030',
+                                                                    color: '#c62f2f',
                                                                     marginRight: 10,
                                                                     fontSize: '18px',
                                                                     lineHeight: '18px'
@@ -291,7 +291,7 @@ class PersonalityRecommendation extends Component {
                                                                     cursor: 'pointer',
                                                                     verticalAlign: 'center'
                                                                 }}>{item.song.mvid && <Icon type="youtube" style={{
-                                                                    color: '#903030',
+                                                                    color: '#c62f2f',
                                                                     marginRight: 10,
                                                                     fontSize: '18px',
                                                                     lineHeight: '18px'
