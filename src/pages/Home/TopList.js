@@ -76,13 +76,45 @@ class TopList extends Component {
                                             {
                                                 item.tracks.map((track, index) => (
                                                     <div key={track.first} className='officialTrack'>
-                                                        <span>{index + 1}</span>
+                                                        <span style={{marginRight: '10px', color: '#c62f2f'}}>0{index + 1}</span>
                                                         <span>{track.first}</span>
-                                                        <span style={{float: 'right'}}>{track.second}</span>
+                                                        <span style={{float: 'right', color: '#b7b9bb'}}>{track.second}</span>
                                                     </div>
                                                 ))
                                             }
+                                            <div className='officialTrack' style={{textAlign: 'right', color: '#b7b9bb'}}>查看全部 ></div>
                                         </div>
+                                    </Card>
+                                </Col>
+                            ))
+                        }
+                    </Row>
+                </Card>
+                <Card title="全球榜" bordered={false} headStyle={{ padding: 0 }}
+                      bodyStyle={{ padding: '10px 0 20px 0' }}>
+                    <Row type='flex' style={{ marginTop: 15 }} gutter={16}>
+                        {
+                            globalTopList.map((item, index) => (
+                                <Col span={4} key={index}>
+                                    <Card
+                                        cover={
+                                            <div style={{
+                                                position: 'relative',
+                                                Height: 231,
+                                                border: '1px solid #e8e8e8'
+                                            }}>
+                                                <img alt={item.name} src={`${item.coverImgUrl}?param=230y244`}/>
+                                                <div className='cameraIconCotainer'>
+                                                    <Icon type="customer-service"/>
+                                                    {item.playCount > 10000 ? Math.ceil(item.playCount / 1000) + '万' : item.playCount}
+                                                </div>
+                                            </div>
+                                        }
+                                        bordered={false} bodyStyle={{ padding: '10px 0 10px 0' }}
+                                        style={{ cursor: 'pointer', position: 'relative' }}
+                                        className='songListCard'
+                                    >
+                                        {item.name}
                                     </Card>
                                 </Col>
                             ))
