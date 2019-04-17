@@ -1,6 +1,6 @@
-import React, { Component, lazy, Suspense } from 'react';
-import { Layout, Spin } from "antd";
-import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import React, {Component, lazy, Suspense} from 'react';
+import {Layout, Spin} from "antd";
+import {HashRouter as Router, Route, Switch, Redirect} from "react-router-dom";
 import NetMenu from "./components/Menu/";
 import NetHeader from "./components/NetHeader/";
 import './App.less';
@@ -15,41 +15,34 @@ class App extends Component {
         data: true
     };
 
-    componentWillMount() {
-        // window.axios.get('/login/cellphone', {
-        //   params: {
-        //     phone: '17620410119',
-        //     password: 'zly119505'
-        //   }
-        // }).then((response) => {
-
-        // })
+    componentWillMount () {
     }
 
-    componentDidMount() {
+    componentDidMount () {
 
     }
 
-    componentWillUnmount() {
+    componentWillUnmount () {
 
     }
 
-    render() {
+    render () {
         return (
             <Layout>
                 <Header style={{ padding: 0 }}>
-                    <NetHeader />
+                    <NetHeader/>
                 </Header>
                 <Layout>
                     <Sider className='menuWrapper'>
-                        <NetMenu />
+                        <NetMenu/>
                         <div className='palyingSong'></div>
                     </Sider>
-                    <Content style={{backgroundColor: 'white', overflowY: 'auto', height: 'calc(100vh - 113px)'}}>
-                        <Suspense fallback={<Spin tip='加载中...' spinning={this.state.data} />}>
+                    <Content style={{ backgroundColor: 'white', overflowY: 'auto', height: 'calc(100vh - 113px)' }}>
+                        <Suspense fallback={<Spin tip='加载中...' spinning={this.state.data}/>}>
                             <Router>
                                 <Switch>
-                                    <Route path='/' component={Home} exact />
+                                    <Route exact path="/" render={() => (<Redirect to="/Personalize"/>)}/>
+                                    <Route path='/Personalize' component={Home}/>
                                 </Switch>
                             </Router>
                         </Suspense>

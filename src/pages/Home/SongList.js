@@ -4,7 +4,7 @@ import axios from '../../request/index';
 import './index.less';
 
 class SongList extends Component {
-    constructor(props) {
+    constructor (props) {
         super(props);
         this.state = {
             catlist: null,
@@ -15,14 +15,17 @@ class SongList extends Component {
             spinning: false,
             loadingMore: false,
             loadTimes: 1,
+            category: '',
+            radioCurrentValue: '',
+            popoverVisible: false,
         }
     }
 
-    componentWillMount() {
+    componentWillMount () {
 
     }
 
-    componentDidMount() {
+    componentDidMount () {
         this.setState({
             spinning: true
         });
@@ -36,7 +39,7 @@ class SongList extends Component {
                 hotTag: response.data.tags
             })
         });
-        axios.get('/top/playlist', {params: {limit: this.state.limit}}).then((response) => {
+        axios.get('/top/playlist', { params: { limit: this.state.limit } }).then((response) => {
             this.setState({
                 playlist: response.data,
                 spinning: false
@@ -44,58 +47,80 @@ class SongList extends Component {
         });
     }
 
-    componentWillReceiveProps(nextProps) {
-
-    }
+    // componentWillReceiveProps(nextProps) {
+    //
+    // }
 
     // shouldComponentUpdate(nextProps, nextState) {
 
     // }
 
-    componentWillUpdate(nextProps, nextState) {
+    // componentWillUpdate(nextProps, nextState) {
+    //
+    // }
+    //
+    // componentDidUpdate(prevProps, prevState) {
+    //
+    // }
+
+    componentWillUnmount () {
 
     }
 
-    componentDidUpdate(prevProps, prevState) {
-
-    }
-
-    componentWillUnmount() {
-
-    }
-
-    handleTagChange(tag, checked) {
+    handleTagChange (tag, checked) {
+        const checkedTag = checked ? tag.name : undefined;
         const nextSelectedTags = [];
-        checked && nextSelectedTags.push(tag);
+        checked && nextSelectedTags.push(checkedTag);
         this.setState({
-            hotTagChecked: nextSelectedTags
-        })
+            hotTagChecked: nextSelectedTags,
+            spinning: true,
+            category: checkedTag,
+            radioCurrentValue: checkedTag
+        });
+        axios.get('/top/playlist', { params: { limit: this.state.limit, cat: checkedTag } }).then((response) => {
+            this.setState({
+                playlist: response.data,
+                spinning: false
+            })
+        });
     }
 
-    onPaginationChange() {
+    onRadioChange (e) {
+        this.setState({ radioCurrentValue: e.target.value, popoverVisible: false });
+        axios.get('/top/playlist', { params: { limit: this.state.limit, cat: e.target.value } }).then((response) => {
+            this.setState({
+                playlist: response.data,
+                spinning: false,
+                hotTagChecked: [e.target.value],
+            })
+        });
+    }
+
+    onPaginationChange () {
         this.setState({
-            loadingMore: true
+            loadingMore: true,
         });
         this.state.loadTimes += 1;
-        axios.get('/top/playlist', {params: {limit: this.state.limit * this.state.loadTimes}}).then((response) => {
+        axios.get('/top/playlist', {
+            params: {
+                limit: this.state.limit * this.state.loadTimes,
+                cat: this.state.category
+            }
+        }).then((response) => {
             this.setState({
                 playlist: response.data,
                 loadingMore: false
-            }, () => {
-                setTimeout(() => {
-                    document.querySelector('#loadMore').scrollIntoView(true)
-                }, 200)
             });
         });
     }
 
-    render() {
+    render () {
         const RadioButton = Radio.Button;
         const RadioGroup = Radio.Group;
         const CheckableTag = Tag.CheckableTag;
-        const {catlist, hotTag, hotTagChecked, playlist, spinning, loadingMore} = this.state;
+        const { catlist, hotTag, hotTagChecked, playlist, spinning, loadingMore, radioCurrentValue, popoverVisible } = this.state;
 
-        function getContent() {
+        const getContent = () => {
             if (!catlist) return <div>全部歌单</div>;
             const allElem = (<RadioButton key='全部歌单' style={{
                 borderRadius: 0,
@@ -107,12 +132,13 @@ class SongList extends Component {
                 categories.push(catlist.categories[cate])
             }
             return (
-                <RadioGroup name='categories' buttonStyle='solid'>
+                <RadioGroup name='categories' buttonStyle='solid' value={radioCurrentValue}
+                            onChange={this.onRadioChange.bind(this)}>
                     {allElem}
                     {
                         categories.map((category, categoryIndex) => {
                             return (
-                                <Row key={category} style={{width: 550, marginTop: 15}}>
+                                <Row key={category} style={{ width: 550, marginTop: 15 }}>
                                     <Col span={4}>{category}</Col>
                                     <Col span={20}>
                                         {
@@ -131,24 +157,28 @@ class SongList extends Component {
                     }
                 </RadioGroup>
             )
-        }
+        };
 
         return (
             <Fragment>
                 <Spin spinning={spinning} tip='加载中...'>
                     <Row>
                         <Popover content={getContent()} title="添加标签" trigger="click" overlayClassName='categoryPop'
-                                 placement='bottomLeft'>
-                            <Button>全部歌单 <Icon type="down"/></Button>
+                                 placement='bottomLeft' visible={popoverVisible}>
+                            <Button onClick={() => {
+                                this.setState({
+                                    popoverVisible: !this.state.popoverVisible
+                                })
+                            }}>{radioCurrentValue || '全部歌单'} <Icon type="down"/></Button>
                         </Popover>
                     </Row>
-                    <Row style={{marginTop: 15}}>
+                    <Row style={{ marginTop: 15 }}>
                         <span>热门标签：</span>
                         {
                             hotTag.map(tag => (
                                 <CheckableTag
                                     key={tag.id}
-                                    checked={hotTagChecked.indexOf(tag) > -1}
+                                    checked={hotTagChecked.indexOf(tag.name) > -1}
                                     onChange={checked => this.handleTagChange(tag, checked)}
                                 >
                                     {tag.name}
@@ -156,7 +186,7 @@ class SongList extends Component {
                             ))
                         }
                     </Row>
-                    <Row type='flex' style={{marginTop: 15}} gutter={16}>
+                    <Row type='flex' style={{ marginTop: 15 }} gutter={16}>
                         {
                             playlist.playlists && playlist.playlists.map((item, index) => (
                                 <Col span={4} key={index}>
@@ -174,8 +204,8 @@ class SongList extends Component {
                                                 </div>
                                             </div>
                                         }
-                                        bordered={false} bodyStyle={{padding: '10px 0 10px 0'}}
-                                        style={{cursor: 'pointer', position: 'relative'}}
+                                        bordered={false} bodyStyle={{ padding: '10px 0 10px 0' }}
+                                        style={{ cursor: 'pointer', position: 'relative' }}
                                         className='songListCard'
                                     >
                                         {item.name}
@@ -184,10 +214,10 @@ class SongList extends Component {
                             ))
                         }
                     </Row>
-                    <Row style={{marginTop: 15, textAlign: 'center'}}>
+                    <Row style={{ marginTop: 15, textAlign: 'center' }}>
                         {
-                            loadingMore ? <Icon type="loading" style={{fontSize: '30px', color: '#c62f2f'}}/> :
-                                <Icon id='loadMore' type="cloud-download" style={{fontSize: '30px', color: '#c62f2f'}}
+                            loadingMore ? <Icon type="loading" style={{ fontSize: '30px', color: '#c62f2f' }}/> :
+                                <Icon id='loadMore' type="cloud-download" style={{ fontSize: '30px', color: '#c62f2f' }}
                                       title='加载更多' onClick={this.onPaginationChange.bind(this)}/>
                         }
                     </Row>
