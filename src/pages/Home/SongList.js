@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import {Button, Popover, Icon, Radio, Row, Col, Tag, Spin, Card} from "antd";
+import {Button, Popover, Icon, Radio, Row, Col, Tag, Spin, Card, Pagination} from "antd";
 import axios from '../../request/index';
 import './index.less';
 
@@ -11,11 +11,12 @@ class SongList extends Component {
             hotTag: [],
             hotTagChecked: [],
             playlist: {},
-            limit: 18,
+            limit: 48,
+            currentPage: 1,
             spinning: false,
             loadingMore: false,
             loadTimes: 1,
-            category: '',
+            category: undefined,
             radioCurrentValue: '',
             popoverVisible: false,
         }
@@ -47,22 +48,6 @@ class SongList extends Component {
         });
     }
 
-    // componentWillReceiveProps(nextProps) {
-    //
-    // }
-
-    // shouldComponentUpdate(nextProps, nextState) {
-
-    // }
-
-    // componentWillUpdate(nextProps, nextState) {
-    //
-    // }
-    //
-    // componentDidUpdate(prevProps, prevState) {
-    //
-    // }
-
     componentWillUnmount () {
 
     }
@@ -75,7 +60,8 @@ class SongList extends Component {
             hotTagChecked: nextSelectedTags,
             spinning: true,
             category: checkedTag,
-            radioCurrentValue: checkedTag
+            radioCurrentValue: checkedTag,
+            currentPage: 1,
         });
         axios.get('/top/playlist', { params: { limit: this.state.limit, cat: checkedTag } }).then((response) => {
             this.setState({
@@ -86,7 +72,7 @@ class SongList extends Component {
     }
 
     onRadioChange (e) {
-        this.setState({ radioCurrentValue: e.target.value, popoverVisible: false });
+        this.setState({ radioCurrentValue: e.target.value, category: e.target.value, popoverVisible: false, currentPage: 1 });
         axios.get('/top/playlist', { params: { limit: this.state.limit, cat: e.target.value } }).then((response) => {
             this.setState({
                 playlist: response.data,
@@ -96,20 +82,22 @@ class SongList extends Component {
         });
     }
 
-    onPaginationChange () {
+    onPaginationChange (page) {
+        document.querySelector('#categoryRow').scrollIntoView(false);
         this.setState({
-            loadingMore: true,
+            currentPage: page,
+            spinning: true,
         });
-        this.state.loadTimes += 1;
         axios.get('/top/playlist', {
             params: {
-                limit: this.state.limit * this.state.loadTimes,
+                limit: this.state.limit,
+                offset: (page - 1) * this.state.limit,
                 cat: this.state.category
             }
         }).then((response) => {
             this.setState({
                 playlist: response.data,
-                loadingMore: false
+                spinning: false,
             });
         });
     }
@@ -118,7 +106,7 @@ class SongList extends Component {
         const RadioButton = Radio.Button;
         const RadioGroup = Radio.Group;
         const CheckableTag = Tag.CheckableTag;
-        const { catlist, hotTag, hotTagChecked, playlist, spinning, loadingMore, radioCurrentValue, popoverVisible } = this.state;
+        const { catlist, hotTag, hotTagChecked, playlist, spinning, currentPage, radioCurrentValue, popoverVisible } = this.state;
 
         const getContent = () => {
             if (!catlist) return <div>全部歌单</div>;
@@ -162,7 +150,7 @@ class SongList extends Component {
         return (
             <Fragment>
                 <Spin spinning={spinning} tip='加载中...'>
-                    <Row>
+                    <Row id='categoryRow'>
                         <Popover content={getContent()} title="添加标签" trigger="click" overlayClassName='categoryPop'
                                  placement='bottomLeft' visible={popoverVisible}>
                             <Button onClick={() => {
@@ -194,7 +182,7 @@ class SongList extends Component {
                                         cover={
                                             <div style={{
                                                 position: 'relative',
-                                                Height: 231,
+                                                minHeight: 231,
                                                 border: '1px solid #e8e8e8'
                                             }}>
                                                 <img alt={item.name} src={`${item.coverImgUrl}?param=230y244`}/>
@@ -215,11 +203,8 @@ class SongList extends Component {
                         }
                     </Row>
                     <Row style={{ marginTop: 15, textAlign: 'center' }}>
-                        {
-                            loadingMore ? <Icon type="loading" style={{ fontSize: '30px', color: '#c62f2f' }}/> :
-                                <Icon id='loadMore' type="cloud-download" style={{ fontSize: '30px', color: '#c62f2f' }}
-                                      title='加载更多' onClick={this.onPaginationChange.bind(this)}/>
-                        }
+                        <Pagination total={playlist.total} current={currentPage}
+                                    onChange={this.onPaginationChange.bind(this)}/>
                     </Row>
                 </Spin>
             </Fragment>

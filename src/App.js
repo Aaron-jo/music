@@ -11,6 +11,10 @@ const { Header, Sider, Content, Footer } = Layout;
 const Home = lazy(() => import('./pages/Home/index'));
 
 class App extends Component {
+    constructor (props) {
+        super(props);
+        this.mainContent = React.createRef();
+    }
     state = {
         data: true
     };
@@ -37,7 +41,7 @@ class App extends Component {
                         <NetMenu/>
                         <div className='palyingSong'></div>
                     </Sider>
-                    <Content style={{ backgroundColor: 'white', overflowY: 'auto', height: 'calc(100vh - 113px)' }}>
+                    <Content style={{ backgroundColor: 'white', overflowY: 'auto', height: 'calc(100vh - 113px)' }} id='mainContent' ref={this.mainContent}>
                         <Suspense fallback={<Spin tip='加载中...' spinning={this.state.data}/>}>
                             <Router>
                                 <Switch>
