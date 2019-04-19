@@ -1,7 +1,6 @@
 import React, {Component, Fragment} from 'react';
-import {Icon, Row, Col, Tag, Spin, Card, Pagination} from "antd";
+import {Icon, Row, Col, Tag, Spin, Card} from "antd";
 import axios from '../../request/index';
-import InfiniteScroll from 'react-infinite-scroller';
 
 class Artist extends Component {
     constructor (props) {
@@ -11,39 +10,73 @@ class Artist extends Component {
             artists: [],
             categoryChecked: 5001,
             filterTagChecked: '',
-            hasMore: true,
-        }
+            pageNum: 0,
+            scrollHasMore: true,
+        };
+        this.limit = 30;
+        this.mainContent = document.querySelector('#mainContent');
+        this.loadMore = () => {
+            if (!this.state.scrollHasMore) return;
+            let scrollTop = this.mainContent.scrollTop;
+            if (this.mainContent.scrollHeight === this.mainContent.clientHeight + scrollTop) {
+                this.setState((perState, props) => ({ pageNum: perState.pageNum + 1, spinning: true }), () => {
+                    axios.get('artist/list', {
+                        params: {
+                            limit: this.limit,
+                            cat: this.state.categoryChecked,
+                            initial: this.state.filterTagChecked,
+                            offset: this.state.pageNum * 30
+                        }
+                    }).then(response => {
+                        this.setState({
+                            artists: this.state.artists.concat(response.data.artists),
+                            scrollHasMore: response.data.more,
+                            spinning: false
+                        })
+                    })
+                })
+            }
+        };
     }
 
     componentWillMount () {
     }
 
     componentDidMount () {
-        console.log(document.querySelector('#mainContent'));
+        this.mainContent.addEventListener('scroll', this.loadMore);
         this.setState({
             spinning: true
         });
-        axios.get('artist/list', { params: { cat: this.state.categoryChecked } }).then(response => {
+        axios.get('artist/list', { params: { limit: this.limit, cat: this.state.categoryChecked } }).then(response => {
             this.setState({
                 artists: response.data.artists,
-                spinning: false
+                spinning: false,
+                scrollHasMore: response.data.more,
             })
         })
     }
 
     componentWillUnmount () {
-
+        this.mainContent.removeEventListener('scroll', this.loadMore)
     }
 
     handleCategoryTagChange (tag, checked) {
         this.setState({
             spinning: true,
+            pageNum: 0,
             categoryChecked: tag.code,
             filterTagChecked: tag.code === 5001 ? undefined : this.state.filterTagChecked
         });
-        axios.get('artist/list', { params: { cat: tag.code, initial: this.state.filterTagChecked } }).then(response => {
+        axios.get('artist/list', {
+            params: {
+                limit: this.limit,
+                cat: tag.code,
+                initial: this.state.filterTagChecked
+            }
+        }).then(response => {
             this.setState({
                 artists: response.data.artists,
+                scrollHasMore: response.data.more,
                 spinning: false
             })
         })
@@ -53,12 +86,20 @@ class Artist extends Component {
         const filte = checked ? tag : undefined;
         this.setState({
             spinning: true,
+            pageNum: 0,
             filterTagChecked: filte
         });
 
-        axios.get('artist/list', { params: { cat: this.state.categoryChecked, initial: filte } }).then(response => {
+        axios.get('artist/list', {
+            params: {
+                limit: this.limit,
+                cat: this.state.categoryChecked,
+                initial: filte
+            }
+        }).then(response => {
             this.setState({
                 artists: response.data.artists,
+                scrollHasMore: response.data.more,
                 spinning: false
             })
         })
@@ -68,29 +109,9 @@ class Artist extends Component {
         console.log(accountId)
     }
 
-    loadMore (page) {
-        console.log(page);
-        this.setState({
-            spinning: true,
-        });
-        let data = this.state.artists;
-        axios.get('artist/list', {
-            params: {
-                cat: this.state.categoryChecked,
-                initial: this.state.filterTagChecked,
-                offset: (page - 1) * 30
-            }
-        }).then(response => {
-            this.setState({
-                artists: data.concat(response.data.artists),
-                spinning: false
-            })
-        })
-    }
-
     render () {
         const CheckableTag = Tag.CheckableTag;
-        const { spinning, categoryChecked, filterTagChecked, artists, hasMore } = this.state;
+        const { spinning, categoryChecked, filterTagChecked, artists, scrollHasMore } = this.state;
         const category = [
             {
                 code: 5001,
@@ -227,19 +248,18 @@ class Artist extends Component {
                 }
                 <Spin spinning={spinning}>
                     <Row type='flex' style={{ marginTop: 15 }} gutter={16}>
-                        <InfiniteScroll
-                            pageStart={0}
-                            loadMore={this.loadMore}
-                            hasMore={!spinning && hasMore}
-                            initialLoad={false}
-                            getScrollParent={() => document.querySelector('#mainContent')}
-                        >
-                            {
-                                getArtists()
-                            }
-                        </InfiniteScroll>
+                        {
+                            getArtists()
+                        }
                     </Row>
                 </Spin>
+                {
+                    !scrollHasMore && (
+                        <Row type='flex' style={{ justifyContent: 'center' }}>
+                            <span>没有更多了</span>
+                        </Row>
+                    )
+                }
             </Fragment>
         );
     }

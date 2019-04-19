@@ -15,7 +15,7 @@ class TopList extends Component {
     componentWillMount () {
         axios.get('/toplist/detail').then((response) => {
             const officialTopList = [], globalTopList = [];
-            response.data.list.map(item => {
+            response.data.list.forEach(item => {
                 if (item.tracks.length > 0) {
                     officialTopList.push(item)
                 } else {
