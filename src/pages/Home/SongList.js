@@ -4,7 +4,7 @@ import axios from '../../request/index';
 import './index.less';
 
 class SongList extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
             catlist: null,
@@ -22,11 +22,11 @@ class SongList extends Component {
         }
     }
 
-    componentWillMount () {
+    componentWillMount() {
 
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.setState({
             spinning: true
         });
@@ -40,7 +40,7 @@ class SongList extends Component {
                 hotTag: response.data.tags
             })
         });
-        axios.get('/top/playlist', { params: { limit: this.state.limit } }).then((response) => {
+        axios.get('/top/playlist', {params: {limit: this.state.limit}}).then((response) => {
             this.setState({
                 playlist: response.data,
                 spinning: false
@@ -48,11 +48,11 @@ class SongList extends Component {
         });
     }
 
-    componentWillUnmount () {
+    componentWillUnmount() {
 
     }
 
-    handleTagChange (tag, checked) {
+    handleTagChange(tag, checked) {
         const checkedTag = checked ? tag.name : undefined;
         const nextSelectedTags = [];
         checked && nextSelectedTags.push(checkedTag);
@@ -63,7 +63,7 @@ class SongList extends Component {
             radioCurrentValue: checkedTag,
             currentPage: 1,
         });
-        axios.get('/top/playlist', { params: { limit: this.state.limit, cat: checkedTag } }).then((response) => {
+        axios.get('/top/playlist', {params: {limit: this.state.limit, cat: checkedTag}}).then((response) => {
             this.setState({
                 playlist: response.data,
                 spinning: false
@@ -71,9 +71,15 @@ class SongList extends Component {
         });
     }
 
-    onRadioChange (e) {
-        this.setState({ radioCurrentValue: e.target.value, category: e.target.value, popoverVisible: false, currentPage: 1 });
-        axios.get('/top/playlist', { params: { limit: this.state.limit, cat: e.target.value } }).then((response) => {
+    onRadioChange(e) {
+        console.log(e.target);
+        this.setState({
+            radioCurrentValue: e.target.value,
+            category: e.target.value,
+            popoverVisible: false,
+            currentPage: 1
+        });
+        axios.get('/top/playlist', {params: {limit: this.state.limit, cat: e.target.value}}).then((response) => {
             this.setState({
                 playlist: response.data,
                 spinning: false,
@@ -82,7 +88,7 @@ class SongList extends Component {
         });
     }
 
-    onPaginationChange (page) {
+    onPaginationChange(page) {
         document.querySelector('#categoryRow').scrollIntoView(false);
         this.setState({
             currentPage: page,
@@ -102,31 +108,33 @@ class SongList extends Component {
         });
     }
 
-    render () {
+    render() {
         const RadioButton = Radio.Button;
         const RadioGroup = Radio.Group;
         const CheckableTag = Tag.CheckableTag;
-        const { catlist, hotTag, hotTagChecked, playlist, spinning, currentPage, radioCurrentValue, popoverVisible } = this.state;
+        const {catlist, hotTag, hotTagChecked, playlist, spinning, currentPage, radioCurrentValue, popoverVisible} = this.state;
 
         const getContent = () => {
             if (!catlist) return <div>全部歌单</div>;
-            const allElem = (<RadioButton key='全部歌单' style={{
-                borderRadius: 0,
-                width: '100%',
-                textAlign: 'center'
-            }}>全部歌单</RadioButton>);
             let categories = [];
             for (let cate in catlist.categories) {
                 categories.push(catlist.categories[cate])
             }
             return (
-                <RadioGroup name='categories' buttonStyle='solid' value={radioCurrentValue}
+                <RadioGroup name='categories' buttonStyle='solid' value={radioCurrentValue} defaultValue=''
                             onChange={this.onRadioChange.bind(this)}>
-                    {allElem}
+                    <RadioButton value=''
+                                 style={{
+                                     borderRadius: 0,
+                                     width: '100%',
+                                     textAlign: 'center'
+                                 }}>
+                        全部歌单
+                    </RadioButton>
                     {
                         categories.map((category, categoryIndex) => {
                             return (
-                                <Row key={category} style={{ width: 550, marginTop: 15 }}>
+                                <Row key={category} style={{width: 550, marginTop: 15}}>
                                     <Col span={4}>{category}</Col>
                                     <Col span={20}>
                                         {
@@ -153,14 +161,25 @@ class SongList extends Component {
                     <Row id='categoryRow'>
                         <Popover content={getContent()} title="添加标签" trigger="click" overlayClassName='categoryPop'
                                  placement='bottomLeft' visible={popoverVisible}>
-                            <Button onClick={() => {
-                                this.setState({
-                                    popoverVisible: !this.state.popoverVisible
-                                })
-                            }}>{radioCurrentValue || '全部歌单'} <Icon type="down"/></Button>
+                            <Button
+                                onClick={() => {
+                                    this.setState({
+                                        popoverVisible: !this.state.popoverVisible
+                                    })
+                                }}
+                                onBlur={() => {
+                                    setTimeout(()=>{
+                                        this.setState({
+                                            popoverVisible: false
+                                        })
+                                    }, 200)
+                                }}
+                            >
+                                {radioCurrentValue || '全部歌单'} <Icon type="down"/>
+                            </Button>
                         </Popover>
                     </Row>
-                    <Row style={{ marginTop: 15 }}>
+                    <Row style={{marginTop: 15}}>
                         <span>热门标签：</span>
                         {
                             hotTag.map(tag => (
@@ -174,7 +193,7 @@ class SongList extends Component {
                             ))
                         }
                     </Row>
-                    <Row type='flex' style={{ marginTop: 15 }} gutter={16}>
+                    <Row type='flex' style={{marginTop: 15}} gutter={16}>
                         {
                             playlist.playlists && playlist.playlists.map((item, index) => (
                                 <Col span={4} key={index}>
@@ -192,8 +211,8 @@ class SongList extends Component {
                                                 </div>
                                             </div>
                                         }
-                                        bordered={false} bodyStyle={{ padding: '10px 0 10px 0' }}
-                                        style={{ cursor: 'pointer', position: 'relative' }}
+                                        bordered={false} bodyStyle={{padding: '10px 0 10px 0'}}
+                                        style={{cursor: 'pointer', position: 'relative'}}
                                         className='songListCard'
                                     >
                                         {item.name}
@@ -202,7 +221,7 @@ class SongList extends Component {
                             ))
                         }
                     </Row>
-                    <Row style={{ marginTop: 15, textAlign: 'center' }}>
+                    <Row style={{marginTop: 15, textAlign: 'center'}}>
                         <Pagination total={playlist.total} current={currentPage}
                                     onChange={this.onPaginationChange.bind(this)}/>
                     </Row>

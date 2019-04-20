@@ -42,7 +42,7 @@ class App extends Component {
                         <div className='palyingSong'></div>
                     </Sider>
                     <Content style={{ backgroundColor: 'white', overflowY: 'auto', height: 'calc(100vh - 113px)' }} id='mainContent' ref={this.mainContent}>
-                        <Suspense fallback={<Spin tip='加载中...' spinning={this.state.data}/>}>
+                        <Suspense fallback={<Spin tip='加载中...' spinning={this.state.data} className='suspense-loading'/>}>
                             <Router>
                                 <Switch>
                                     <Route exact path="/" render={() => (<Redirect to="/Personalize"/>)}/>

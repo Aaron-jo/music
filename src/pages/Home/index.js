@@ -48,27 +48,27 @@ class Home extends Component {
                 <Tabs onChange={this.TabsChange.bind(this)} tabBarStyle={{ textAlign: 'center' }} activeKey={activeKey}
                       defaultActiveKey={defaultKey}>
                     <Tabs.TabPane tab="个性推荐" key="/Personalize" className='personalized'>
-                        <Suspense fallback={<Spin tip='加载中...' spinning={true}/>}>
+                        <Suspense fallback={<Spin tip='加载中...' spinning={true} className='suspense-loading'/>}>
                             <Route path='/Personalize' component={PersonalityRecommendation} exact/>
                         </Suspense>
                     </Tabs.TabPane>
-                    <Tabs.TabPane tab="歌单" key="/Personalize/SongList" className='songlist'>
-                        <Suspense fallback={<Spin tip='加载中...' spinning={true}/>}>
+                    <Tabs.TabPane tab="歌单" key="/Personalize/SongList" className='song-list'>
+                        <Suspense fallback={<Spin tip='加载中...' spinning={true} className='suspense-loading'/>}>
                             <Route path='/Personalize/SongList' component={SongList}/>
                         </Suspense>
                     </Tabs.TabPane>
                     <Tabs.TabPane tab="排行榜" key="/Personalize/TopList" className='topList'>
-                        <Suspense fallback={<Spin tip='加载中...' spinning={true}/>}>
+                        <Suspense fallback={<Spin tip='加载中...' spinning={true} className='suspense-loading'/>}>
                             <Route path='/Personalize/TopList' component={TopList}/>
                         </Suspense>
                     </Tabs.TabPane>
                     <Tabs.TabPane tab="歌手" key="/Personalize/Artist" className='artist'>
-                        <Suspense fallback={<Spin tip='加载中...' spinning={true}/>}>
+                        <Suspense fallback={<Spin tip='加载中...' spinning={true} className='suspense-loading'/>}>
                             <Route path='/Personalize/Artist' component={Artist}/>
                         </Suspense>
                     </Tabs.TabPane>
                     <Tabs.TabPane tab="最新音乐" key="/Personalize/TopMusic" className='top-music'>
-                        <Suspense fallback={<Spin tip='加载中...' spinning={true}/>}>
+                        <Suspense fallback={<Spin tip='加载中...' spinning={true} className='suspense-loading'/>}>
                             <Route path='/Personalize/TopMusic' component={TopMusic}/>
                         </Suspense>
                     </Tabs.TabPane>
