@@ -3,16 +3,13 @@ import {Row, Col, Spin, Card, Pagination, Icon} from "antd";
 import axios from '../../../request/';
 
 class NewAlbum extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            type: this.props.type,
-            albums: [],
-            total: 0,
-            currentPage: 1,
-            spinning: true
-        }
-    }
+    state = {
+        type: this.props.type,
+        albums: [],
+        total: 0,
+        currentPage: 1,
+        spinning: true
+    };
 
     componentWillMount() {
     }
@@ -53,7 +50,10 @@ class NewAlbum extends Component {
     }
 
     play(id) {
-        console.log(id)
+        console.log(id);
+        axios.get('/album', {params: {id: id}}).then((response) => {
+
+        })
     }
 
     render() {

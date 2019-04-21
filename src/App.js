@@ -7,42 +7,40 @@ import './App.less';
 
 // 路由懒加载--划重点：https://zh-hans.reactjs.org/docs/code-splitting.html
 
-const { Header, Sider, Content, Footer } = Layout;
+const {Header, Sider, Content, Footer} = Layout;
 const Home = lazy(() => import('./pages/Home/index'));
 
 class App extends Component {
-    constructor (props) {
-        super(props);
-        this.mainContent = React.createRef();
-    }
     state = {
         data: true
     };
 
-    componentWillMount () {
+    componentWillMount() {
     }
 
-    componentDidMount () {
-
-    }
-
-    componentWillUnmount () {
+    componentDidMount() {
 
     }
 
-    render () {
+    componentWillUnmount() {
+
+    }
+
+    render() {
+        const {data} = this.state;
         return (
             <Layout>
-                <Header style={{ padding: 0 }}>
+                <Header style={{padding: 0}}>
                     <NetHeader/>
                 </Header>
                 <Layout>
                     <Sider className='menuWrapper'>
                         <NetMenu/>
-                        <div className='palyingSong'></div>
+                        <div className='playingSong'/>
                     </Sider>
-                    <Content style={{ backgroundColor: 'white', overflowY: 'auto', height: 'calc(100vh - 113px)' }} id='mainContent' ref={this.mainContent}>
-                        <Suspense fallback={<Spin tip='加载中...' spinning={this.state.data} className='suspense-loading'/>}>
+                    <Content style={{backgroundColor: 'white', overflowY: 'auto', height: 'calc(100vh - 113px)'}}>
+                        <Suspense
+                            fallback={<Spin tip='加载中...' spinning={data} className='suspense-loading'/>}>
                             <Router>
                                 <Switch>
                                     <Route exact path="/" render={() => (<Redirect to="/Personalize"/>)}/>
@@ -52,7 +50,7 @@ class App extends Component {
                         </Suspense>
                     </Content>
                 </Layout>
-                <Footer style={{ borderTop: '1px solid #e8e8e8' }}>
+                <Footer style={{borderTop: '1px solid #e8e8e8'}}>
 
                 </Footer>
             </Layout>
