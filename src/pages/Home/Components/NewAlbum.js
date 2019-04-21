@@ -1,6 +1,8 @@
 import React, {Component, Fragment} from 'react';
 import {Row, Col, Spin, Card, Pagination, Icon} from "antd";
 import axios from '../../../request/';
+import {connect} from 'react-redux';
+import {changeNumber} from '../../../reduxModal/actions/testAction';
 
 class NewAlbum extends Component {
     state = {
@@ -102,4 +104,10 @@ class NewAlbum extends Component {
     }
 }
 
-export default NewAlbum;
+export default connect(
+    state => ({
+        testReducer: state.testReducer
+    }), {
+        changeNumber
+    }
+)(NewAlbum);

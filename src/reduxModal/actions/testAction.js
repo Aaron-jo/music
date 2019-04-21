@@ -1,10 +1,13 @@
-import constants from '../constants/index'
+import actionType from '../action-type/index'
 
-export const changeNumber = data => (dispatch) => {
+/*export const changeNumber = data => (dispatch) => {
     dispatch({
-        type: constants.CHANGE_NUMBER,
+        type: action-type.CHANGE_NUMBER,
         data,
     })
-};
+};*/
 
-export default {}
+export const changeNumber = data => ({
+    type: actionType.CHANGE_NUMBER,
+    data,
+});
