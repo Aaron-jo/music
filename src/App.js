@@ -1,4 +1,5 @@
 import React, {Component, lazy, Suspense} from 'react';
+import {connect} from 'react-redux';
 import {Layout, Spin} from "antd";
 import {HashRouter as Router, Route, Switch, Redirect} from "react-router-dom";
 import NetMenu from "./components/Menu/";
@@ -7,7 +8,7 @@ import './App.less';
 
 // 路由懒加载--划重点：https://zh-hans.reactjs.org/docs/code-splitting.html
 
-const {Header, Sider, Content, Footer} = Layout;
+const { Header, Sider, Content, Footer } = Layout;
 const Home = lazy(() => import('./pages/Home/index'));
 
 class App extends Component {
@@ -15,22 +16,28 @@ class App extends Component {
         data: true
     };
 
-    componentWillMount() {
+    componentWillMount () {
     }
 
-    componentDidMount() {
+    componentDidMount () {
+        window.audio = document.getElementById('audio');
+        window.audio.addEventListener('play', (e) => {
+            console.log(e)
+        });
+        window.audio.addEventListener('ended', (e) => {
+            console.log(e)
+        });
+    }
+
+    componentWillUnmount () {
 
     }
 
-    componentWillUnmount() {
-
-    }
-
-    render() {
-        const {data} = this.state;
+    render () {
+        const { data } = this.state;
         return (
             <Layout>
-                <Header style={{padding: 0}}>
+                <Header style={{ padding: 0 }}>
                     <NetHeader/>
                 </Header>
                 <Layout>
@@ -38,7 +45,8 @@ class App extends Component {
                         <NetMenu/>
                         <div className='playingSong'/>
                     </Sider>
-                    <Content style={{backgroundColor: 'white', overflowY: 'auto', height: 'calc(100vh - 113px)'}}>
+                    <Content style={{ backgroundColor: 'white', overflowY: 'auto', height: 'calc(100vh - 113px)' }}
+                             id='mainContent'>
                         <Suspense
                             fallback={<Spin tip='加载中...' spinning={data} className='suspense-loading'/>}>
                             <Router>
@@ -50,12 +58,16 @@ class App extends Component {
                         </Suspense>
                     </Content>
                 </Layout>
-                <Footer style={{borderTop: '1px solid #e8e8e8'}}>
-
+                <Footer style={{ borderTop: '1px solid #e8e8e8' }}>
+                    <audio id='audio' autoPlay/>
                 </Footer>
             </Layout>
         );
     }
 }
 
-export default App;
+export default connect(
+    state => ({
+        currentPlayList: state.currentPlayList,
+    })
+)(App);

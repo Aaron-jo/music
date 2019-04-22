@@ -2,7 +2,8 @@ import React, {Component, Fragment} from 'react';
 import {Row, Col, Spin, Card, Pagination, Icon} from "antd";
 import axios from '../../../request/';
 import {connect} from 'react-redux';
-import {changeNumber} from '../../../reduxModal/actions/testAction';
+import {getCurrentSongLit} from '../../../reduxModal/actions/getCurrentPlayList';
+import playMusic from '../../../commo/playMusic';
 
 class NewAlbum extends Component {
     state = {
@@ -13,23 +14,23 @@ class NewAlbum extends Component {
         spinning: true
     };
 
-    componentWillMount() {
+    componentWillMount () {
     }
 
-    componentDidMount() {
+    componentDidMount () {
         this.getData()
     }
 
-    componentWillUnmount() {
+    componentWillUnmount () {
 
     }
 
-    getData(page = 1) {
+    getData (page = 1) {
         this.setState({
             spinning: true
         });
         axios.get('/top/album', {
-            params: {limit: 30, offset: (page - 1) * 30}
+            params: { limit: 30, offset: (page - 1) * 30 }
         }).then((response) => {
             this.setState({
                 albums: response.data.albums,
@@ -44,22 +45,22 @@ class NewAlbum extends Component {
         })
     }
 
-    onPaginationChange(page) {
+    onPaginationChange (page) {
         this.setState({
             currentPage: page,
         });
         this.getData(page)
     }
 
-    play(id) {
-        console.log(id);
-        axios.get('/album', {params: {id: id}}).then((response) => {
-
+    play (id) {
+        axios.get('/album', { params: { id: id } }).then((response) => {
+            this.props.getCurrentSongLit(response.data.songs);
+            playMusic(response.data.songs[0].id)
         })
     }
 
-    render() {
-        const {albums, spinning, total, currentPage} = this.state;
+    render () {
+        const { albums, spinning, total, currentPage } = this.state;
         return (
             <Fragment>
                 <Spin spinning={spinning} tip='加载中...'>
@@ -80,8 +81,8 @@ class NewAlbum extends Component {
                                                 </div>
                                             </div>
                                         }
-                                        bordered={false} bodyStyle={{padding: '10px 0 10px 0'}}
-                                        style={{cursor: 'pointer', position: 'relative', marginBottom: '10px'}}
+                                        bordered={false} bodyStyle={{ padding: '10px 0 10px 0' }}
+                                        style={{ cursor: 'pointer', position: 'relative', marginBottom: '10px' }}
                                         className='songListCard'
                                     >
                                         <div>{item.name}</div>
@@ -94,7 +95,7 @@ class NewAlbum extends Component {
                             ))
                         }
                     </Row>
-                    <Row style={{marginTop: 15, textAlign: 'center'}}>
+                    <Row style={{ marginTop: 15, textAlign: 'center' }}>
                         <Pagination total={total} current={currentPage}
                                     onChange={this.onPaginationChange.bind(this)}/>
                     </Row>
@@ -106,8 +107,8 @@ class NewAlbum extends Component {
 
 export default connect(
     state => ({
-        testReducer: state.testReducer
+        currentSongList: state.currentPlayList,
     }), {
-        changeNumber
+        getCurrentSongLit
     }
 )(NewAlbum);

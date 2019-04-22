@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux';
-import testReducer from './testReducer';
+import currentPlayList from './currentPlayList';
 
 export default combineReducers({
-    testReducer,
+    currentPlayList
 })

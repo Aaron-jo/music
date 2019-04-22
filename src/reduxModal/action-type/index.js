@@ -1,7 +1,7 @@
-import testActionType from './testConstants';
+import currentPlayList from './currentPlayList';
 
 const actionType = {
-    ...testActionType
+    ...currentPlayList,
 };
 
 export default actionType

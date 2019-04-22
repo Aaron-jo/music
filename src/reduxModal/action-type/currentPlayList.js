@@ -1,0 +1,5 @@
+export default {
+    GET_CURRENT_SONG_LIST: 'GET_CURRENT_SONG_LIST', // 获取播放列表
+    SEQUENTIAL_PLAY: 'SEQUENTIAL_PLAY', // 顺序播放
+    RESET_CURRENT_PLAY_INDEX: 'RESET_CURRENT_PLAY_INDEX', // 重置当前播放的index
+}
