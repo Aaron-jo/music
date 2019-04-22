@@ -39,6 +39,40 @@ main::-webkit-scrollbar-track {
     }
 }
 
+.footer{
+    display: flex;
+    padding: 0;
+    justify-content: flex-start;
+    height: 48px;
+    & > div{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+    .audio-control{
+        width: 250px;
+        & > div{
+            width: 36px;
+            height: 36px;
+            font-size: 22px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            background: #e83c3c;
+            border-radius: 50%;
+            margin: auto 15px;
+            cursor: pointer;
+            &:hover{
+                background: #c62f2f;
+            }
+        }
+    }
+    .audio-progress{
+    }
+}
+
 .suspense-loading{
     width: 100%;
     text-align: center;

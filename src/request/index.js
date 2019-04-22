@@ -24,7 +24,7 @@ axiosInstans.interceptors.response.use(function (response) {
     return response
 }, function (error) {
     // 对响应错误做些什么
-    message.error(error);
+    console.log(error);
     return Promise.reject(error);
 });
 
