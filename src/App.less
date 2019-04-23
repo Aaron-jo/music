@@ -105,12 +105,28 @@ main::-webkit-scrollbar-track {
             }
             #anchor-point{
                 position: absolute;
-                z-index: 11;
-                top: -4px;
-                width: 12px;
-                height: 12px;
-                background: radial-gradient(#9B0909, #e83c3c, white);
+                display: inline-block;
+                z-index: 22;
+                width: 4px;
+                height: 4px;
+                &:after{
+                    content: ' ';
+                    display: inline-block;
+                    width: 14px;
+                    height: 14px;
+                    border: solid 1px #c62f2f;
+                    background: radial-gradient(#c62f2f 5%, white, white);
+                    border-radius: 50%;
+                    position: absolute;
+                    top: -5px;
+                    left: -5px;
+                    z-index: 20;
+                }
+                background: #e83c3c;
                 border-radius: 50%;
+                &:hover{
+                    box-shadow: 0 0 0 10px rgba(232, 60, 60, 0.2);
+                }
             }
         }
         #sound {

@@ -14,14 +14,13 @@ class NetFooter extends Component {
         currentTime: '00:00',
         playWay: 0,
         volume: 50,
-        offsetDrag: 0,
     };
 
-    componentWillMount () {
+    componentWillMount() {
 
     }
 
-    componentDidMount () {
+    componentDidMount() {
         window.audio = document.getElementById('audio');
         window.audio.volume = this.state.volume / 100;
         window.audio.addEventListener('play', () => {
@@ -57,36 +56,43 @@ class NetFooter extends Component {
         const audioProgress = document.getElementById('audio-progress');
         audioProgress.onmousedown = (downEvent) => {
             downEvent.stopPropagation();
-            window.audio.ontimeupdate = null;
-            const downClientX = downEvent.clientX;
-            let preOffset = 0;
-            document.onmousemove = (moveEvent) => {
-                let moveClientX = moveEvent.clientX;
-                const offsetDrag = ((moveClientX - downClientX - preOffset) / audioProgress.getBoundingClientRect().width) * 100;
-                const played = this.state.played + offsetDrag;
+            if (window.audio.readyState === 4) {
+                window.audio.ontimeupdate = null;
+                const downClientX = downEvent.clientX;
+                let preOffset = 0;
 
+                const anchorPoint = document.getElementById('anchor-point');
+                const offsetPercentClick = ((downClientX - anchorPoint.getBoundingClientRect().x) / audioProgress.getBoundingClientRect().width) * 100;
                 this.setState({
-                    offsetDrag,
-                    played,
+                    played: this.state.played + offsetPercentClick
                 });
 
-                preOffset = moveClientX - downClientX;
-            };
-            document.onmouseup = (upEvent) => {
-                document.onmousemove = null;
-                const currentTime = (this.state.played / 100) * window.audio.duration;
-                window.audio.currentTime = currentTime;
-                window.audio.ontimeupdate = audioTimeUpdate;
-                document.onmouseup = null;
+                document.onmousemove = (moveEvent) => {
+                    console.log('moveEvent');
+                    let moveClientX = moveEvent.clientX;
+                    const offsetDrag = ((moveClientX - downClientX - preOffset) / audioProgress.getBoundingClientRect().width) * 100;
+                    const played = this.state.played + offsetDrag;
+                    this.setState({
+                        played,
+                    });
+                    preOffset = moveClientX - downClientX;
+                };
+
+                document.onmouseup = () => {
+                    document.onmousemove = null;
+                    window.audio.currentTime = (this.state.played / 100) * window.audio.duration;
+                    window.audio.ontimeupdate = audioTimeUpdate;
+                    document.onmouseup = null;
+                }
             }
-        }
+        };
     }
 
-    componentWillUnmount () {
+    componentWillUnmount() {
 
     }
 
-    playOrPause () {
+    playOrPause() {
         if (!this.props.currentPlayList.list.length > 0) return;
         if (this.state.isPaused) {
             window.audio.play()
@@ -98,23 +104,23 @@ class NetFooter extends Component {
         });
     }
 
-    preSong () {
+    preSong() {
 
     }
 
-    nextSong () {
+    nextSong() {
 
     }
 
-    handleSoundChange (value) {
+    handleSoundChange(value) {
         window.audio.volume = value / 100;
         this.setState({
             volume: value
         })
     }
 
-    render () {
-        const { isPaused, played, duration, currentTime, buffered, playWay, volume } = this.state;
+    render() {
+        const {isPaused, played, duration, currentTime, buffered, playWay, volume} = this.state;
         const IconFont = Icon.createFromIconfontCN({
             scriptUrl: '//at.alicdn.com/t/font_1157727_280juyortfd.js',
         });
@@ -137,9 +143,9 @@ class NetFooter extends Component {
                 <div className='audio-progress-container'>
                     <div>{currentTime}</div>
                     <div id='audio-progress'>
-                        <div className='buffered' style={{ width: `${buffered}%` }}/>
-                        <div className='played' style={{ width: `${played}%` }}/>
-                        <div id='anchor-point' style={{ left: `${played}%` }}/>
+                        <div className='buffered' style={{width: `${buffered}%`}}/>
+                        <div className='played' style={{width: `${played}%`}}/>
+                        <div id='anchor-point' style={{left: `${played}%`}}/>
                     </div>
                     <div>{duration}</div>
                     <div id='sound'>
