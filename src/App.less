@@ -1,12 +1,14 @@
-main::-webkit-scrollbar{
+main::-webkit-scrollbar {
     width: 5px;
     height: 100%;
 }
-main::-webkit-scrollbar-thumb{
+
+main::-webkit-scrollbar-thumb {
     width: 5px;
     border-radius: 2px;
     background-color: #c62f2f;
 }
+
 main::-webkit-scrollbar-track {
     width: 5px;
 }
@@ -25,7 +27,7 @@ main::-webkit-scrollbar-track {
     &::-webkit-scrollbar,
     &::-webkit-scrollbar-thumb,
     &::-webkit-scrollbar-track {
-        width: 0px !important;
+        width: 0 !important;
         visibility: hidden !important;
     }
 
@@ -39,20 +41,20 @@ main::-webkit-scrollbar-track {
     }
 }
 
-.footer{
+.footer {
     display: flex;
     padding: 0;
     justify-content: flex-start;
     height: 48px;
-    & > div{
+    & > div {
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100%;
     }
-    .audio-control{
+    .audio-control {
         width: 250px;
-        & > div{
+        & > div {
             width: 36px;
             height: 36px;
             font-size: 22px;
@@ -64,16 +66,109 @@ main::-webkit-scrollbar-track {
             border-radius: 50%;
             margin: auto 15px;
             cursor: pointer;
-            &:hover{
+            &:hover {
                 background: #c62f2f;
             }
         }
     }
-    .audio-progress{
+    .audio-progress-container {
+        display: flex;
+        justify-content: space-around;
+        flex-grow: 1;
+        & > div {
+            margin: 0 10px;
+            user-select: none;
+            cursor: pointer;
+        }
+        #audio-progress {
+            position: relative;
+            flex-grow: 1;
+            background: #e8e8e8;
+            height: 4px;
+            border-radius: 10px;
+            margin: 0 10px;
+            .buffered {
+                position: absolute;
+                z-index: 5;
+                height: 4px;
+                border-radius: 10px;
+                background: #ababab;
+                width: 100px;
+            }
+            .played {
+                position: absolute;
+                z-index: 10;
+                height: 4px;
+                border-radius: 10px;
+                background: #e83c3c;
+                cursor: pointer;
+            }
+            #anchor-point{
+                position: absolute;
+                z-index: 11;
+                top: -4px;
+                width: 12px;
+                height: 12px;
+                background: radial-gradient(#9B0909, #e83c3c, white);
+                border-radius: 50%;
+            }
+        }
+        #sound {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            & i{
+                font-size: 20px;
+            }
+            & > div {
+                width: 100px;
+                margin: 0 0 0 10px;
+                &:hover .ant-slider-handle {
+                    opacity: 1;
+                }
+                .ant-slider-rail{
+                    background: #e8e8e8;
+                }
+                .ant-slider-track {
+                    background: #e83c3c;
+
+                }
+                .ant-slider-handle {
+                    opacity: 0;
+                    width: 12px;
+                    height: 12px;
+                    margin-top: -4px;
+                    border: solid 1px #e83c3c;
+                    &:focus {
+                        box-shadow: 0 0 0 5px rgba(232, 60, 60, 0.2);
+                    }
+                }
+            }
+        }
+        #play-way{
+            font-size: 20px;
+            cursor: pointer;
+        }
+        #play-list{
+            margin-right: 20px;
+            font-size: 12px;
+            & i{
+                float: left;
+                font-size: 20px;
+                background: white;
+            }
+            & span{
+                color: #000;
+            }
+            border-radius: 10px;
+            background: #e8e8e8;
+            height: 20px;
+            width: 50px;
+        }
     }
 }
 
-.suspense-loading{
+.suspense-loading {
     width: 100%;
     text-align: center;
     margin-top: 50px;
