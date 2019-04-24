@@ -103,13 +103,13 @@ main::-webkit-scrollbar-track {
                 background: #e83c3c;
                 cursor: pointer;
             }
-            #anchor-point{
+            #anchor-point {
                 position: absolute;
                 display: inline-block;
                 z-index: 22;
                 width: 4px;
                 height: 4px;
-                &:after{
+                &:after {
                     content: ' ';
                     display: inline-block;
                     width: 14px;
@@ -124,7 +124,7 @@ main::-webkit-scrollbar-track {
                 }
                 background: #e83c3c;
                 border-radius: 50%;
-                &:hover{
+                &:hover {
                     box-shadow: 0 0 0 10px rgba(232, 60, 60, 0.2);
                 }
             }
@@ -133,7 +133,7 @@ main::-webkit-scrollbar-track {
             display: flex;
             justify-content: space-around;
             align-items: center;
-            & i{
+            & i {
                 font-size: 20px;
             }
             & > div {
@@ -142,7 +142,7 @@ main::-webkit-scrollbar-track {
                 &:hover .ant-slider-handle {
                     opacity: 1;
                 }
-                .ant-slider-rail{
+                .ant-slider-rail {
                     background: #e8e8e8;
                 }
                 .ant-slider-track {
@@ -161,19 +161,19 @@ main::-webkit-scrollbar-track {
                 }
             }
         }
-        #play-way{
+        #play-way {
             font-size: 20px;
             cursor: pointer;
         }
-        #play-list{
+        #play-list {
             margin-right: 20px;
             font-size: 12px;
-            & i{
+            & i {
                 float: left;
                 font-size: 20px;
                 background: white;
             }
-            & span{
+            & span {
                 color: #000;
             }
             border-radius: 10px;
@@ -188,4 +188,37 @@ main::-webkit-scrollbar-track {
     width: 100%;
     text-align: center;
     margin-top: 50px;
+}
+
+@keyframes play-loading {
+    0% {
+        box-shadow: 0 0 0 5px rgba(232, 60, 60, 1)
+    }
+    10% {
+        box-shadow: 0 0 0 6px rgba(232, 60, 60, 0.9)
+    }
+    20% {
+        box-shadow: 0 0 0 7px rgba(232, 60, 60, 0.8)
+    }
+    30% {
+        box-shadow: 0 0 0 8px rgba(232, 60, 60, 0.7)
+    }
+    40% {
+        box-shadow: 0 0 0 9px rgba(232, 60, 60, 0.6)
+    }
+    50% {
+        box-shadow: 0 0 0 10px rgba(232, 60, 60, 0.5)
+    }
+    60% {
+        box-shadow: 0 0 0 11px rgba(232, 60, 60, 0.4)
+    }
+    70% {
+        box-shadow: 0 0 0 12px rgba(232, 60, 60, 0.3)
+    }
+    80% {
+        box-shadow: 0 0 0 13px rgba(232, 60, 60, 0.2)
+    }
+    90% {
+        box-shadow: 0 0 0 14px rgba(232, 60, 60, 0.1)
+    }
 }

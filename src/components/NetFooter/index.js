@@ -2,6 +2,8 @@ import React, {Component, Fragment} from 'react';
 import {Icon, Slider} from "antd";
 import {connect} from "react-redux";
 import {formatSecond} from '../../Utils';
+import playMusic from '../../commo/playMusic';
+import {sequentialPlay} from '../../reduxModal/actions/getCurrentPlayList';
 import '../../App.less';
 
 class NetFooter extends Component {
@@ -23,7 +25,16 @@ class NetFooter extends Component {
     componentDidMount() {
         window.audio = document.getElementById('audio');
         window.audio.volume = this.state.volume / 100;
+        // 在文件开始加载且未实际加载任何数据前运行的脚本
+        window.audio.addEventListener('loadstart', () => {
+            this.setState({
+                played: 0,
+                buffered: 0
+            })
+        });
+        // 播放事件
         window.audio.addEventListener('play', () => {
+            document.getElementById('anchor-point').style.animationName = '';
             this.setState({
                 isPaused: false,
                 duration: formatSecond(window.audio.duration),
@@ -36,23 +47,61 @@ class NetFooter extends Component {
                 played: played
             });
         };
+        // 播放位置改变时
         window.audio.ontimeupdate = audioTimeUpdate;
+        // 暂停播放
         window.audio.addEventListener('pause', () => {
+            document.getElementById('anchor-point').style.animationName = '';
             console.log('pause');
             this.setState({
                 isPaused: true
             });
         });
+        // 浏览器正在获取媒介数据时运行的脚本
         window.audio.addEventListener('progress', () => {
             const buffered = (window.audio.buffered.end(window.audio.buffered.length - 1) / window.audio.duration) * 100;
             this.setState({
                 buffered
             })
         });
+        // 当媒介已到达结尾时运行的脚本
         window.audio.addEventListener('ended', () => {
-            console.log('ended')
+            switch (this.state.playWay) {
+                case 0: //顺序播放
+                    let currentPlayIndex0 = this.props.currentPlayList.currentPlayIndex;
+                    currentPlayIndex0 += 1;
+                    if (currentPlayIndex0 < this.props.currentPlayList.list.length) {
+                        this.props.sequentialPlay(currentPlayIndex0);
+                        playMusic(this.props.currentPlayList.list[currentPlayIndex0].id);
+                    }
+                    break;
+                case 1: //列表循环
+                    let currentPlayIndex1 = this.props.currentPlayList.currentPlayIndex;
+                    currentPlayIndex1 += 1;
+                    if (currentPlayIndex1 < this.props.currentPlayList.list.length) {
+                        this.props.sequentialPlay(currentPlayIndex1);
+                        playMusic(this.props.currentPlayList.list[currentPlayIndex1].id);
+                    }else {
+                        this.props.sequentialPlay(0);
+                        playMusic(this.props.currentPlayList.list[currentPlayIndex1].id);
+                    }
+                    break;
+                case 3: //随机播放
+                    let currentPlayIndex3 = this.props.currentPlayList.currentPlayIndex;
+                    currentPlayIndex3 += 1;
+                    if (currentPlayIndex3 < this.props.currentPlayList.list.length) {
+                        this.props.sequentialPlay(currentPlayIndex3);
+                        playMusic(this.props.currentPlayList.list[currentPlayIndex3].id);
+                    }else {
+                        this.props.sequentialPlay(0);
+                        playMusic(this.props.currentPlayList.list[currentPlayIndex3].id);
+                    }
+                    break;
+                default:
+            }
         });
 
+        // control的拖拽与点击事件
         const audioProgress = document.getElementById('audio-progress');
         audioProgress.onmousedown = (downEvent) => {
             downEvent.stopPropagation();
@@ -119,8 +168,24 @@ class NetFooter extends Component {
         })
     }
 
+    onChangePlayWay() {
+        let playWay = this.state.playWay + 1;
+        if (playWay > 3) {
+            playWay = 0;
+            this.setState({
+                playWay
+            })
+        } else {
+            this.setState({
+                playWay
+            })
+        }
+
+        window.audio.loop = playWay === 2;
+    }
+
     render() {
-        const {isPaused, played, duration, currentTime, buffered, playWay, volume} = this.state;
+        const { isPaused, played, duration, currentTime, buffered, playWay, volume } = this.state;
         const IconFont = Icon.createFromIconfontCN({
             scriptUrl: '//at.alicdn.com/t/font_1157727_280juyortfd.js',
         });
@@ -143,16 +208,20 @@ class NetFooter extends Component {
                 <div className='audio-progress-container'>
                     <div>{currentTime}</div>
                     <div id='audio-progress'>
-                        <div className='buffered' style={{width: `${buffered}%`}}/>
-                        <div className='played' style={{width: `${played}%`}}/>
-                        <div id='anchor-point' style={{left: `${played}%`}}/>
+                        <div className='buffered' style={{ width: `${buffered}%` }}/>
+                        <div className='played' style={{ width: `${played}%` }}/>
+                        <div id='anchor-point' style={{
+                            left: `${played}%`,
+                            animationDuration: '1s',
+                            animationIterationCount: 15
+                        }}/>
                     </div>
                     <div>{duration}</div>
                     <div id='sound'>
                         <IconFont type="iconsound"/>
                         <Slider min={0} max={100} value={volume} onChange={this.handleSoundChange.bind(this)}/>
                     </div>
-                    <div id='play-way'>
+                    <div id='play-way' onClick={this.onChangePlayWay.bind(this)}>
                         {
                             playWay === 0 ? <IconFont type='iconshunxubofang' title='顺序播放'/> : (
                                 playWay === 1 ? <IconFont type='iconxunhuanbofang' title='列表循环'/> : (
@@ -165,7 +234,8 @@ class NetFooter extends Component {
                     {/*<div>歌词</div>*/}
                     <div id='play-list'>
                         <IconFont type='iconplist'/>
-                        <span>100</span>
+                        <span
+                            style={{ marginLeft: 5 }}>{this.props.currentPlayList.list ? this.props.currentPlayList.list.length : 0}</span>
                     </div>
                 </div>
             </Fragment>
@@ -176,5 +246,7 @@ class NetFooter extends Component {
 export default connect(
     state => ({
         currentPlayList: state.currentPlayList,
-    })
+    }), {
+        sequentialPlay
+    }
 )(NetFooter);
