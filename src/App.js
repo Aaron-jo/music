@@ -4,6 +4,7 @@ import {HashRouter as Router, Route, Switch, Redirect} from "react-router-dom";
 import NetMenu from "./components/Menu/";
 import NetHeader from "./components/NetHeader/";
 import NetFooter from './components/NetFooter';
+import PlayingSong from './components/PlayingSong';
 import './App.less';
 
 // 路由懒加载--划重点：https://zh-hans.reactjs.org/docs/code-splitting.html
@@ -36,7 +37,7 @@ class App extends Component {
                 <Layout>
                     <Sider className='menuWrapper'>
                         <NetMenu/>
-                        <div className='playingSong'/>
+                        <PlayingSong />
                     </Sider>
                     <Content style={{backgroundColor: 'white', overflowY: 'auto', height: 'calc(100vh - 113px)'}}
                              id='mainContent'>

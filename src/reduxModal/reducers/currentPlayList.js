@@ -2,7 +2,9 @@ import actionType from '../action-type';
 
 const initialState = {
     list: [],
-    currentPlayIndex: 0
+    playWay: 0, // 播放方式(顺序)
+    currentPlayIndex: 0, // 当前正在播放歌曲的list的index
+    shuffleList: [],
 };
 
 export default (state = initialState, action) => {
@@ -12,15 +14,20 @@ export default (state = initialState, action) => {
                 ...state,
                 list: action.songList
             };
-        case actionType.SEQUENTIAL_PLAY:
+        case actionType.SET_CURRENT_PLAY_INDEX:
             return {
                 ...state,
-                currentPlayIndex: action.next
+                currentPlayIndex: action.index
             };
-        case actionType.RESET_CURRENT_PLAY_INDEX:
+        case actionType.SHUFFLE_LIST:
             return {
                 ...state,
-                currentPlayIndex: action.reset
+                shuffleList: action.shuffleList
+            };
+        case actionType.SET_PLAY_WAY:
+            return {
+                ...state,
+                playWay: action.code
             };
         default:
             return state

@@ -38,6 +38,12 @@ main::-webkit-scrollbar-track {
         bottom: 60px;
         width: 250px;
         z-index: 100;
+        display: flex;
+    }
+    .playingSong-none{
+        &:extend(.menuWrapper .playingSong);
+        justify-content: center;
+        align-items: center;
     }
 }
 

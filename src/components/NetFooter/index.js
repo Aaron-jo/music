@@ -3,7 +3,8 @@ import {Icon, Slider} from "antd";
 import {connect} from "react-redux";
 import {formatSecond} from '../../Utils';
 import playMusic from '../../commo/playMusic';
-import {sequentialPlay} from '../../reduxModal/actions/getCurrentPlayList';
+import {setCurrentPlayIndex, setShuffleList, setPlayWay} from '../../reduxModal/actions/getCurrentPlayList';
+import _ from 'lodash';
 import '../../App.less';
 
 class NetFooter extends Component {
@@ -14,7 +15,6 @@ class NetFooter extends Component {
         buffered: 0,
         duration: '00:00',
         currentTime: '00:00',
-        playWay: 0,
         volume: 50,
     };
 
@@ -66,12 +66,12 @@ class NetFooter extends Component {
         });
         // 当媒介已到达结尾时运行的脚本
         window.audio.addEventListener('ended', () => {
-            switch (this.state.playWay) {
+            switch (this.props.currentPlayList.playWay) {
                 case 0: //顺序播放
                     let currentPlayIndex0 = this.props.currentPlayList.currentPlayIndex;
                     currentPlayIndex0 += 1;
                     if (currentPlayIndex0 < this.props.currentPlayList.list.length) {
-                        this.props.sequentialPlay(currentPlayIndex0);
+                        this.props.setCurrentPlayIndex(currentPlayIndex0);
                         playMusic(this.props.currentPlayList.list[currentPlayIndex0].id);
                     }
                     break;
@@ -79,10 +79,10 @@ class NetFooter extends Component {
                     let currentPlayIndex1 = this.props.currentPlayList.currentPlayIndex;
                     currentPlayIndex1 += 1;
                     if (currentPlayIndex1 < this.props.currentPlayList.list.length) {
-                        this.props.sequentialPlay(currentPlayIndex1);
+                        this.props.setCurrentPlayIndex(currentPlayIndex1);
                         playMusic(this.props.currentPlayList.list[currentPlayIndex1].id);
-                    }else {
-                        this.props.sequentialPlay(0);
+                    } else {
+                        this.props.setCurrentPlayIndex(0);
                         playMusic(this.props.currentPlayList.list[currentPlayIndex1].id);
                     }
                     break;
@@ -90,11 +90,11 @@ class NetFooter extends Component {
                     let currentPlayIndex3 = this.props.currentPlayList.currentPlayIndex;
                     currentPlayIndex3 += 1;
                     if (currentPlayIndex3 < this.props.currentPlayList.list.length) {
-                        this.props.sequentialPlay(currentPlayIndex3);
-                        playMusic(this.props.currentPlayList.list[currentPlayIndex3].id);
-                    }else {
-                        this.props.sequentialPlay(0);
-                        playMusic(this.props.currentPlayList.list[currentPlayIndex3].id);
+                        this.props.setCurrentPlayIndex(currentPlayIndex3);
+                        playMusic(this.props.currentPlayList.shuffleList[currentPlayIndex3].songInfo.id);
+                    } else {
+                        this.props.setCurrentPlayIndex(0);
+                        playMusic(this.props.currentPlayList.shuffleList[0].songInfo.id);
                     }
                     break;
                 default:
@@ -169,23 +169,28 @@ class NetFooter extends Component {
     }
 
     onChangePlayWay() {
-        let playWay = this.state.playWay + 1;
+        let playWay = this.props.currentPlayList.playWay;
+        ++playWay;
         if (playWay > 3) {
             playWay = 0;
-            this.setState({
-                playWay
-            })
+            this.props.setPlayWay(playWay)
         } else {
-            this.setState({
-                playWay
-            })
+            this.props.setPlayWay(playWay)
         }
-
+        if (playWay === 3) {
+            this.props.setShuffleList(_.shuffle(this.props.currentPlayList.list.map((item, index) => ({
+                songInfo: item,
+                originalIndex: index
+            })))); // 洗牌操作
+        } else {
+            this.props.setShuffleList([])
+        }
         window.audio.loop = playWay === 2;
     }
 
     render() {
-        const { isPaused, played, duration, currentTime, buffered, playWay, volume } = this.state;
+        const {isPaused, played, duration, currentTime, buffered, volume} = this.state;
+        const playWay = this.props.currentPlayList.playWay;
         const IconFont = Icon.createFromIconfontCN({
             scriptUrl: '//at.alicdn.com/t/font_1157727_280juyortfd.js',
         });
@@ -208,8 +213,8 @@ class NetFooter extends Component {
                 <div className='audio-progress-container'>
                     <div>{currentTime}</div>
                     <div id='audio-progress'>
-                        <div className='buffered' style={{ width: `${buffered}%` }}/>
-                        <div className='played' style={{ width: `${played}%` }}/>
+                        <div className='buffered' style={{width: `${buffered}%`}}/>
+                        <div className='played' style={{width: `${played}%`}}/>
                         <div id='anchor-point' style={{
                             left: `${played}%`,
                             animationDuration: '1s',
@@ -235,7 +240,7 @@ class NetFooter extends Component {
                     <div id='play-list'>
                         <IconFont type='iconplist'/>
                         <span
-                            style={{ marginLeft: 5 }}>{this.props.currentPlayList.list ? this.props.currentPlayList.list.length : 0}</span>
+                            style={{marginLeft: 5}}>{this.props.currentPlayList.list ? this.props.currentPlayList.list.length : 0}</span>
                     </div>
                 </div>
             </Fragment>
@@ -247,6 +252,8 @@ export default connect(
     state => ({
         currentPlayList: state.currentPlayList,
     }), {
-        sequentialPlay
+        setCurrentPlayIndex,
+        setShuffleList,
+        setPlayWay,
     }
 )(NetFooter);
