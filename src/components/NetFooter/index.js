@@ -3,8 +3,8 @@ import {Icon, Slider, message, Popover} from "antd";
 import {connect} from "react-redux";
 import {formatSecond} from '../../Utils';
 import playMusic from '../../commo/playMusic';
-import {setCurrentPlayIndex, setRandomPlayedIndex, setPlayWay} from '../../reduxModal/actions/getCurrentPlayList';
 import PlayListContent from './playListContent';
+import {setCurrentPlayIndex, setRandomPlayedIndex, setPlayWay} from '../../reduxModal/actions/getCurrentPlayList';
 import _ from 'lodash';
 import '../../App.less';
 
@@ -186,7 +186,7 @@ class NetFooter extends Component {
             playMusic(this.props.currentPlayList.list[this.props.currentPlayList.currentPlayIndex + 1].id);
             this.props.setCurrentPlayIndex(this.props.currentPlayList.currentPlayIndex + 1)
         }
-        console.log(this.props.currentPlayList.currentPlayIndex)
+        // console.log(this.props.currentPlayList.currentPlayIndex)
     }
 
     handleSoundChange(value) {
@@ -209,7 +209,7 @@ class NetFooter extends Component {
     }
 
     render() {
-        const { isPaused, played, duration, currentTime, buffered, volume, playListVisible } = this.state;
+        const {isPaused, played, duration, currentTime, buffered, volume, playListVisible} = this.state;
         const playWay = this.props.currentPlayList.playWay;
         const IconFont = Icon.createFromIconfontCN({
             scriptUrl: '//at.alicdn.com/t/font_1157727_280juyortfd.js',
@@ -233,8 +233,8 @@ class NetFooter extends Component {
                 <div className='audio-progress-container'>
                     <div>{currentTime}</div>
                     <div id='audio-progress'>
-                        <div className='buffered' style={{ width: `${buffered}%` }}/>
-                        <div className='played' style={{ width: `${played}%` }}/>
+                        <div className='buffered' style={{width: `${buffered}%`}}/>
+                        <div className='played' style={{width: `${played}%`}}/>
                         <div id='anchor-point' style={{
                             left: `${played}%`,
                             animationDuration: '1s',
@@ -258,13 +258,15 @@ class NetFooter extends Component {
                     </div>
                     {/*<div>歌词</div>*/}
                     <div id='play-list' onClick={() => {
-                        this.setState({ playListVisible: !playListVisible })
+                        this.setState({playListVisible: !playListVisible})
                     }}>
                         <Popover content={<PlayListContent/>}
-                                 getPopupContainer={() => document.getElementById('play-list')} trigger='click'>
+                                 overlayClassName='play-list-popover'
+                                 getPopupContainer={() => document.getElementById('play-list')} trigger='click'
+                        >
                             <IconFont type='iconplist'/>
                             <span
-                                style={{ marginLeft: 5 }}>{this.props.currentPlayList.list ? this.props.currentPlayList.list.length : 0}</span>
+                                style={{marginLeft: 5}}>{this.props.currentPlayList.list ? this.props.currentPlayList.list.length : 0}</span>
                         </Popover>
                     </div>
                 </div>
