@@ -1,13 +1,20 @@
 import React, {Component, Fragment} from 'react';
-import {Icon, Slider} from "antd";
+import {Icon, Slider, message, Popover} from "antd";
 import {connect} from "react-redux";
 import {formatSecond} from '../../Utils';
 import playMusic from '../../commo/playMusic';
-import {setCurrentPlayIndex, setShuffleList, setPlayWay} from '../../reduxModal/actions/getCurrentPlayList';
+import {setCurrentPlayIndex, setRandomPlayedIndex, setPlayWay} from '../../reduxModal/actions/getCurrentPlayList';
+import PlayListContent from './playListContent';
 import _ from 'lodash';
 import '../../App.less';
 
 class NetFooter extends Component {
+
+    constructor(props) {
+        super(props);
+        this.randomPlayed = [];
+        this.randomPlayedIndex = 0;
+    }
 
     state = {
         isPaused: true,
@@ -34,7 +41,7 @@ class NetFooter extends Component {
         });
         // 播放事件
         window.audio.addEventListener('play', () => {
-            document.getElementById('anchor-point').style.animationName = '';
+            if (document.getElementById('anchor-point')) document.getElementById('anchor-point').style.animationName = '';
             this.setState({
                 isPaused: false,
                 duration: formatSecond(window.audio.duration),
@@ -83,19 +90,15 @@ class NetFooter extends Component {
                         playMusic(this.props.currentPlayList.list[currentPlayIndex1].id);
                     } else {
                         this.props.setCurrentPlayIndex(0);
-                        playMusic(this.props.currentPlayList.list[currentPlayIndex1].id);
+                        playMusic(this.props.currentPlayList.list[0].id);
                     }
                     break;
                 case 3: //随机播放
-                    let currentPlayIndex3 = this.props.currentPlayList.currentPlayIndex;
-                    currentPlayIndex3 += 1;
-                    if (currentPlayIndex3 < this.props.currentPlayList.list.length) {
-                        this.props.setCurrentPlayIndex(currentPlayIndex3);
-                        playMusic(this.props.currentPlayList.shuffleList[currentPlayIndex3].songInfo.id);
-                    } else {
-                        this.props.setCurrentPlayIndex(0);
-                        playMusic(this.props.currentPlayList.shuffleList[0].songInfo.id);
-                    }
+                    // let currentPlayIndex3 = this.props.currentPlayList.currentPlayIndex;
+                    let currentPlayIndex3 = _.random(this.props.currentPlayList.list.length - 1);
+                    this.props.setCurrentPlayIndex(currentPlayIndex3);
+                    playMusic(this.props.currentPlayList.list[currentPlayIndex3].id);
+                    this.randomPlayed.push(currentPlayIndex3);
                     break;
                 default:
             }
@@ -104,7 +107,7 @@ class NetFooter extends Component {
         // control的拖拽与点击事件
         const audioProgress = document.getElementById('audio-progress');
         audioProgress.onmousedown = (downEvent) => {
-            downEvent.stopPropagation();
+            // downEvent.stopPropagation();
             if (window.audio.readyState === 4) {
                 window.audio.ontimeupdate = null;
                 const downClientX = downEvent.clientX;
@@ -154,11 +157,36 @@ class NetFooter extends Component {
     }
 
     preSong() {
-
+        if (!this.props.currentPlayList.currentPlayIndex) return message.warning('没有上一首了');
+        let playWay = this.props.currentPlayList.playWay;
+        if (playWay === 3) { // 随机播放
+            if (this.randomPlayedIndex) {
+                playMusic(this.props.currentPlayList.list[this.randomPlayed[this.randomPlayedIndex - 1]].id);
+                this.randomPlayedIndex = this.randomPlayedIndex - 1;
+                this.props.setCurrentPlayIndex(this.randomPlayed[this.randomPlayedIndex]);
+            } else { // 当随机播放没了的时候
+                playMusic(this.props.currentPlayList.list[this.props.currentPlayList.currentPlayIndex - 1].id);
+                this.props.setCurrentPlayIndex(this.props.currentPlayList.currentPlayIndex - 1)
+            }
+        } else {
+            playMusic(this.props.currentPlayList.list[this.props.currentPlayList.currentPlayIndex - 1].id);
+            this.props.setCurrentPlayIndex(this.props.currentPlayList.currentPlayIndex - 1)
+        }
     }
 
     nextSong() {
-
+        if (this.props.currentPlayList.currentPlayIndex === this.props.currentPlayList.list.length - 1) return message.warning('没有下一首了');
+        let playWay = this.props.currentPlayList.playWay;
+        if (playWay === 3) { // 随机播放
+            let currentPlayIndex = _.random(this.props.currentPlayList.list.length - 1);
+            this.props.setCurrentPlayIndex(currentPlayIndex);
+            playMusic(this.props.currentPlayList.list[currentPlayIndex].id);
+            this.randomPlayed.push(currentPlayIndex);
+        } else {
+            playMusic(this.props.currentPlayList.list[this.props.currentPlayList.currentPlayIndex + 1].id);
+            this.props.setCurrentPlayIndex(this.props.currentPlayList.currentPlayIndex + 1)
+        }
+        console.log(this.props.currentPlayList.currentPlayIndex)
     }
 
     handleSoundChange(value) {
@@ -177,19 +205,11 @@ class NetFooter extends Component {
         } else {
             this.props.setPlayWay(playWay)
         }
-        if (playWay === 3) {
-            this.props.setShuffleList(_.shuffle(this.props.currentPlayList.list.map((item, index) => ({
-                songInfo: item,
-                originalIndex: index
-            })))); // 洗牌操作
-        } else {
-            this.props.setShuffleList([])
-        }
         window.audio.loop = playWay === 2;
     }
 
     render() {
-        const {isPaused, played, duration, currentTime, buffered, volume} = this.state;
+        const { isPaused, played, duration, currentTime, buffered, volume, playListVisible } = this.state;
         const playWay = this.props.currentPlayList.playWay;
         const IconFont = Icon.createFromIconfontCN({
             scriptUrl: '//at.alicdn.com/t/font_1157727_280juyortfd.js',
@@ -213,8 +233,8 @@ class NetFooter extends Component {
                 <div className='audio-progress-container'>
                     <div>{currentTime}</div>
                     <div id='audio-progress'>
-                        <div className='buffered' style={{width: `${buffered}%`}}/>
-                        <div className='played' style={{width: `${played}%`}}/>
+                        <div className='buffered' style={{ width: `${buffered}%` }}/>
+                        <div className='played' style={{ width: `${played}%` }}/>
                         <div id='anchor-point' style={{
                             left: `${played}%`,
                             animationDuration: '1s',
@@ -226,7 +246,7 @@ class NetFooter extends Component {
                         <IconFont type="iconsound"/>
                         <Slider min={0} max={100} value={volume} onChange={this.handleSoundChange.bind(this)}/>
                     </div>
-                    <div id='play-way' onClick={this.onChangePlayWay.bind(this)}>
+                    <div id='play-way' onMouseUp={this.onChangePlayWay.bind(this)}>
                         {
                             playWay === 0 ? <IconFont type='iconshunxubofang' title='顺序播放'/> : (
                                 playWay === 1 ? <IconFont type='iconxunhuanbofang' title='列表循环'/> : (
@@ -237,10 +257,15 @@ class NetFooter extends Component {
                         }
                     </div>
                     {/*<div>歌词</div>*/}
-                    <div id='play-list'>
-                        <IconFont type='iconplist'/>
-                        <span
-                            style={{marginLeft: 5}}>{this.props.currentPlayList.list ? this.props.currentPlayList.list.length : 0}</span>
+                    <div id='play-list' onClick={() => {
+                        this.setState({ playListVisible: !playListVisible })
+                    }}>
+                        <Popover content={<PlayListContent/>}
+                                 getPopupContainer={() => document.getElementById('play-list')} trigger='click'>
+                            <IconFont type='iconplist'/>
+                            <span
+                                style={{ marginLeft: 5 }}>{this.props.currentPlayList.list ? this.props.currentPlayList.list.length : 0}</span>
+                        </Popover>
                     </div>
                 </div>
             </Fragment>
@@ -253,7 +278,7 @@ export default connect(
         currentPlayList: state.currentPlayList,
     }), {
         setCurrentPlayIndex,
-        setShuffleList,
+        setRandomPlayedIndex,
         setPlayWay,
     }
 )(NetFooter);

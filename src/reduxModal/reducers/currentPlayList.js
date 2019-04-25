@@ -4,7 +4,7 @@ const initialState = {
     list: [],
     playWay: 0, // 播放方式(顺序)
     currentPlayIndex: 0, // 当前正在播放歌曲的list的index
-    shuffleList: [],
+    randomPlayedIndex: [],
 };
 
 export default (state = initialState, action) => {
@@ -19,10 +19,15 @@ export default (state = initialState, action) => {
                 ...state,
                 currentPlayIndex: action.index
             };
-        case actionType.SHUFFLE_LIST:
+        case actionType.SET_RANDOM_PLAYED_INDEX:
             return {
                 ...state,
-                shuffleList: action.shuffleList
+                randomPlayedIndex: state.randomPlayedIndex.push(action.index)
+            };
+        case actionType.RESET_RANDOM_PLAYED_INDEX:
+            return {
+                ...state,
+                randomPlayedIndex: []
             };
         case actionType.SET_PLAY_WAY:
             return {

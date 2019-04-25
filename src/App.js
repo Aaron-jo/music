@@ -4,7 +4,7 @@ import {HashRouter as Router, Route, Switch, Redirect} from "react-router-dom";
 import NetMenu from "./components/Menu/";
 import NetHeader from "./components/NetHeader/";
 import NetFooter from './components/NetFooter';
-import PlayingSong from './components/PlayingSong';
+import PlayingSong from './components/NetFooter/playingSong';
 import './App.less';
 
 // 路由懒加载--划重点：https://zh-hans.reactjs.org/docs/code-splitting.html

@@ -13,16 +13,22 @@ main::-webkit-scrollbar-track {
     width: 5px;
 }
 
+.anticon{
+    cursor: pointer;
+}
+
 .menuWrapper {
     height: calc(100vh - 113px);
     background: white;
     border-right: 1px solid #e8e8e8;
-    overflow-y: auto;
-    position: relative;
+    overflow-y: scroll;
     width: 250px !important;
     flex: 0 0 250px !important;
     max-width: 250px !important;
     min-width: 250px !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 
     &::-webkit-scrollbar,
     &::-webkit-scrollbar-thumb,
@@ -34,11 +40,29 @@ main::-webkit-scrollbar-track {
     .playingSong {
         border-top: 1px solid #e8e8e8;
         position: fixed;
-        height: 60px;
-        bottom: 60px;
+        height: 65px;
+        bottom: 50px;
         width: 250px;
         z-index: 100;
         display: flex;
+        padding: 5px 15px;
+        justify-content: space-between;
+        align-items: center;
+        &:hover .playIconInImg{
+            opacity: 1;
+        }
+        .playIconInImg{
+            height: 48px;
+            width: 48px;
+            border-radius: 0;
+            font-size: 35px;
+            bottom: 0;
+            left: 0;
+            opacity: 0;
+            &:hover {
+                background: rgba(0, 0, 0, 0.3);
+            }
+        }
     }
     .playingSong-none{
         &:extend(.menuWrapper .playingSong);
@@ -186,6 +210,17 @@ main::-webkit-scrollbar-track {
             background: #e8e8e8;
             height: 20px;
             width: 50px;
+            .ant-popover-arrow {
+                display: none;
+            }
+            .ant-popover-inner {
+                border-bottom-right-radius: 0;
+                border-bottom-left-radius: 0;
+                border-top-right-radius: 0;
+                box-shadow: -4px -4px 12px rgba(0, 0, 0, 0.15);
+                border-left: 1px solid rgb(183, 185, 187);
+                border-top: 1px solid rgb(183, 185, 187);
+            }
         }
     }
 }

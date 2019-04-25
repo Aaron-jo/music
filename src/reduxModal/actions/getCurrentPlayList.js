@@ -10,9 +10,13 @@ export const setCurrentPlayIndex = index => ({
     index
 });
 
-export const setShuffleList = shuffleList => ({
-    type: actionType.SHUFFLE_LIST,
-    shuffleList
+export const setRandomPlayedIndex = index => ({
+    type: actionType.SET_RANDOM_PLAYED_INDEX,
+    index
+});
+
+export const resetRandomPlayedIndex = () => ({
+    type: actionType.SET_RANDOM_PLAYED_INDEX,
 });
 
 export const setPlayWay = code => ({
