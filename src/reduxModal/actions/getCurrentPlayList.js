@@ -23,3 +23,8 @@ export const setPlayWay = code => ({
     type: actionType.SET_PLAY_WAY,
     code
 });
+
+export const setIsPaused = boolean => ({
+    type: actionType.SET_IS_PAUSED,
+    boolean
+});

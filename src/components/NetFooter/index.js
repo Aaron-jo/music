@@ -4,7 +4,12 @@ import {connect} from "react-redux";
 import {formatSecond} from '../../Utils';
 import playMusic from '../../commo/playMusic';
 import PlayListContent from './playListContent';
-import {setCurrentPlayIndex, setRandomPlayedIndex, setPlayWay} from '../../reduxModal/actions/getCurrentPlayList';
+import {
+    setCurrentPlayIndex,
+    setRandomPlayedIndex,
+    setPlayWay,
+    setIsPaused
+} from '../../reduxModal/actions/getCurrentPlayList';
 import _ from 'lodash';
 import '../../App.less';
 
@@ -41,7 +46,9 @@ class NetFooter extends Component {
         });
         // 播放事件
         window.audio.addEventListener('play', () => {
+            this.props.setIsPaused(false);
             if (document.getElementById('anchor-point')) document.getElementById('anchor-point').style.animationName = '';
+            console.log('play');
             this.setState({
                 isPaused: false,
                 duration: formatSecond(window.audio.duration),
@@ -58,15 +65,25 @@ class NetFooter extends Component {
         window.audio.ontimeupdate = audioTimeUpdate;
         // 暂停播放
         window.audio.addEventListener('pause', () => {
+            this.props.setIsPaused(true);
             document.getElementById('anchor-point').style.animationName = '';
             console.log('pause');
             this.setState({
                 isPaused: true
             });
         });
+        // 当媒介已停止播放但打算继续播放时运行脚本
+        window.audio.addEventListener('waiting', () => {
+            document.getElementById('anchor-point').style.animationName = 'play-loading';
+            console.log('waiting')
+        });
+        window.audio.addEventListener('canplay', () => {
+            document.getElementById('anchor-point').style.animationName = '';
+            console.log('canplay')
+        });
         // 浏览器正在获取媒介数据时运行的脚本
         window.audio.addEventListener('progress', () => {
-            const buffered = (window.audio.buffered.end(window.audio.buffered.length - 1) / window.audio.duration) * 100;
+            const buffered = window.audio.buffered.length && (window.audio.buffered.end(window.audio.buffered.length - 1) / window.audio.duration) * 100;
             this.setState({
                 buffered
             })
@@ -209,7 +226,7 @@ class NetFooter extends Component {
     }
 
     render() {
-        const {isPaused, played, duration, currentTime, buffered, volume, playListVisible} = this.state;
+        const { isPaused, played, duration, currentTime, buffered, volume, playListVisible } = this.state;
         const playWay = this.props.currentPlayList.playWay;
         const IconFont = Icon.createFromIconfontCN({
             scriptUrl: '//at.alicdn.com/t/font_1157727_280juyortfd.js',
@@ -233,8 +250,8 @@ class NetFooter extends Component {
                 <div className='audio-progress-container'>
                     <div>{currentTime}</div>
                     <div id='audio-progress'>
-                        <div className='buffered' style={{width: `${buffered}%`}}/>
-                        <div className='played' style={{width: `${played}%`}}/>
+                        <div className='buffered' style={{ width: `${buffered}%` }}/>
+                        <div className='played' style={{ width: `${played}%` }}/>
                         <div id='anchor-point' style={{
                             left: `${played}%`,
                             animationDuration: '1s',
@@ -258,7 +275,7 @@ class NetFooter extends Component {
                     </div>
                     {/*<div>歌词</div>*/}
                     <div id='play-list' onClick={() => {
-                        this.setState({playListVisible: !playListVisible})
+                        this.setState({ playListVisible: !playListVisible })
                     }}>
                         <Popover content={<PlayListContent/>}
                                  overlayClassName='play-list-popover'
@@ -266,7 +283,7 @@ class NetFooter extends Component {
                         >
                             <IconFont type='iconplist'/>
                             <span
-                                style={{marginLeft: 5}}>{this.props.currentPlayList.list ? this.props.currentPlayList.list.length : 0}</span>
+                                style={{ marginLeft: 5 }}>{this.props.currentPlayList.list ? this.props.currentPlayList.list.length : 0}</span>
                         </Popover>
                     </div>
                 </div>
@@ -282,5 +299,6 @@ export default connect(
         setCurrentPlayIndex,
         setRandomPlayedIndex,
         setPlayWay,
+        setIsPaused,
     }
 )(NetFooter);
