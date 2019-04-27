@@ -66,7 +66,7 @@ class NetFooter extends Component {
         // 暂停播放
         window.audio.addEventListener('pause', () => {
             this.props.setIsPaused(true);
-            document.getElementById('anchor-point').style.animationName = '';
+            if (document.getElementById('anchor-point')) document.getElementById('anchor-point').style.animationName = '';
             console.log('pause');
             this.setState({
                 isPaused: true

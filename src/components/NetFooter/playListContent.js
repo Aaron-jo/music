@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {Table, Icon, Divider, Radio} from 'antd';
 import {formatSecond} from '../../Utils';
 import playMusic from '../../commo/playMusic';
-import {setCurrentPlayIndex} from '../../reduxModal/actions/getCurrentPlayList';
+import {setCurrentPlayIndex, setCurrentSongLit} from '../../reduxModal/actions/getCurrentPlayList';
 import _ from 'lodash';
 import './index.less';
 
@@ -22,9 +22,17 @@ class playListContent extends Component {
 
     }
 
+    // 双击播放列表歌曲播放
     playListRowDoubleClick(record) {
         this.props.setCurrentPlayIndex(_.findIndex(this.props.list, ['id', record.id]));
         playMusic(record.id);
+    }
+
+    // 清空播放列表
+    clearPlayList(){
+        this.props.setCurrentSongLit([]);
+        this.props.setCurrentPlayIndex(0);
+        window.audio.src = '';
     }
 
     render() {
@@ -45,7 +53,7 @@ class playListContent extends Component {
                                     <i style={{width: 14, display: 'inline-block'}}/>
                             }
                         </span>
-                        <span>{value}</span>
+                        <span title={value}>{value}</span>
                     </div>
                 )
             }, {
@@ -54,8 +62,9 @@ class playListContent extends Component {
                 key: 'artists',
                 width: 120,
                 render: (value, row) => (
-                    <div style={{textOverflow: 'ellipsis', overflow: 'hidden', maxWidth: 120}}>
-                        {row.ar.map((item, index) => {
+                    <div style={{textOverflow: 'ellipsis', overflow: 'hidden', maxWidth: 120}}
+                         title={value.map(item => item.name).join('/')}>
+                        {value.map((item, index) => {
                             if (index === row.ar.length - 1) {
                                 return <span key={item.id}>{item.name}</span>
                             } else {
@@ -93,7 +102,7 @@ class playListContent extends Component {
                     <div className='add-delete'>
                         <span><Icon type='folder-add' style={{marginRight: 5}}/>收藏全部</span>
                         <Divider type='vertical'/>
-                        <span style={{float: 'right'}}><Icon type='delete' style={{marginRight: 5}}/>清空</span>
+                        <span style={{float: 'right'}} onClick={this.clearPlayList.bind(this)}><Icon type='delete' style={{marginRight: 5}}/>清空</span>
                     </div>
                 </div>
                 <div className='play-list-content-body'>
@@ -119,5 +128,6 @@ export default connect(
         ...state.currentPlayList
     }), {
         setCurrentPlayIndex,
+        setCurrentSongLit,
     }
 )(playListContent);
