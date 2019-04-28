@@ -8,7 +8,8 @@ import {
     setCurrentPlayIndex,
     setRandomPlayedIndex,
     setPlayWay,
-    setIsPaused
+    setIsPaused,
+    setPlayedList,
 } from '../../reduxModal/actions/getCurrentPlayList';
 import _ from 'lodash';
 import '../../App.less';
@@ -48,6 +49,13 @@ class NetFooter extends Component {
         window.audio.addEventListener('play', () => {
             this.props.setIsPaused(false);
             if (document.getElementById('anchor-point')) document.getElementById('anchor-point').style.animationName = '';
+            let played = JSON.parse(localStorage.getItem('playedList')) || [];
+            played.unshift(this.props.currentPlayList.list[this.props.currentPlayList.currentPlayIndex]);
+            played = _.uniqBy(played, 'id');
+            if (played.length > 100) {
+                played = _.dropRight(played)
+            }
+            this.props.setPlayedList(played);
             console.log('play');
             this.setState({
                 isPaused: false,
@@ -164,7 +172,11 @@ class NetFooter extends Component {
     playOrPause() {
         if (!this.props.currentPlayList.list.length > 0) return;
         if (this.state.isPaused) {
-            window.audio.play()
+            if (!window.audio.src) {
+                playMusic(this.props.currentPlayList.list[this.props.currentPlayList.currentPlayIndex].id)
+            }else {
+                window.audio.play()
+            }
         } else {
             window.audio.pause();
         }
@@ -300,5 +312,6 @@ export default connect(
         setRandomPlayedIndex,
         setPlayWay,
         setIsPaused,
+        setPlayedList
     }
 )(NetFooter);
