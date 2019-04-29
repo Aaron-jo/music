@@ -13,7 +13,7 @@ axiosInstans.interceptors.request.use(function (config) {
     return config
 }, function (error) {
     // 对请求错误做些什么
-    message.error(error);
+    // message.error(error);
     return Promise.reject(error);
 });
 
@@ -24,7 +24,7 @@ axiosInstans.interceptors.response.use(function (response) {
     return response
 }, function (error) {
     // 对响应错误做些什么
-    console.log(error);
+    // console.log(error);
     return Promise.reject(error);
 });
 

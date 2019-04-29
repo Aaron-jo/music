@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
-import {Table, Icon, Divider, Radio} from 'antd';
+import {Table, Icon, Divider, Radio, Dropdown, Menu} from 'antd';
 import {formatSecond} from '../../Utils';
 import playMusic from '../../commo/playMusic';
 import {setCurrentPlayIndex, setCurrentSongLit, setPlayedList} from '../../reduxModal/actions/getCurrentPlayList';
@@ -33,9 +33,7 @@ class playListContent extends Component {
                 });
                 break;
             case 1:
-                const played = JSON.parse(localStorage.getItem('played')) || [];
                 this.setState({
-                    playedList: played,
                     isPlayed: true,
                 });
                 break;
@@ -47,11 +45,19 @@ class playListContent extends Component {
     // 双击播放列表歌曲播放
     playListRowDoubleClick(record) {
         if (this.state.isPlayed) {
-
+            const doubleClickIndex = _.findIndex(this.props.list, ['id', record.id]);
+            if (doubleClickIndex === -1) { // 在播放列表中没有该歌曲，则插入
+                const list = _.cloneDeep(this.props.list);
+                list.splice(this.props.currentPlayIndex + 1, 0, record);
+                this.props.setCurrentSongLit(list);
+                this.props.setCurrentPlayIndex(this.props.currentPlayIndex + 1);
+            } else { // 有该歌曲，则播放这首
+                this.props.setCurrentPlayIndex(doubleClickIndex)
+            }
         } else {
             this.props.setCurrentPlayIndex(_.findIndex(this.props.list, ['id', record.id]));
-            playMusic(record.id);
         }
+        playMusic(record.id);
     }
 
     // 清空播放列表
@@ -72,26 +78,35 @@ class playListContent extends Component {
         const { isPlayed } = this.state;
         const RadioGroup = Radio.Group;
         const RadioButton = Radio.Button;
+        const menu = (
+            <Menu>
+                <Menu.Item key="1">1st menu item</Menu.Item>
+                <Menu.Item key="2">2nd menu item</Menu.Item>
+                <Menu.Item key="3">3rd menu item</Menu.Item>
+            </Menu>
+        );
         const columns = [
             {
                 title: '歌名',
                 dataIndex: 'name',
                 key: 'name',
                 render: (value, row) => (
-                    <div className='play-list-table-icon'>
-                        {
-                            isPlayed ? '' : (
-                                <span>
+                    <Dropdown overlay={menu} trigger={['contextMenu']}>
+                        <div className='play-list-table-icon'>
+                            {
+                                isPlayed ? '' : (
+                                    <span>
                                     {
                                         list[currentPlayIndex].id === row.id ?
                                             <Icon type={isPaused ? 'pause' : 'caret-right'}/> :
                                             <i style={{ width: 14, display: 'inline-block' }}/>
                                     }
                                 </span>
-                            )
-                        }
-                        <span title={value}>{value}</span>
-                    </div>
+                                )
+                            }
+                            <span title={value}>{value}</span>
+                        </div>
+                    </Dropdown>
                 )
             }, {
                 title: '歌手',
@@ -103,9 +118,9 @@ class playListContent extends Component {
                          title={value.map(item => item.name).join('/')}>
                         {value.map((item, index) => {
                             if (index === row.ar.length - 1) {
-                                return <span key={item.id}>{item.name}</span>
+                                return <span key={item.id ? item.id : item.name + row.id}>{item.name}</span>
                             } else {
-                                return <span key={item.id}>{item.name}/</span>
+                                return <span key={item.id ? item.id : item.name + row.id}>{item.name}/</span>
                             }
                         })}
                     </div>

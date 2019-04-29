@@ -3,7 +3,7 @@ import actionType from '../action-type';
 const initialState = {
     list: JSON.parse(localStorage.getItem('playingList')) || [], //当前播放列表
     playedList: JSON.parse(localStorage.getItem('playedList')) || [], // 历史播放列表
-    playWay: 0, // 播放方式(顺序)
+    playWay: parseInt(localStorage.getItem('PLAY_WAY')) || 0, // 播放方式(顺序)
     currentPlayIndex: parseInt(localStorage.getItem('currentPlayIndex')) || 0, // 当前正在播放歌曲的list的index
     randomPlayedIndex: [],
     isPaused: true,

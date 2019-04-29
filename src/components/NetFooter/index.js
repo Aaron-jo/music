@@ -86,7 +86,7 @@ class NetFooter extends Component {
             console.log('waiting')
         });
         window.audio.addEventListener('canplay', () => {
-            document.getElementById('anchor-point').style.animationName = '';
+            if (document.getElementById('anchor-point')) document.getElementById('anchor-point').style.animationName = '';
             console.log('canplay')
         });
         // 浏览器正在获取媒介数据时运行的脚本
@@ -234,6 +234,7 @@ class NetFooter extends Component {
         } else {
             this.props.setPlayWay(playWay)
         }
+        localStorage.setItem('PLAY_WAY', playWay);
         window.audio.loop = playWay === 2;
     }
 

@@ -9,7 +9,7 @@ class TopMusic extends Component {
         super(props);
         this.state = {
             type: '0',
-            isAlbum: true,
+            isAlbum: false,
         }
     }
 
@@ -45,7 +45,7 @@ class TopMusic extends Component {
         return (
             <Fragment>
                 <Row type='flex' style={{justifyContent: 'center'}}>
-                    <RadioGroup buttonStyle='solid' defaultValue={1} onChange={this.onRadioChange.bind(this)}>
+                    <RadioGroup buttonStyle='solid' defaultValue={0} onChange={this.onRadioChange.bind(this)}>
                         <RadioButton value={0}>新歌速递</RadioButton>
                         <RadioButton value={1}>新碟上架</RadioButton>
                     </RadioGroup>

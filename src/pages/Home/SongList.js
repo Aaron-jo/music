@@ -1,7 +1,11 @@
 import React, {Component, Fragment} from 'react';
 import {Button, Popover, Icon, Radio, Row, Col, Tag, Spin, Card, Pagination} from "antd";
+import {connect} from 'react-redux';
 import axios from '../../request/index';
+import _ from 'lodash';
 import './index.less';
+import {setCurrentPlayIndex, setCurrentSongLit} from "../../reduxModal/actions/getCurrentPlayList";
+import playMusic from '../../commo/playMusic';
 
 class SongList extends Component {
     constructor(props) {
@@ -40,7 +44,7 @@ class SongList extends Component {
                 hotTag: response.data.tags
             })
         });
-        axios.get('/top/playlist', {params: {limit: this.state.limit}}).then((response) => {
+        axios.get('/top/playlist', { params: { limit: this.state.limit } }).then((response) => {
             this.setState({
                 playlist: response.data,
                 spinning: false
@@ -63,7 +67,7 @@ class SongList extends Component {
             radioCurrentValue: checkedTag,
             currentPage: 1,
         });
-        axios.get('/top/playlist', {params: {limit: this.state.limit, cat: checkedTag}}).then((response) => {
+        axios.get('/top/playlist', { params: { limit: this.state.limit, cat: checkedTag } }).then((response) => {
             this.setState({
                 playlist: response.data,
                 spinning: false
@@ -79,7 +83,7 @@ class SongList extends Component {
             popoverVisible: false,
             currentPage: 1
         });
-        axios.get('/top/playlist', {params: {limit: this.state.limit, cat: e.target.value}}).then((response) => {
+        axios.get('/top/playlist', { params: { limit: this.state.limit, cat: e.target.value } }).then((response) => {
             this.setState({
                 playlist: response.data,
                 spinning: false,
@@ -108,11 +112,20 @@ class SongList extends Component {
         });
     }
 
+    play(payLoad) {
+        axios.get('/playlist/detail', { params: { id: payLoad.id } }).then(response => {
+            const tracks = response.data.playlist.tracks;
+            this.props.setCurrentSongLit(tracks);
+            this.props.setCurrentPlayIndex(0);
+            playMusic(tracks[0].id)
+        });
+    }
+
     render() {
         const RadioButton = Radio.Button;
         const RadioGroup = Radio.Group;
         const CheckableTag = Tag.CheckableTag;
-        const {catlist, hotTag, hotTagChecked, playlist, spinning, currentPage, radioCurrentValue, popoverVisible} = this.state;
+        const { catlist, hotTag, hotTagChecked, playlist, spinning, currentPage, radioCurrentValue, popoverVisible } = this.state;
 
         const getContent = () => {
             if (!catlist) return <div>全部歌单</div>;
@@ -134,7 +147,7 @@ class SongList extends Component {
                     {
                         categories.map((category, categoryIndex) => {
                             return (
-                                <Row key={category} style={{width: 550, marginTop: 15}}>
+                                <Row key={category} style={{ width: 550, marginTop: 15 }}>
                                     <Col span={4}>{category}</Col>
                                     <Col span={20}>
                                         {
@@ -168,7 +181,7 @@ class SongList extends Component {
                                     })
                                 }}
                                 onBlur={() => {
-                                    setTimeout(()=>{
+                                    setTimeout(() => {
                                         this.setState({
                                             popoverVisible: false
                                         })
@@ -179,7 +192,7 @@ class SongList extends Component {
                             </Button>
                         </Popover>
                     </Row>
-                    <Row style={{marginTop: 15}}>
+                    <Row style={{ marginTop: 15 }}>
                         <span>热门标签：</span>
                         {
                             hotTag.map(tag => (
@@ -193,13 +206,13 @@ class SongList extends Component {
                             ))
                         }
                     </Row>
-                    <Row type='flex' style={{marginTop: 15}} gutter={16}>
+                    <Row type='flex' style={{ marginTop: 15 }} gutter={16}>
                         {
                             playlist.playlists && playlist.playlists.map((item, index) => (
                                 <Col span={4} key={index}>
                                     <Card
                                         cover={
-                                            <div style={{
+                                            <div className='cover-container' style={{
                                                 position: 'relative',
                                                 minHeight: 231,
                                                 border: '1px solid #e8e8e8'
@@ -207,12 +220,16 @@ class SongList extends Component {
                                                 <img alt={item.name} src={`${item.coverImgUrl}?param=230y244`}/>
                                                 <div className='cameraIconCotainer'>
                                                     <Icon type="customer-service"/>
-                                                    {item.playCount > 10000 ? Math.ceil(item.playCount / 1000) + '万' : item.playCount}
+                                                    {item.playCount > 100000 ? _.round(item.playCount / 10000) + '万' : item.playCount}
+                                                </div>
+                                                <div className='playIconInImg' style={{ bottom: 15 }}
+                                                     onClick={this.play.bind(this, item)}>
+                                                    <Icon type="caret-right"/>
                                                 </div>
                                             </div>
                                         }
-                                        bordered={false} bodyStyle={{padding: '10px 0 10px 0'}}
-                                        style={{cursor: 'pointer', position: 'relative'}}
+                                        bordered={false} bodyStyle={{ padding: '10px 0 10px 0' }}
+                                        style={{ cursor: 'pointer', position: 'relative' }}
                                         className='songListCard'
                                     >
                                         {item.name}
@@ -221,7 +238,7 @@ class SongList extends Component {
                             ))
                         }
                     </Row>
-                    <Row style={{marginTop: 15, textAlign: 'center'}}>
+                    <Row style={{ marginTop: 15, textAlign: 'center' }}>
                         <Pagination total={playlist.total} current={currentPage}
                                     onChange={this.onPaginationChange.bind(this)}/>
                     </Row>
@@ -231,4 +248,11 @@ class SongList extends Component {
     }
 }
 
-export default SongList;
+export default connect(
+    state => ({
+        ...state.currentPlayList
+    }), {
+        setCurrentPlayIndex,
+        setCurrentSongLit,
+    }
+)(SongList);
