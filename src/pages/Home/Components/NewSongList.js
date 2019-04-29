@@ -50,10 +50,14 @@ class NewSongList extends Component {
             const song = response.data.songs[0];
             const doubleClickIndex = _.findIndex(this.props.list, ['id', song.id]);
             if (doubleClickIndex === -1) { // 在播放列表中没有该歌曲，则插入
-                const list = _.cloneDeep(this.props.list);
-                list.splice(this.props.currentPlayIndex + 1, 0, song);
-                this.props.setCurrentSongLit(list);
-                this.props.setCurrentPlayIndex(this.props.currentPlayIndex + 1);
+                if (this.props.list.length !== 0) {
+                    const list = _.cloneDeep(this.props.list);
+                    list.splice(this.props.currentPlayIndex + 1, 0, song);
+                    this.props.setCurrentSongLit(list);
+                    this.props.setCurrentPlayIndex(this.props.currentPlayIndex + 1);
+                }else {
+                    this.props.setCurrentSongLit([song]);
+                }
             } else { // 有该歌曲，则播放这首
                 this.props.setCurrentPlayIndex(doubleClickIndex)
             }

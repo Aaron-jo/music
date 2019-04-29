@@ -94,21 +94,18 @@ class PersonalityRecommendation extends Component {
                 break;
             case 2:
                 const playList = _.cloneDeep(this.props.list);
-                axios.get('/song/detail', { params: { ids: payLoad.id } }).then(response => {
-                    playList.splice(this.props.currentPlayIndex + 1, 0, response.data.songs[0]);
-                    this.props.setCurrentSongLit(playList);
-                    this.props.setCurrentPlayIndex(this.props.currentPlayIndex + 1);
-                    playMusic(payLoad.id);
+                axios.get('/song/detail', { params: { ids: payLoad } }).then(response => {
+                    if (playList.length > 0) {
+                        playList.splice(this.props.currentPlayIndex + 1, 0, response.data.songs[0]);
+                        this.props.setCurrentSongLit(playList);
+                        this.props.setCurrentPlayIndex(this.props.currentPlayIndex + 1);
+                    }else {
+                        playList.push(response.data.songs[0]);
+                        this.props.setCurrentSongLit(playList);
+                        this.props.setCurrentPlayIndex(0);
+                    }
+                    playMusic(payLoad);
                 });
-                break;
-            default:
-                break;
-        }
-    }
-
-    gotoMore(index) {
-        switch (index) {
-            case 0:
                 break;
             default:
                 break;
@@ -279,7 +276,7 @@ class PersonalityRecommendation extends Component {
                                                                             style={{ width: 48, height: 48 }} alt='图片'
                                                                             src={`${item.song.album.picUrl}?param=48y48&quality=100`}/>
                                                                             <div className='playIconInImg'
-                                                                                 onClick={this.play.bind(this, item, 2)}
+                                                                                 onClick={this.play.bind(this, item.id, 2)}
                                                                                  style={{ top: 0, right: 13 }}>
                                                                                 <Icon type="caret-right"/>
                                                                             </div>
