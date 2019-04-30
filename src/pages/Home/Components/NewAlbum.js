@@ -7,7 +7,6 @@ import playMusic from '../../../commo/playMusic';
 
 class NewAlbum extends Component {
     state = {
-        type: this.props.type,
         albums: [],
         total: 0,
         currentPage: 1,
@@ -54,8 +53,8 @@ class NewAlbum extends Component {
 
     play (id) {
         axios.get('/album', { params: { id: id } }).then((response) => {
-            this.props.setCurrentSongLit(response.data.songs);
             this.props.setCurrentPlayIndex(0);
+            this.props.setCurrentSongLit(response.data.songs);
             playMusic(response.data.songs[0].id)
         })
     }

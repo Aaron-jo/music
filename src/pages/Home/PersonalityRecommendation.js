@@ -6,6 +6,9 @@ import playMusic from '../../commo/playMusic';
 import axios from '../../request/index';
 import './index.less';
 import {setCurrentPlayIndex, setCurrentSongLit} from "../../reduxModal/actions/getCurrentPlayList";
+import {createHashHistory} from 'history';
+
+const history = createHashHistory();
 
 class PersonalityRecommendation extends Component {
     constructor(props) {
@@ -99,7 +102,7 @@ class PersonalityRecommendation extends Component {
                         playList.splice(this.props.currentPlayIndex + 1, 0, response.data.songs[0]);
                         this.props.setCurrentSongLit(playList);
                         this.props.setCurrentPlayIndex(this.props.currentPlayIndex + 1);
-                    }else {
+                    } else {
                         playList.push(response.data.songs[0]);
                         this.props.setCurrentSongLit(playList);
                         this.props.setCurrentPlayIndex(0);
@@ -110,6 +113,11 @@ class PersonalityRecommendation extends Component {
             default:
                 break;
         }
+    }
+
+    // 点击进入歌单详情
+    gotoSongListDetail(id) {
+        history.push(`/SongListDetail?id=${id}`)
     }
 
     render() {
@@ -147,23 +155,29 @@ class PersonalityRecommendation extends Component {
                                     personalized.map((item, index) => (
                                         index < 5 && (
                                             <Col span={4} key={item.name}>
-                                                <Card cover={
-                                                    <div className='cover-container'
-                                                         style={{ position: 'relative', minHeight: 228 }}>
-                                                        <img alt={item.name} src={`${item.picUrl}?param=228y225`}/>
-                                                        <div className='playIconInImg' style={{ bottom: 13 }}
-                                                             onClick={this.play.bind(this, item.id, 0)}>
-                                                            <Icon type="caret-right"/>
+                                                <Card
+                                                    cover={
+                                                        <div className='cover-container'
+                                                             style={{
+                                                                 position: 'relative',
+                                                                 minHeight: 228,
+                                                                 border: '1px solid #e8e8e8'
+                                                             }}>
+                                                            <img alt={item.name} src={`${item.picUrl}?param=228y225`}/>
+                                                            <div className='playIconInImg' style={{ bottom: 13 }}
+                                                                 onClick={this.play.bind(this, item.id, 0)}>
+                                                                <Icon type="caret-right"/>
+                                                            </div>
+                                                            <div className='cameraIconCotainer'>
+                                                                <Icon type="customer-service"/>
+                                                                {item.playCount > 100000 ? _.round(item.playCount / 10000) + '万' : item.playCount}
+                                                            </div>
                                                         </div>
-                                                        <div className='cameraIconCotainer'>
-                                                            <Icon type="customer-service"/>
-                                                            {item.playCount > 100000 ? _.round(item.playCount / 10000) + '万' : item.playCount}
-                                                        </div>
-                                                    </div>
-                                                }
-                                                      bordered={false} bodyStyle={{ padding: '10px 0 0 0' }}
-                                                      style={{ cursor: 'pointer', position: 'relative' }}
-                                                      className='songListCard'
+                                                    }
+                                                    bordered={false} bodyStyle={{ padding: '10px 0 0 0' }}
+                                                    style={{ cursor: 'pointer', position: 'relative' }}
+                                                    className='songListCard'
+                                                    onClick={this.gotoSongListDetail.bind(this, item.id)}
                                                 >
                                                     <div className='hangInfo'>
                                                         {item.copywriter}
@@ -182,7 +196,11 @@ class PersonalityRecommendation extends Component {
                                             <Col span={4} key={item.name}>
                                                 <Card cover={
                                                     <div className='cover-container'
-                                                         style={{ position: 'relative', minHeight: 228 }}>
+                                                         style={{
+                                                             position: 'relative',
+                                                             minHeight: 228,
+                                                             border: '1px solid #e8e8e8'
+                                                         }}>
                                                         <img alt={item.name} src={`${item.picUrl}?param=228y225`}/>
                                                         <div className='cameraIconCotainer'>
                                                             <Icon type="customer-service"/>
@@ -216,7 +234,7 @@ class PersonalityRecommendation extends Component {
                                     privatecontent.map((item, index) => (
                                         <Col key={item.id} span={8}>
                                             <Card cover={
-                                                <div style={{ position: 'relative' }}>
+                                                <div style={{ position: 'relative', border: '1px solid #e8e8e8' }}>
                                                     <img alt={item.name} src={`${item.sPicUrl}?param=471y265`}/>
                                                     <div style={{
                                                         position: 'absolute',
@@ -246,7 +264,8 @@ class PersonalityRecommendation extends Component {
                                 }
                             </Row>
                         </Card>
-                        <Card title="最新音乐" bordered={false} headStyle={{ padding: 0 }} extra={<a href='#/Personalize/TopMusic'>更多 ></a>}
+                        <Card title="最新音乐" bordered={false} headStyle={{ padding: 0 }}
+                              extra={<a href='#/Personalize/TopMusic'>更多 ></a>}
                               bodyStyle={{ padding: '10px 0 20px 0' }}>
                             <Row style={{ border: '1px solid #e8e8e8' }}>
                                 {
@@ -371,7 +390,11 @@ class PersonalityRecommendation extends Component {
                                 {
                                     mv.map((item, index) => (
                                         <Col span={6} key={item.id}>
-                                            <Card cover={<div style={{ position: 'relative', minHeight: 212 }}>
+                                            <Card cover={<div style={{
+                                                position: 'relative',
+                                                minHeight: 212,
+                                                border: '1px solid #e8e8e8'
+                                            }}>
                                                 <img alt={item.name} src={`${item.picUrl}?param=352y212`}/>
                                                 <div className='cameraIconCotainer'>
                                                     <Icon type="video-camera"/>

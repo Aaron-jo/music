@@ -38,19 +38,24 @@ class PlayingSong extends Component {
     render() {
         // const {} = this.state;
         if (!this.props.list.length) return <div className='playingSong-none'>暂无播放歌曲</div>;
-        const {currentPlayIndex, list} = this.props;
+        const { currentPlayIndex, list } = this.props;
         const currentSong = list[currentPlayIndex];
-        let src = currentSong.al.picUrl;
+        let src = '';
+        if (currentSong) {
+            src = currentSong.al.picUrl;
+        }else {
+            return (<div className='playingSong' />)
+        }
         return (
             <div className='playingSong'>
-                <div style={{position: 'relative'}}>
-                    <img style={{width: 48, height: 48, cursor: 'pointer'}} alt='图片'
+                <div style={{ position: 'relative' }}>
+                    <img style={{ width: 48, height: 48, cursor: 'pointer' }} alt='图片'
                          src={`${src}?param=48y48&quality=100`}/>
                     <div className='playIconInImg'>
                         <Icon type="arrows-alt"/>
                     </div>
                 </div>
-                <div style={{width: 155, padding: '0 5px', cursor: 'pointer',}}>
+                <div style={{ width: 155, padding: '0 5px', cursor: 'pointer', }}>
                     <div title={currentSong.name}
                          style={{
                              textOverflow: 'ellipsis',
@@ -79,7 +84,7 @@ class PlayingSong extends Component {
                         }
                     </div>
                 </div>
-                <div style={{width: 15, fontSize: '15px'}}>
+                <div style={{ width: 15, fontSize: '15px' }}>
                     <div onClick={this.collectSong.bind(this, currentSong.id)}><Icon type="heart"/></div>
                     <div onClick={this.share.bind(this, currentSong.id)}><Icon type="share-alt"/></div>
                 </div>

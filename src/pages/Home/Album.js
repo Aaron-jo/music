@@ -4,14 +4,11 @@ import {Radio, Row, Spin, Tabs} from 'antd';
 const NewSongList = lazy(() => import('./Components/NewSongList'));
 const NewAlbum = lazy(() => import('./Components/NewAlbum'));
 
-class TopMusic extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            type: '0',
-            isAlbum: false,
-        }
-    }
+class Album extends Component {
+    state = {
+        type: '0',
+        isAlbum: false,
+    };
 
     componentWillMount() {
 
@@ -38,19 +35,19 @@ class TopMusic extends Component {
     }
 
     render() {
-        const {type, isAlbum} = this.state;
+        const { type, isAlbum } = this.state;
         const RadioGroup = Radio.Group;
         const RadioButton = Radio.Button;
         const TabPane = Tabs.TabPane;
         return (
             <Fragment>
-                <Row type='flex' style={{justifyContent: 'center'}}>
+                <Row type='flex' style={{ justifyContent: 'center' }}>
                     <RadioGroup buttonStyle='solid' defaultValue={0} onChange={this.onRadioChange.bind(this)}>
                         <RadioButton value={0}>新歌速递</RadioButton>
                         <RadioButton value={1}>新碟上架</RadioButton>
                     </RadioGroup>
                 </Row>
-                <div style={{marginTop: 20, padding: '0px 50px'}}>
+                <div style={{ marginTop: 20, padding: '0px 50px' }}>
                     {
                         !isAlbum && (
                             <Row>
@@ -67,7 +64,7 @@ class TopMusic extends Component {
                     {/*新歌速递、新碟上架*/}
                     <Suspense fallback={<Spin tip='加载中...' spinning={true} className='suspense-loading'/>}>
                         {
-                            isAlbum ? <NewAlbum type={type}/> : <NewSongList type={type}/>
+                            isAlbum ? <NewAlbum /> : <NewSongList type={type}/>
                         }
                     </Suspense>
                 </div>
@@ -76,4 +73,4 @@ class TopMusic extends Component {
     }
 }
 
-export default TopMusic;
+export default Album;

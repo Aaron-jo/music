@@ -30,7 +30,6 @@ class TopList extends Component {
                 officialTopList,
                 globalTopList
             });
-            console.log(officialTopList)
         });
     }
 

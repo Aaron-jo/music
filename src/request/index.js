@@ -1,6 +1,6 @@
 import axios from 'axios';
 import 'axios-response-logger';
-import {message} from 'antd';
+// import {message} from 'antd';
 
 const axiosInstans = axios.create({
     baseURL: 'http://localhost:4000',
