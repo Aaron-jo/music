@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import {getQueryString} from '../../Utils/';
-import {Button, Avatar, Icon, Table, Spin, Divider} from 'antd';
+import {Button, Avatar, Icon, Table, Spin} from 'antd';
 import axios from '../../request/';
 import _ from 'lodash';
 import moment from 'moment';
@@ -80,33 +80,39 @@ class SongListDetail extends Component {
                     <div style={{ flexGrow: 1 }}>
                         <h2>
                             {songHeaderInfo.name}
-                            <div style={{float: 'right'}}>
-                                <div>歌曲数</div>
-                                <Divider type='vertical'/>
-                                <div>播放数 <br/> 200</div>
+                            <div style={{ float: 'right', display: 'flex', justifyContent: 'space-around', fontSize: '12px', color: 'gray', marginRight: 20 }}>
+                                <div>
+                                    <div>歌曲数</div>
+                                    <div style={{float: 'right', fontSize: '8px'}}>100</div>
+                                </div>
+                                <div style={{borderRight: '1px solid gray', margin: '0 10px'}}/>
+                                <div>
+                                    <div>播放数</div>
+                                    <div style={{float: 'right', fontSize: '8px'}}>200</div>
+                                </div>
                             </div>
                         </h2>
-                        <div style={{margin: '10px 0'}}>
+                        <div style={{ margin: '10px 0' }}>
                             <span>
-                                <Avatar src={songHeaderInfo.creator.avatarUrl} style={{marginRight: 5}}/>
+                                <Avatar src={songHeaderInfo.creator.avatarUrl} style={{ marginRight: 5 }}/>
                                 {songHeaderInfo.creator.nickname}
                             </span>
                             <span
                                 style={{ marginLeft: 10 }}>{moment(songHeaderInfo.createTime).format('YYYY-MM-DD')}创建</span>
                         </div>
-                        <div style={{margin: '20px 0'}}>
-                            <ButtonGroup style={{marginRight: 10}}>
+                        <div style={{ margin: '20px 0' }}>
+                            <ButtonGroup style={{ marginRight: 10 }}>
                                 <Button icon='play-circle'>播放全部</Button>
-                                <Button icon='plus' />
+                                <Button icon='plus'/>
                             </ButtonGroup>
-                            <Button style={{marginRight: 10}} icon='folder-add'>收藏</Button>
-                            <Button style={{marginRight: 10}} icon='share-alt'>分享</Button>
-                            <Button style={{marginRight: 10}} icon='download'>下载</Button>
+                            <Button style={{ marginRight: 10 }} icon='folder-add'>收藏</Button>
+                            <Button style={{ marginRight: 10 }} icon='share-alt'>分享</Button>
+                            <Button style={{ marginRight: 10 }} icon='download'>下载</Button>
                         </div>
-                        <div style={{margin: '10px 0'}}>
+                        <div style={{ margin: '10px 0' }}>
                             标签：{songHeaderInfo.tags.join('/')}
                         </div>
-                        <div style={{margin: '10px 0'}}>
+                        <div style={{ margin: '10px 0' }}>
                             简介：{songHeaderInfo.description}
                         </div>
                     </div>
