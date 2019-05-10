@@ -1,6 +1,4 @@
 import _ from 'lodash';
-import {createHashHistory} from 'history';
-const history = createHashHistory();
 
 export const formatSecond = function (time) {
     if (time < 1000) {
@@ -15,9 +13,9 @@ export const formatSecond = function (time) {
     return minute;
 };
 
-export const getQueryString = (name) => {
+export const getQueryString = (search, name) => {
     const reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
-    const r = history.location.search.substr(1).match(reg);
+    const r = search.substr(1).match(reg);
     if (r != null) return _.unescape(r[2]);
     return null;
 };
