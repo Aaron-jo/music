@@ -1,6 +1,6 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-This project is a high imitation of Netease CloudMusic and it's dependece on Netease CloudMusic Api(https://binaryify.github.io/NeteaseCloudMusicApi), before starting this project, please download this api and start it
+This project is a web version of high imitation Netease CloudMusic and it's dependece on Netease CloudMusic Api(https://binaryify.github.io/NeteaseCloudMusicApi), before starting this project, please download this api and start it
 
 ## Here are some screenshots
 
