@@ -1,8 +1,12 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+This project is high imitation and it's dependece on Netease CloudMusic Api(https://binaryify.github.io/NeteaseCloudMusicApi), before starting this project, please download this api and start it
+
 ## Here are some screenshots
 
-
+![仿网易云首页](https://images.gitee.com/uploads/images/2019/0516/103754_ca983c8c_1400811.png "1.png")
+![歌单页](https://images.gitee.com/uploads/images/2019/0516/104039_43e1229a_1400811.png "2.png")
+![歌手页](https://images.gitee.com/uploads/images/2019/0516/104120_4222fc23_1400811.png "3.png")
 
 ## Available Scripts
 
