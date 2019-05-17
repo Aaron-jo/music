@@ -8,7 +8,7 @@ const PersonalityRecommendation = lazy(() => import('./PersonalityRecommendation
 const SongList = lazy(() => import('./SongList'));
 const TopList = lazy(() => import('./TopList'));
 const Artist = lazy(() => import('./Artist'));
-const TopMusic = lazy(() => import('./TopMusic'));
+const TopMusic = lazy(() => import('./Album'));
 const history = createHashHistory();
 
 class Home extends Component {
@@ -67,9 +67,9 @@ class Home extends Component {
                             <Route path='/Personalize/Artist' component={Artist}/>
                         </Suspense>
                     </Tabs.TabPane>
-                    <Tabs.TabPane tab="最新音乐" key="/Personalize/TopMusic" className='top-music'>
+                    <Tabs.TabPane tab="最新音乐" key="/Personalize/Album" className='top-music'>
                         <Suspense fallback={<Spin tip='加载中...' spinning={true} className='suspense-loading'/>}>
-                            <Route path='/Personalize/TopMusic' component={TopMusic}/>
+                            <Route path='/Personalize/Album' component={TopMusic}/>
                         </Suspense>
                     </Tabs.TabPane>
                 </Tabs>

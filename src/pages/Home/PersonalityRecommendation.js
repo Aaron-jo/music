@@ -1,10 +1,17 @@
 import React, {Component, Fragment} from 'react';
 import {Carousel, Card, Row, Col, List, Icon, Spin} from "antd";
+import {connect} from 'react-redux';
+import _ from 'lodash';
+import playMusic from '../../commo/playMusic';
 import axios from '../../request/index';
 import './index.less';
+import {setCurrentPlayIndex, setCurrentSongLit} from "../../reduxModal/actions/getCurrentPlayList";
+import {createHashHistory} from 'history';
+
+const history = createHashHistory();
 
 class PersonalityRecommendation extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
             spinning: false,
@@ -17,10 +24,10 @@ class PersonalityRecommendation extends Component {
         }
     }
 
-    componentWillMount () {
+    componentWillMount() {
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.setState({
             spinning: true,
         });
@@ -73,12 +80,47 @@ class PersonalityRecommendation extends Component {
     //
     // }
 
-    componentWillUnmount () {
+    componentWillUnmount() {
 
     }
 
+    play(payLoad, index) {
+        switch (index) {
+            case 0:
+                axios.get('/playlist/detail', { params: { id: payLoad } }).then((response) => {
+                    this.props.setCurrentSongLit(response.data.playlist.tracks);
+                    this.props.setCurrentPlayIndex(0);
+                    playMusic(response.data.playlist.tracks[0].id)
+                });
+                break;
+            case 1:
+                break;
+            case 2:
+                const playList = _.cloneDeep(this.props.list);
+                axios.get('/song/detail', { params: { ids: payLoad } }).then(response => {
+                    if (playList.length > 0) {
+                        playList.splice(this.props.currentPlayIndex + 1, 0, response.data.songs[0]);
+                        this.props.setCurrentSongLit(playList);
+                        this.props.setCurrentPlayIndex(this.props.currentPlayIndex + 1);
+                    } else {
+                        playList.push(response.data.songs[0]);
+                        this.props.setCurrentSongLit(playList);
+                        this.props.setCurrentPlayIndex(0);
+                    }
+                    playMusic(payLoad);
+                });
+                break;
+            default:
+                break;
+        }
+    }
 
-    render () {
+    // 点击进入歌单详情
+    gotoSongListDetail(id) {
+        history.push(`/SongListDetail?id=${id}`)
+    }
+
+    render() {
         const { banners, personalized, privatecontent, newsong, mv, djprogram, spinning } = this.state;
         return (
             <Fragment>
@@ -93,7 +135,8 @@ class PersonalityRecommendation extends Component {
                         </Carousel>
                     </div>
                     <div style={{ marginTop: 20 }}>
-                        <Card title="推荐歌单" bordered={false} headStyle={{ padding: 0 }} extra={<a href='/#'>更多 ></a>}
+                        <Card title="推荐歌单" bordered={false} headStyle={{ padding: 0 }}
+                              extra={<a href='#/Personalize/SongList'>更多 ></a>}
                               bodyStyle={{ padding: '10px 0 20px 0' }}>
                             <Row gutter={20}>
                                 <Col span={4}>
@@ -112,18 +155,29 @@ class PersonalityRecommendation extends Component {
                                     personalized.map((item, index) => (
                                         index < 5 && (
                                             <Col span={4} key={item.name}>
-                                                <Card cover={
-                                                    <div style={{ position: 'relative', minHeight: 228 }}>
-                                                        <img alt={item.name} src={`${item.picUrl}?param=228y225`}/>
-                                                        <div className='cameraIconCotainer'>
-                                                            <Icon type="customer-service"/>
-                                                            {item.playCount > 10000 ? Math.ceil(item.playCount / 1000) + '万' : item.playCount}
+                                                <Card
+                                                    cover={
+                                                        <div className='cover-container'
+                                                             style={{
+                                                                 position: 'relative',
+                                                                 minHeight: 228,
+                                                                 border: '1px solid #e8e8e8'
+                                                             }}>
+                                                            <img alt={item.name} src={`${item.picUrl}?param=228y225`}/>
+                                                            <div className='playIconInImg' style={{ bottom: 13 }}
+                                                                 onClick={this.play.bind(this, item.id, 0)}>
+                                                                <Icon type="caret-right"/>
+                                                            </div>
+                                                            <div className='cameraIconCotainer'>
+                                                                <Icon type="customer-service"/>
+                                                                {item.playCount > 100000 ? _.round(item.playCount / 10000) + '万' : item.playCount}
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                }
-                                                      bordered={false} bodyStyle={{ padding: '10px 0 0 0' }}
-                                                      style={{ cursor: 'pointer', position: 'relative' }}
-                                                      className='songListCard'
+                                                    }
+                                                    bordered={false} bodyStyle={{ padding: '10px 0 0 0' }}
+                                                    style={{ cursor: 'pointer', position: 'relative' }}
+                                                    className='songListCard'
+                                                    onClick={this.gotoSongListDetail.bind(this, item.id)}
                                                 >
                                                     <div className='hangInfo'>
                                                         {item.copywriter}
@@ -141,11 +195,20 @@ class PersonalityRecommendation extends Component {
                                         index >= 5 && index < 11 && (
                                             <Col span={4} key={item.name}>
                                                 <Card cover={
-                                                    <div style={{ position: 'relative', minHeight: 228 }}>
+                                                    <div className='cover-container'
+                                                         style={{
+                                                             position: 'relative',
+                                                             minHeight: 228,
+                                                             border: '1px solid #e8e8e8'
+                                                         }}>
                                                         <img alt={item.name} src={`${item.picUrl}?param=228y225`}/>
                                                         <div className='cameraIconCotainer'>
                                                             <Icon type="customer-service"/>
-                                                            {item.playCount > 10000 ? Math.ceil(item.playCount / 1000) + '万' : item.playCount}
+                                                            {item.playCount > 100000 ? _.round(item.playCount / 10000) + '万' : item.playCount}
+                                                        </div>
+                                                        <div className='playIconInImg' style={{ bottom: 13 }}
+                                                             onClick={this.play.bind(this, item.id, 0)}>
+                                                            <Icon type="caret-right"/>
                                                         </div>
                                                     </div>
                                                 }
@@ -171,7 +234,7 @@ class PersonalityRecommendation extends Component {
                                     privatecontent.map((item, index) => (
                                         <Col key={item.id} span={8}>
                                             <Card cover={
-                                                <div style={{ position: 'relative' }}>
+                                                <div style={{ position: 'relative', border: '1px solid #e8e8e8' }}>
                                                     <img alt={item.name} src={`${item.sPicUrl}?param=471y265`}/>
                                                     <div style={{
                                                         position: 'absolute',
@@ -201,7 +264,8 @@ class PersonalityRecommendation extends Component {
                                 }
                             </Row>
                         </Card>
-                        <Card title="最新音乐" bordered={false} headStyle={{ padding: 0 }} extra={<a href='/#'>更多 ></a>}
+                        <Card title="最新音乐" bordered={false} headStyle={{ padding: 0 }}
+                              extra={<a href='#/Personalize/TopMusic'>更多 ></a>}
                               bodyStyle={{ padding: '10px 0 20px 0' }}>
                             <Row style={{ border: '1px solid #e8e8e8' }}>
                                 {
@@ -229,15 +293,13 @@ class PersonalityRecommendation extends Component {
                                                                     }}>0{index + 1}</span>
                                                                         <span style={{ position: 'relative' }}><img
                                                                             style={{ width: 48, height: 48 }} alt='图片'
-                                                                            src={`${item.song.album.picUrl}?param=48y48&quality=100`}/><Icon
-                                                                            type="play-circle" style={{
-                                                                            position: 'absolute',
-                                                                            top: '0px',
-                                                                            right: '13px',
-                                                                            fontSize: '20px',
-                                                                            color: 'white',
-                                                                            cursor: 'pointer'
-                                                                        }}/></span>
+                                                                            src={`${item.song.album.picUrl}?param=48y48&quality=100`}/>
+                                                                            <div className='playIconInImg'
+                                                                                 onClick={this.play.bind(this, item.id, 2)}
+                                                                                 style={{ top: 0, right: 13 }}>
+                                                                                <Icon type="caret-right"/>
+                                                                            </div>
+                                                                        </span>
                                                                     </div>}
                                                                     title={<div><span>{item.song.name}</span><span
                                                                         style={{
@@ -285,15 +347,13 @@ class PersonalityRecommendation extends Component {
                                                                     }}>{index >= 9 ? index + 1 : `0${index + 1}`}</span>
                                                                         <span style={{ position: 'relative' }}><img
                                                                             style={{ width: 48, height: 48 }} alt='图片'
-                                                                            src={`${item.song.album.picUrl}?param=48y48&quality=100`}/><Icon
-                                                                            type="play-circle" style={{
-                                                                            position: 'absolute',
-                                                                            top: '0px',
-                                                                            right: '13px',
-                                                                            fontSize: '20px',
-                                                                            color: 'white',
-                                                                            cursor: 'pointer'
-                                                                        }}/></span>
+                                                                            src={`${item.song.album.picUrl}?param=48y48&quality=100`}/>
+                                                                            <div className='playIconInImg'
+                                                                                 onClick={this.play.bind(this, item.id, 2)}
+                                                                                 style={{ top: 0, right: 13 }}>
+                                                                                <Icon type="caret-right"/>
+                                                                            </div>
+                                                                        </span>
                                                                     </div>}
                                                                     title={<div><span>{item.song.name}</span><span
                                                                         style={{
@@ -330,7 +390,11 @@ class PersonalityRecommendation extends Component {
                                 {
                                     mv.map((item, index) => (
                                         <Col span={6} key={item.id}>
-                                            <Card cover={<div style={{ position: 'relative', minHeight: 212 }}>
+                                            <Card cover={<div style={{
+                                                position: 'relative',
+                                                minHeight: 212,
+                                                border: '1px solid #e8e8e8'
+                                            }}>
                                                 <img alt={item.name} src={`${item.picUrl}?param=352y212`}/>
                                                 <div className='cameraIconCotainer'>
                                                     <Icon type="video-camera"/>
@@ -381,4 +445,11 @@ class PersonalityRecommendation extends Component {
     }
 }
 
-export default PersonalityRecommendation;
+export default connect(
+    state => ({
+        ...state.currentPlayList
+    }), {
+        setCurrentSongLit,
+        setCurrentPlayIndex
+    }
+)(PersonalityRecommendation);
