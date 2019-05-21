@@ -13,10 +13,9 @@ main::-webkit-scrollbar-track {
     width: 5px;
 }
 
-.anticon{
+.anticon {
     cursor: pointer;
 }
-
 
 .playIcon {
     border-radius: 50%;
@@ -39,6 +38,7 @@ main::-webkit-scrollbar-track {
     height: 25px;
     border-color: white;
     background: rgba(0, 0, 0, 0.3);
+
     &:hover {
         background: rgba(0, 0, 0, 0.6);
     }
@@ -65,7 +65,7 @@ main::-webkit-scrollbar-track {
 
     &::-webkit-scrollbar,
     &::-webkit-scrollbar-thumb,
-    &::-webkit-scrollbar-track{
+    &::-webkit-scrollbar-track {
         width: 0 !important;
         visibility: hidden !important;
     }
@@ -81,10 +81,12 @@ main::-webkit-scrollbar-track {
         padding: 5px 15px;
         justify-content: space-between;
         align-items: center;
-        &:hover .playIconInImg{
+
+        &:hover .playIconInImg {
             opacity: 1;
         }
-        .playIconInImg{
+
+        .playIconInImg {
             height: 48px;
             width: 48px;
             border-radius: 0;
@@ -92,12 +94,14 @@ main::-webkit-scrollbar-track {
             bottom: 0;
             left: 0;
             opacity: 0;
+
             &:hover {
                 background: rgba(0, 0, 0, 0.3);
             }
         }
     }
-    .playingSong-none{
+
+    .playingSong-none {
         &:extend(.menuWrapper .playingSong);
         justify-content: center;
         align-items: center;
@@ -109,15 +113,18 @@ main::-webkit-scrollbar-track {
     padding: 0;
     justify-content: flex-start;
     height: 48px;
-    & > div {
+
+    &>div {
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100%;
     }
+
     .audio-control {
         width: 250px;
-        & > div {
+
+        &>div {
             width: 36px;
             height: 36px;
             font-size: 22px;
@@ -129,20 +136,24 @@ main::-webkit-scrollbar-track {
             border-radius: 50%;
             margin: auto 15px;
             cursor: pointer;
+
             &:hover {
                 background: #c62f2f;
             }
         }
     }
+
     .audio-progress-container {
         display: flex;
         justify-content: space-around;
         flex-grow: 1;
-        & > div {
+
+        &>div {
             margin: 0 10px;
             user-select: none;
             cursor: pointer;
         }
+
         #audio-progress {
             position: relative;
             flex-grow: 1;
@@ -150,6 +161,7 @@ main::-webkit-scrollbar-track {
             height: 4px;
             border-radius: 10px;
             margin: 0 10px;
+
             .buffered {
                 position: absolute;
                 z-index: 5;
@@ -158,6 +170,7 @@ main::-webkit-scrollbar-track {
                 background: #ababab;
                 width: 100px;
             }
+
             .played {
                 position: absolute;
                 z-index: 10;
@@ -166,12 +179,14 @@ main::-webkit-scrollbar-track {
                 background: #e83c3c;
                 cursor: pointer;
             }
+
             #anchor-point {
                 position: absolute;
                 display: inline-block;
                 z-index: 22;
                 width: 4px;
                 height: 4px;
+
                 &:after {
                     content: ' ';
                     display: inline-block;
@@ -185,67 +200,84 @@ main::-webkit-scrollbar-track {
                     left: -5px;
                     z-index: 20;
                 }
+
                 background: #e83c3c;
                 border-radius: 50%;
+
                 &:hover {
                     box-shadow: 0 0 0 10px rgba(232, 60, 60, 0.2);
                 }
             }
         }
+
         #sound {
             display: flex;
             justify-content: space-around;
             align-items: center;
+
             & i {
                 font-size: 20px;
             }
-            & > div {
+
+            &>div {
                 width: 100px;
                 margin: 0 0 0 10px;
+
                 &:hover .ant-slider-handle {
                     opacity: 1;
                 }
+
                 .ant-slider-rail {
                     background: #e8e8e8;
                 }
+
                 .ant-slider-track {
                     background: #e83c3c;
 
                 }
+
                 .ant-slider-handle {
                     opacity: 0;
                     width: 12px;
                     height: 12px;
                     margin-top: -4px;
                     border: solid 1px #e83c3c;
+
                     &:focus {
                         box-shadow: 0 0 0 5px rgba(232, 60, 60, 0.2);
                     }
                 }
             }
         }
+
         #play-way {
             font-size: 20px;
             cursor: pointer;
         }
+
         #play-list {
             margin-right: 20px;
             font-size: 12px;
+
             & i {
                 float: left;
                 font-size: 20px;
                 background: white;
             }
+
             & span {
                 //color: #000;
             }
+
             border-radius: 10px;
             background: #e8e8e8;
             height: 20px;
             width: 50px;
+
             .ant-popover-arrow {
                 display: none;
             }
+
             .ant-popover-inner {
                 border-bottom-right-radius: 0;
                 border-bottom-left-radius: 0;
@@ -254,8 +286,9 @@ main::-webkit-scrollbar-track {
                 border-left: 1px solid rgb(183, 185, 187);
                 border-top: 1px solid rgb(183, 185, 187);
             }
-            .play-list-popover{
-                .ant-popover-inner-content{
+
+            .play-list-popover {
+                .ant-popover-inner-content {
                     padding: 0;
                 }
             }
@@ -273,30 +306,39 @@ main::-webkit-scrollbar-track {
     0% {
         box-shadow: 0 0 0 5px rgba(232, 60, 60, 1)
     }
+
     10% {
         box-shadow: 0 0 0 6px rgba(232, 60, 60, 0.9)
     }
+
     20% {
         box-shadow: 0 0 0 7px rgba(232, 60, 60, 0.8)
     }
+
     30% {
         box-shadow: 0 0 0 8px rgba(232, 60, 60, 0.7)
     }
+
     40% {
         box-shadow: 0 0 0 9px rgba(232, 60, 60, 0.6)
     }
+
     50% {
         box-shadow: 0 0 0 10px rgba(232, 60, 60, 0.5)
     }
+
     60% {
         box-shadow: 0 0 0 11px rgba(232, 60, 60, 0.4)
     }
+
     70% {
         box-shadow: 0 0 0 12px rgba(232, 60, 60, 0.3)
     }
+
     80% {
         box-shadow: 0 0 0 13px rgba(232, 60, 60, 0.2)
     }
+
     90% {
         box-shadow: 0 0 0 14px rgba(232, 60, 60, 0.1)
     }

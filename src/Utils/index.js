@@ -19,3 +19,11 @@ export const getQueryString = (search, name) => {
     if (r != null) return _.unescape(r[2]);
     return null;
 };
+
+export const convertToMillion = (number) => {
+    if (typeof number === 'number') {
+        return number > 100000 ? _.round(number / 10000) + '万' : number
+    } else {
+        return 0
+    }
+}
