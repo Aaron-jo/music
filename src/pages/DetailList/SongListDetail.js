@@ -142,7 +142,7 @@ class SongListDetail extends Component {
                     <div style={{ width: 250, height: 250, margin: '0 40px' }}>
                         <img src={`${songHeaderInfo.coverImgUrl}?param=250y250`} alt='' />
                     </div>
-                    <div style={{ flexGrow: 1 }}>
+                    <div style={{ flexGrow: 1, paddingRight: 20 }}>
                         <h2>
                             {songHeaderInfo.name}
                             <div style={{ float: 'right', display: 'flex', justifyContent: 'space-around', alignItems: 'center', fontSize: '12px', color: 'rgb(153,153,153)', marginRight: 20 }}>
