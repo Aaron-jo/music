@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Row, Col, Input, Avatar, Icon, Popover, Button, Divider } from "antd";
+import logo from '@/static/image/网易云音乐.png'
 import './index.less';
-const Search = Input.Search;
 
 class Header extends Component {
 
@@ -87,11 +87,12 @@ class Header extends Component {
     }
 
     render() {
+        const Search = Input.Search;
         return (
             <Fragment>
                 <Row style={{ background: '#c62f2f', width: '100vw', height: 64 }}>
                         <Col span={3} style={{fontFamily: 'Arial, Helvetica, sans-serif', fontWeight: 'bold', fontSize: 20, color: 'white', textAlign: 'center'}}>
-                            网易云音乐
+                            <img src={logo} alt='' style={{width: 40, height: 40, marginRight: 10}} />网易云音乐
                         </Col>
                         <Col span={21} className='headerRightCol'>
                             <div>

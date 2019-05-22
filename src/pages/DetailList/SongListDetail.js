@@ -189,7 +189,7 @@ class SongListDetail extends Component {
                     </TabPane>
                     <TabPane tab={'评论(' + songHeaderInfo.commentCount + ')'} key='comment'>
                         <div style={{ padding: '20px 30px' }}>
-                            <div className='comment'>
+                            <div className='commentTextArea'>
                                 <TextArea rows={3} />
                                 <div className='comment-operator'><Button>评论</Button></div>
                             </div>
@@ -197,9 +197,9 @@ class SongListDetail extends Component {
                                 <div style={{ paddingBottom: 10, width: '100%', borderBottom: '1px solid rgb(232,232,232)' }}>精彩评论</div>
                                 {
                                     hotComments.map(item =>
-                                        <div className='hotCommentsChunck' key={item.commentId}>
+                                        <div className='commentsChunck' key={item.commentId}>
                                             <Avatar src={item.user.avatarUrl} style={{ marginRight: 10 }} />
-                                            <div style={{width: '100%'}}>
+                                            <div style={{ width: '100%' }}>
                                                 <p style={{ marginBottom: 5 }}>
                                                     <span style={{ cursor: 'pointer', color: 'rgb(0,122,204)' }} onClick={() => this.nicknameClick(item.user.userId)}>
                                                         {item.user.nickname}
@@ -228,7 +228,38 @@ class SongListDetail extends Component {
                                 }
                             </div>
                             <div className='comments'>
-
+                                <div style={{ paddingBottom: 10, width: '100%', borderBottom: '1px solid rgb(232,232,232)' }}>最新评论</div>
+                                {
+                                    comments.map(item => (
+                                        <div className='commentsChunck' key={item.commentId}>
+                                            <Avatar src={item.user.avatarUrl} style={{ marginRight: 10 }} />
+                                            <div style={{ width: '100%' }}>
+                                                <p style={{ marginBottom: 5 }}>
+                                                    <span style={{ cursor: 'pointer', color: 'rgb(0,122,204)' }} onClick={() => this.nicknameClick(item.user.userId)}>
+                                                        {item.user.nickname}
+                                                    </span>
+                                                    ：{item.content}
+                                                </p>
+                                                <div>
+                                                    <span style={{ color: 'rgb(136,136,136)', fontSize: '14px' }}>{moment(item.time).format('YYYY年MM月DD日 HH:mm:ss')}</span>
+                                                    <div style={{ float: 'right', display: 'flex', justifyContent: 'space-around', alignItems: 'center', fontSize: '12px', color: 'rgb(153,153,153)', marginRight: 20 }}>
+                                                        <div>
+                                                            赞
+                                                        </div>
+                                                        <div style={{ borderRight: '1px solid rgb(153,153,153)', margin: '0 10px', height: 10 }} />
+                                                        <div>
+                                                            分享
+                                                        </div>
+                                                        <div style={{ borderRight: '1px solid rgb(153,153,153)', margin: '0 10px', height: 10 }} />
+                                                        <div>
+                                                            回复
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                }
                             </div>
                         </div>
                     </TabPane>
