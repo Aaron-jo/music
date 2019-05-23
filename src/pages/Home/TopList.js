@@ -1,10 +1,14 @@
 import React, {Component, Fragment} from 'react';
 import axios from '../../request/';
 import {Card, Col, Icon, Row, Spin} from "antd";
+import _ from 'lodash';
 import './index.less';
+import playMusic from "../../commo/playMusic";
+import {connect} from 'react-redux';
+import {setCurrentPlayIndex, setCurrentSongLit} from "../../reduxModal/actions/getCurrentPlayList";
 
 class TopList extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
             officialTopList: null,
@@ -12,7 +16,7 @@ class TopList extends Component {
         }
     }
 
-    componentWillMount () {
+    componentWillMount() {
         axios.get('/toplist/detail').then((response) => {
             const officialTopList = [], globalTopList = [];
             response.data.list.forEach(item => {
@@ -25,19 +29,37 @@ class TopList extends Component {
             this.setState({
                 officialTopList,
                 globalTopList
-            })
+            });
         });
     }
 
-    componentDidMount () {
+    componentDidMount() {
 
     }
 
-    componentWillUnmount () {
+    componentWillUnmount() {
 
     }
 
-    render () {
+    play(payLoad) {
+        axios.get('/playlist/detail', { params: { id: payLoad.id } }).then(response => {
+            const tracks = response.data.playlist.tracks;
+            this.props.setCurrentSongLit(tracks);
+            this.props.setCurrentPlayIndex(0);
+            playMusic(tracks[0].id)
+        });
+    }
+
+    playOfficialTrack(payLoad, index) {
+        axios.get('/playlist/detail', { params: { id: payLoad.id } }).then(response => {
+            const tracks = response.data.playlist.tracks;
+            this.props.setCurrentSongLit(tracks);
+            this.props.setCurrentPlayIndex(index);
+            playMusic(tracks[index].id)
+        });
+    }
+
+    render() {
         const { officialTopList, globalTopList } = this.state;
         if (!officialTopList) return <Spin spinning={true} tip='加载中...'/>;
         return (
@@ -49,22 +71,11 @@ class TopList extends Component {
                             officialTopList.map((item, index) => (
                                 <Col key={item.name} span={8}>
                                     <Card cover={
-                                        <div style={{ position: 'relative' }}>
+                                        <div className='cover-container' style={{ position: 'relative' }}>
                                             <img alt={item.name} src={`${item.coverImgUrl}?param=476y200`}/>
-                                            <div style={{
-                                                position: 'absolute',
-                                                borderRadius: '50%',
-                                                border: '1px solid white',
-                                                background: 'rgba(0,0,0,0.5)',
-                                                top: '5px',
-                                                left: '5px',
-                                                width: '30px',
-                                                height: '30px',
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                                alignItems: 'center'
-                                            }}>
-                                                <Icon type="video-camera" style={{ color: 'white' }}/>
+                                            <div className='playIconInImg' style={{ bottom: 15, width: 40, height: 40 }}
+                                                 onClick={this.play.bind(this, item)}>
+                                                <Icon type="caret-right" style={{ fontSize: '20px' }}/>
                                             </div>
                                         </div>
                                     }
@@ -72,17 +83,30 @@ class TopList extends Component {
                                           style={{ cursor: 'pointer', position: 'relative' }}
                                           className='songListCard'
                                     >
-                                        <div style={{border: '1px solid #f7f7f7'}}>
+                                        <div style={{ border: '1px solid #f7f7f7' }}>
                                             {
                                                 item.tracks.map((track, index) => (
-                                                    <div key={track.first} className='officialTrack'>
-                                                        <span style={{marginRight: '10px', color: '#c62f2f'}}>0{index + 1}</span>
-                                                        <span>{track.first}</span>
-                                                        <span style={{float: 'right', color: '#b7b9bb'}}>{track.second}</span>
+                                                    <div key={track.first} className='officialTrack'
+                                                         onDoubleClick={this.playOfficialTrack.bind(this, item, index)}>
+                                                        <span style={{
+                                                            marginRight: '10px',
+                                                            color: '#c62f2f'
+                                                        }}>0{index + 1}</span>
+                                                        <span className='textOverflow'
+                                                              style={{ maxWidth: 200, display: 'inline-block' }}
+                                                              title={track.first}>{track.first}</span>
+                                                        <span className='textOverflow' style={{
+                                                            float: 'right',
+                                                            color: '#b7b9bb',
+                                                            maxWidth: 100,
+                                                            display: 'inline-block'
+                                                        }} title={track.second}>{track.second}</span>
                                                     </div>
                                                 ))
                                             }
-                                            <div className='officialTrack' style={{textAlign: 'right', color: '#b7b9bb'}}>查看全部 ></div>
+                                            <div className='officialTrack'
+                                                 style={{ textAlign: 'right', color: '#b7b9bb' }}>查看全部 >
+                                            </div>
                                         </div>
                                     </Card>
                                 </Col>
@@ -98,15 +122,19 @@ class TopList extends Component {
                                 <Col span={4} key={index}>
                                     <Card
                                         cover={
-                                            <div style={{
+                                            <div className='cover-container' style={{
                                                 position: 'relative',
                                                 Height: 231,
                                                 border: '1px solid #e8e8e8'
                                             }}>
                                                 <img alt={item.name} src={`${item.coverImgUrl}?param=230y244`}/>
+                                                <div className='playIconInImg' style={{ bottom: 15 }}
+                                                     onClick={this.play.bind(this, item)}>
+                                                    <Icon type="caret-right"/>
+                                                </div>
                                                 <div className='cameraIconCotainer'>
                                                     <Icon type="customer-service"/>
-                                                    {item.playCount > 10000 ? Math.ceil(item.playCount / 1000) + '万' : item.playCount}
+                                                    {item.playCount > 100000 ? _.round(item.playCount / 10000) + '万' : item.playCount}
                                                 </div>
                                             </div>
                                         }
@@ -126,4 +154,11 @@ class TopList extends Component {
     }
 }
 
-export default TopList;
+export default connect(
+    state => ({
+        ...state.currentPlayList
+    }), {
+        setCurrentPlayIndex,
+        setCurrentSongLit,
+    }
+)(TopList);

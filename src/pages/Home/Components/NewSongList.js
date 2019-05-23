@@ -1,6 +1,10 @@
 import React, {Component, Fragment} from 'react';
 import {Button, Col, Icon, Row, Spin} from "antd";
 import axios from "../../../request";
+import {connect} from 'react-redux';
+import {setCurrentPlayIndex, setCurrentSongLit} from "../../../reduxModal/actions/getCurrentPlayList";
+import _ from "lodash";
+import playMusic from "../../../commo/playMusic";
 
 class NewSongList extends Component {
     constructor(props) {
@@ -33,7 +37,7 @@ class NewSongList extends Component {
             spinning: true,
             preType: type
         });
-        axios.get('/top/song', {params: {type: type}}).then((response) => {
+        axios.get('/top/song', { params: { type: type } }).then((response) => {
             this.setState({
                 newSong: response.data.data,
                 spinning: false
@@ -41,12 +45,40 @@ class NewSongList extends Component {
         })
     }
 
+    play(song) {
+        axios.get('/song/detail', { params: { ids: song.id } }).then(response => {
+            const song = response.data.songs[0];
+            const doubleClickIndex = _.findIndex(this.props.list, ['id', song.id]);
+            if (doubleClickIndex === -1) { // 在播放列表中没有该歌曲，则插入
+                if (this.props.list.length !== 0) {
+                    const list = _.cloneDeep(this.props.list);
+                    list.splice(this.props.currentPlayIndex + 1, 0, song);
+                    this.props.setCurrentSongLit(list);
+                    this.props.setCurrentPlayIndex(this.props.currentPlayIndex + 1);
+                }else {
+                    this.props.setCurrentSongLit([song]);
+                }
+            } else { // 有该歌曲，则播放这首
+                this.props.setCurrentPlayIndex(doubleClickIndex)
+            }
+            playMusic(song.id);
+        });
+    }
+
+    playAll() {
+        axios.get('/song/detail', { params: { ids: this.state.newSong.map(item => item.id).join(',') } }).then(response => {
+            this.props.setCurrentSongLit(response.data.songs);
+            this.props.setCurrentPlayIndex(0);
+            playMusic(response.data.songs[0].id);
+        })
+    }
+
     render() {
-        const {newSong, spinning} = this.state;
+        const { newSong, spinning } = this.state;
         return (
             <Fragment>
                 <Spin spinning={spinning} tip='加载中...'>
-                    <Row type='flex' style={{border: '1px solid #eee'}}>
+                    <Row type='flex' style={{ border: '1px solid #eee' }}>
                         <Col style={{
                             display: 'flex',
                             justifyContent: 'space-between',
@@ -54,7 +86,8 @@ class NewSongList extends Component {
                             alignItems: 'center'
                         }} span={24}>
                             <span>
-                                <div className='playIcon' style={{marginRight: '10px', float: 'left'}}>
+                                <div className='playIcon' style={{ marginRight: '10px', float: 'left' }}
+                                     onClick={this.playAll.bind(this)}>
                                     <Icon type="caret-right"/>
                                 </div>
                                 播放全部
@@ -71,32 +104,33 @@ class NewSongList extends Component {
                                                  width: 20
                                              }}>{index < 9 ? `0${index + 1}` : index + 1}
                                         </div>
-                                        <div className='textOverflow' style={{width: '50%'}}>
-                                            <span style={{position: 'relative', marginRight: 15}}>
-                                                <img style={{width: 48, height: 48}} alt='图片'
+                                        <div className='textOverflow' style={{ width: '50%' }}>
+                                            <span style={{ position: 'relative', marginRight: 15 }}>
+                                                <img style={{ width: 48, height: 48 }} alt='图片'
                                                      src={`${song.album.picUrl}?param=48y48&quality=100`}/>
-                                                <div className='playIconInImg' style={{top: 0}}>
+                                                <div className='playIconInImg' style={{ top: 0 }}
+                                                     onClick={this.play.bind(this, song)}>
                                                     <Icon type="caret-right"/>
                                                 </div>
                                             </span>
                                             <span>{song.name}{song.alias.length > 0 ? `（${song.alias.join('/')}）` : ''}</span>
                                         </div>
-                                        <div className='textOverflow' style={{width: '20%'}}>
+                                        <div className='textOverflow' style={{ width: '20%' }}>
                                             {
                                                 song.artists.map((item, index) => {
                                                     if (index < song.artists.length - 1) {
                                                         return <span key={item.id}
-                                                                     style={{cursor: 'pointer'}}>{item.name}/</span>
+                                                                     style={{ cursor: 'pointer' }}>{item.name}/</span>
                                                     } else {
                                                         return <span key={item.id}
-                                                                     style={{cursor: 'pointer'}}>{item.name}</span>
+                                                                     style={{ cursor: 'pointer' }}>{item.name}</span>
                                                     }
                                                 })
                                             }
                                         </div>
                                         <div className='textOverflow'
-                                             style={{width: '20%', cursor: 'pointer'}}>{song.album.name}</div>
-                                        <div style={{width: '8%'}}>
+                                             style={{ width: '20%', cursor: 'pointer' }}>{song.album.name}</div>
+                                        <div style={{ width: '8%' }}>
                                             {Math.floor(song.duration / 1000 / 60) < 10 ? `0${Math.floor(song.duration / 1000 / 60)}` : Math.floor(song.duration / 1000 / 60)}:{Math.floor(song.duration / 1000 % 60) < 10 ? `0${Math.floor(song.duration / 1000 % 60)}` : Math.floor(song.duration / 1000 % 60)}
                                         </div>
                                     </Col>
@@ -110,4 +144,11 @@ class NewSongList extends Component {
     }
 }
 
-export default NewSongList;
+export default connect(
+    state => ({
+        ...state.currentPlayList
+    }), {
+        setCurrentPlayIndex,
+        setCurrentSongLit,
+    }
+)(NewSongList);

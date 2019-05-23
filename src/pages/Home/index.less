@@ -1,182 +1,145 @@
 .categoryPop {
-  .ant-popover-inner-content {
-    max-height: 350px;
-    overflow-y: auto;
-    &::-webkit-scrollbar {
-      width: 5px;
-      height: 100%;
+    .ant-popover-inner-content {
+        max-height: 350px;
+        overflow-y: auto;
+        &::-webkit-scrollbar {
+            width: 5px;
+            height: 100%;
+        }
+        &::-webkit-scrollbar-thumb {
+            width: 5px;
+            border-radius: 2px;
+            background-color: #c62f2f;
+        }
+        &::-webkit-scrollbar-track {
+            width: 5px;
+        }
+        .categoryRadio {
+            width: 90px;
+            padding: 0;
+            text-align: center;
+            border-radius: 0;
+        }
     }
-    &::-webkit-scrollbar-thumb {
-      width: 5px;
-      border-radius: 2px;
-      background-color: #c62f2f;
-    }
-    &::-webkit-scrollbar-track {
-      width: 5px;
-    }
-    .categoryRadio {
-      width: 90px;
-      padding: 0;
-      text-align: center;
-      border-radius: 0;
-    }
-  }
-}
-
-.playIcon {
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  border: 1px solid #c62f2f;
-  color: #c62f2f;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-}
-
-.playIconInImg {
-  &:extend(.playIcon);
-  position: absolute;
-  right: 13px;
-  color: white;
-  width: 25px;
-  height: 25px;
-  border-color: white;
-  background: rgba(0, 0, 0, 0.3);
-  &:hover {
-    background: rgba(0, 0, 0, 0.6);
-  }
-}
-
-.textOverflow {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
 }
 
 .HomeTabs {
-
-  // .personalTab {
-  //     display: flex;
-  //     justify-content: center;
-  // }
-  .ant-tabs-nav .ant-tabs-tab:hover {
-    color: #c62f2f;
-  }
-
-  .ant-tabs-tab-active {
-    color: #c62f2f;
-  }
-
-  .ant-tabs-ink-bar {
-    background-color: #c62f2f;
-  }
-
-  .ant-carousel .slick-slide {
-    text-align: center;
-    width: 80%;
-    height: 400px;
-    line-height: 400px;
-    background: #364d79;
-    overflow: hidden;
-  }
-
-  .ant-carousel .slick-slide h3 {
-    color: #fff;
-  }
-
-  .cameraIconCotainer {
-    i {
-      color: white;
-      margin-right: 10px;
+    .ant-tabs-nav .ant-tabs-tab:hover {
+        color: #c62f2f;
     }
 
-    transition: opacity 0.5s;
-    color: white;
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 1px 10px;
-    background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6));
-  }
+    .ant-tabs-tab-active {
+        color: #c62f2f;
+    }
 
-  .personalized {
-    .songListCard {
-      overflow: hidden;
-      margin-bottom: 30px;
+    .ant-tabs-ink-bar {
+        background-color: #c62f2f;
+    }
 
-      .hangInfo {
-        width: 100%;
-        background: rgba(0, 0, 0, 0.25);
+    .ant-carousel .slick-slide {
+        text-align: center;
+        width: 80%;
+        height: 400px;
+        line-height: 400px;
+        background: #364d79;
+        overflow: hidden;
+    }
+
+    .ant-carousel .slick-slide h3 {
+        color: #fff;
+    }
+
+    .cameraIconCotainer {
+        i {
+            color: white;
+            margin-right: 10px;
+        }
+
+        transition: opacity 0.5s;
         color: white;
         position: absolute;
-        top: -70px;
-        padding: 8px 5px;
-        transition: top 0.5s;
-        transition-delay: 0.3s;
-      }
-
-      &:hover .hangInfo {
         top: 0;
-      }
+        right: 0;
+        padding: 1px 10px;
+        background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6));
+    }
 
-      &:hover .cameraIconCotainer {
-        opacity: 0;
-      }
-    }
-  }
+    .personalized {
+        .songListCard {
+            overflow: hidden;
+            margin-bottom: 30px;
 
-  .topList {
-    .officialTrack {
-      padding: 8px;
-      &:nth-child(2n) {
-        background: #f7f7f7;
-      }
-      &:hover {
-        background: #f7f7f7;
-      }
-    }
-  }
+            .hangInfo {
+                width: 100%;
+                background: rgba(0, 0, 0, 0.25);
+                color: white;
+                position: absolute;
+                top: -70px;
+                padding: 8px 5px;
+                transition: top 0.5s;
+                transition-delay: 0.3s;
+            }
 
-  .top-music {
-    .songCol {
-      display: flex;
-      padding: 10px;
-      .top-song-index {
-        color: rgba(0, 0, 0, 0.5);
-      }
-      & > div {
-        margin: auto 10px;
-      }
-      &:nth-child(even) {
-        background: #f7f7f7;
-      }
-      &:hover, &:active, &:focus {
-        background: #eee;
-      }
-      &:hover .top-song-index,
-      &:active .top-song-index,
-      &:focus .top-song-index {
-        color: rgba(0, 0, 0);
-      }
+            &:hover .hangInfo {
+                top: 0;
+            }
+
+            &:hover .cameraIconCotainer {
+                opacity: 0;
+            }
+        }
     }
-    .cover-container{
-      .playIconInImg{
-        position: absolute;
-        border: 1px solid white;
-        bottom: 5px !important;
-        right: 5px;
-        width: 30px;
-        height: 30px;
-        opacity: 0;
-        transition: opacity 0.5s;
-        transition-delay: 0.2s;
-      }
-      &:hover .playIconInImg{
-        opacity: 1;
-      }
+
+    .topList {
+        .officialTrack {
+            padding: 8px;
+            &:nth-child(2n) {
+                background: #f7f7f7;
+            }
+            &:hover {
+                background: #f7f7f7;
+            }
+        }
     }
-  }
+
+    .top-music {
+        .songCol {
+            display: flex;
+            padding: 10px;
+            .top-song-index {
+                color: rgba(0, 0, 0, 0.5);
+            }
+            & > div {
+                margin: auto 10px;
+            }
+            &:nth-child(even) {
+                background: #f7f7f7;
+            }
+            &:hover, &:active, &:focus {
+                background: #eee;
+            }
+            &:hover .top-song-index,
+            &:active .top-song-index,
+            &:focus .top-song-index {
+                color: rgba(0, 0, 0);
+            }
+        }
+    }
+    .cover-container {
+        .playIconInImg {
+            position: absolute;
+            border: 1px solid white;
+            bottom: 5px !important;
+            right: 5px;
+            width: 30px;
+            height: 30px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            transition-delay: 0.2s;
+        }
+        &:hover .playIconInImg {
+            opacity: 1;
+        }
+    }
 }
 
