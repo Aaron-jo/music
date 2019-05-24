@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, lazy, Suspense } from 'react';
 import { getQueryString } from '../../Utils/';
 import { Button, Avatar, Icon, Table, Spin, Tabs, Input } from 'antd';
 import axios from '../../request/';
@@ -8,6 +8,7 @@ import { createHashHistory } from 'history';
 import { formatSecond, convertToMillion } from "../../Utils/index";
 import './index.less';
 
+const SongListComments = lazy(() => import('./Components/SongListComments'));
 class SongListDetail extends Component {
 
     constructor(props) {
@@ -18,8 +19,6 @@ class SongListDetail extends Component {
             songList: [],
             songHeaderInfo: null,
             hasSearch: true,
-            comments: [],
-            hotComments: [],
         };
     }
 
@@ -45,6 +44,7 @@ class SongListDetail extends Component {
 
     }
 
+    // 表格搜索歌曲，搜索字段包括歌名, 专辑， 歌手名
     tableSearch = (value) => {
         if (value !== '') {
             const filterList = _.filter(this.songListCopy, (item) =>
@@ -65,18 +65,6 @@ class SongListDetail extends Component {
             this.setState({
                 hasSearch: false
             });
-            if (this.state.comments.length === 0) {
-                axios.get('/comment/playlist', {
-                    params: {
-                        id: this.state.songHeaderInfo.id
-                    }
-                }).then((response) => {
-                    this.setState({
-                        comments: response.data.comments,
-                        hotComments: response.data.hotComments
-                    })
-                })
-            }
         } else {
             this.setState({
                 hasSearch: true
@@ -89,12 +77,11 @@ class SongListDetail extends Component {
     }
 
     render() {
-        const { songList, songHeaderInfo, hasSearch, hotComments, comments } = this.state;
+        const { id, songList, songHeaderInfo, hasSearch } = this.state;
         if (!(songHeaderInfo && songList)) return <Spin spinning={true} tip='加载中...' />;
         const ButtonGroup = Button.Group;
         const TabPane = Tabs.TabPane;
         const Search = Input.Search;
-        const TextArea = Input.TextArea;
         const operations = hasSearch ? (
             <Search
                 placeholder="搜索歌单音乐"
@@ -188,80 +175,9 @@ class SongListDetail extends Component {
                             rowKey={(record => record.id)} />
                     </TabPane>
                     <TabPane tab={'评论(' + songHeaderInfo.commentCount + ')'} key='comment'>
-                        <div style={{ padding: '20px 30px' }}>
-                            <div className='commentTextArea'>
-                                <TextArea rows={3} />
-                                <div className='comment-operator'><Button>评论</Button></div>
-                            </div>
-                            <div className='hotComments'>
-                                <div style={{ paddingBottom: 10, width: '100%', borderBottom: '1px solid rgb(232,232,232)' }}>精彩评论</div>
-                                {
-                                    hotComments.map(item =>
-                                        <div className='commentsChunck' key={item.commentId}>
-                                            <Avatar src={item.user.avatarUrl} style={{ marginRight: 10 }} />
-                                            <div style={{ width: '100%' }}>
-                                                <p style={{ marginBottom: 5 }}>
-                                                    <span style={{ cursor: 'pointer', color: 'rgb(0,122,204)' }} onClick={() => this.nicknameClick(item.user.userId)}>
-                                                        {item.user.nickname}
-                                                    </span>
-                                                    ：{item.content}
-                                                </p>
-                                                <div>
-                                                    <span style={{ color: 'rgb(136,136,136)', fontSize: '14px' }}>{moment(item.time).format('YYYY年MM月DD日 HH:mm:ss')}</span>
-                                                    <div style={{ float: 'right', display: 'flex', justifyContent: 'space-around', alignItems: 'center', fontSize: '12px', color: 'rgb(153,153,153)', marginRight: 20 }}>
-                                                        <div>
-                                                            赞
-                                                        </div>
-                                                        <div style={{ borderRight: '1px solid rgb(153,153,153)', margin: '0 10px', height: 10 }} />
-                                                        <div>
-                                                            分享
-                                                        </div>
-                                                        <div style={{ borderRight: '1px solid rgb(153,153,153)', margin: '0 10px', height: 10 }} />
-                                                        <div>
-                                                            回复
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )
-                                }
-                            </div>
-                            <div className='comments'>
-                                <div style={{ paddingBottom: 10, width: '100%', borderBottom: '1px solid rgb(232,232,232)' }}>最新评论</div>
-                                {
-                                    comments.map(item => (
-                                        <div className='commentsChunck' key={item.commentId}>
-                                            <Avatar src={item.user.avatarUrl} style={{ marginRight: 10 }} />
-                                            <div style={{ width: '100%' }}>
-                                                <p style={{ marginBottom: 5 }}>
-                                                    <span style={{ cursor: 'pointer', color: 'rgb(0,122,204)' }} onClick={() => this.nicknameClick(item.user.userId)}>
-                                                        {item.user.nickname}
-                                                    </span>
-                                                    ：{item.content}
-                                                </p>
-                                                <div>
-                                                    <span style={{ color: 'rgb(136,136,136)', fontSize: '14px' }}>{moment(item.time).format('YYYY年MM月DD日 HH:mm:ss')}</span>
-                                                    <div style={{ float: 'right', display: 'flex', justifyContent: 'space-around', alignItems: 'center', fontSize: '12px', color: 'rgb(153,153,153)', marginRight: 20 }}>
-                                                        <div>
-                                                            赞
-                                                        </div>
-                                                        <div style={{ borderRight: '1px solid rgb(153,153,153)', margin: '0 10px', height: 10 }} />
-                                                        <div>
-                                                            分享
-                                                        </div>
-                                                        <div style={{ borderRight: '1px solid rgb(153,153,153)', margin: '0 10px', height: 10 }} />
-                                                        <div>
-                                                            回复
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))
-                                }
-                            </div>
-                        </div>
+                        <Suspense fallback={<Spin tip='加载中...' spinning={true} className='suspense-loading'/>}>
+                            <SongListComments id={id}/>
+                        </Suspense>
                     </TabPane>
                 </Tabs>
             </Fragment>
