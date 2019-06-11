@@ -1,14 +1,15 @@
 import React, { Component, Fragment, lazy, Suspense } from 'react';
-import { getQueryString } from '../../Utils/';
+import { getQueryString } from '@/Utils/';
 import { Button, Avatar, Icon, Table, Spin, Tabs, Input } from 'antd';
-import axios from '../../request/';
+import axios from '@/request/';
 import _ from 'lodash';
 import moment from 'moment';
 import { createHashHistory } from 'history';
-import { formatSecond, convertToMillion } from "../../Utils/index";
+import { formatSecond, convertToMillion } from "@/Utils/index";
 import './index.less';
 
 const SongListComments = lazy(() => import('./Components/SongListComments'));
+const SongListCollectors = lazy(() => import('./Components/SongListCollectors'));
 class SongListDetail extends Component {
 
     constructor(props) {
@@ -175,8 +176,13 @@ class SongListDetail extends Component {
                             rowKey={(record => record.id)} />
                     </TabPane>
                     <TabPane tab={'评论(' + songHeaderInfo.commentCount + ')'} key='comment'>
-                        <Suspense fallback={<Spin tip='加载中...' spinning={true} className='suspense-loading'/>}>
-                            <SongListComments id={id}/>
+                        <Suspense fallback={<Spin tip='加载中...' spinning={true} className='suspense-loading' />}>
+                            <SongListComments id={id} />
+                        </Suspense>
+                    </TabPane>
+                    <TabPane tab='收藏者' key='collectors'>
+                        <Suspense fallback={<Spin tip='加载中...' spinning={true} className='suspense-loading' />}>
+                            <SongListCollectors id={id} />
                         </Suspense>
                     </TabPane>
                 </Tabs>
