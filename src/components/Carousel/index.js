@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import './index.less';
 
 function Carousel({ images }) {
@@ -30,7 +30,33 @@ function Carousel({ images }) {
     return (
         <div className='caroselWrapper'>
             <div className='pre' onClick={() => preView()} />
-            <div className='preImg'>
+            {
+                currentImg === 0 && (
+                    <div className='preImg'>
+                        <div className='mask' />
+                        <img src={`${imgs[imgs.length - 1]}?param=800y300`} alt={currentImg} />
+                    </div>
+                )
+            }
+            {
+                imgs.map((item, index) => (
+                    <Fragment key={index}>
+                        <div className={index === currentImg ? 'currentImg' : (index === currentImg - 1 ? 'preImg' : (index === currentImg + 1 ? 'nextImg' : 'tempImg'))}>
+                            <div className='mask' />
+                            <img src={`${item}?param=800y300`} alt={currentImg} />
+                        </div>
+                    </Fragment>
+                ))
+            }
+            {
+                 currentImg === imgs.length - 1 && (
+                    <div className='nextImg'>
+                        <div className='mask' />
+                        <img src={`${imgs[0]}?param=800y300`} alt={currentImg} />
+                    </div>
+                )
+            }
+            {/* <div className='preImg'>
                 <div className='mask' />
                 <img src={`${imgs[currentImg - 1 < 0 ? imgs.length - 1 : currentImg - 1]}?param=800y300`} alt={currentImg - 1} />
             </div>
@@ -39,7 +65,8 @@ function Carousel({ images }) {
             <div className='nextImg'>
                 <div className='mask' />
                 <img src={`${imgs[currentImg + 1 > imgs.length - 1 ? 0 : currentImg + 1]}?param=800y300`} alt={currentImg + 1} />
-            </div>
+            </div> */}
+
             <div className='next' onClick={() => nextView()} />
         </div>
     )
