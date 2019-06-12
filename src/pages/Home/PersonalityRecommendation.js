@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import {Carousel, Card, Row, Col, List, Icon, Spin} from "antd";
+import {Card, Row, Col, List, Icon, Spin} from "antd";
 import {connect} from 'react-redux';
 import _ from 'lodash';
 import playMusic from '../../commo/playMusic';
@@ -7,6 +7,7 @@ import axios from '../../request/index';
 import './index.less';
 import {setCurrentPlayIndex, setCurrentSongLit} from "../../reduxModal/actions/getCurrentPlayList";
 import {createHashHistory} from 'history';
+import Carousel from '@/components/Carousel/';
 
 const history = createHashHistory();
 
@@ -126,13 +127,14 @@ class PersonalityRecommendation extends Component {
             <Fragment>
                 <Spin spinning={spinning} tip='加载中...'>
                     <div style={{ width: '100%', textAlign: 'center' }}>
-                        <Carousel autoplay={false}>
+                        {/* <Carousel autoplay={false}>
                             {
                                 banners.map((banner, index) => (
                                     <div key={banner.imageUrl}><img src={banner.imageUrl} alt={banner.typeTitle}/></div>
                                 ))
                             }
-                        </Carousel>
+                        </Carousel> */}
+                        <Carousel />
                     </div>
                     <div style={{ marginTop: 20 }}>
                         <Card title="推荐歌单" bordered={false} headStyle={{ padding: 0 }}

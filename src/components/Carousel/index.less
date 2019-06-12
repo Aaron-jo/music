@@ -1,0 +1,59 @@
+.caroselWrapper {
+    width: 100%;
+    min-height: 300px;
+    position: relative;
+    display: flex;
+    overflow: hidden;
+
+    div {
+        position: absolute;
+        cursor: pointer;
+    }
+
+    .pre{
+        left: 0;
+        height: 100%;
+        width: 30px;
+        z-index: 3;
+        background: rgba(10, 10, 10, 0.6);
+    }
+
+    .next{
+        right: 0;
+        height: 100%;
+        width: 30px;
+        z-index: 3;
+        background: rgba(10, 10, 10, 0.6);
+    }
+
+    .mask{
+        width: 100%;
+        height: 100%;
+        background: rgba(10, 10, 10, 0.6)
+    }
+
+    .preImg {
+        z-index: 1;
+    }
+
+    .currentImg {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+    }
+
+    .tempImg {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 0;
+    }
+
+    .nextImg {
+        z-index: 1;
+        right: 0;
+    }
+}
