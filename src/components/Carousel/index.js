@@ -1,14 +1,20 @@
 import React, { useState, useEffect, Fragment } from 'react'
+import { Icon } from 'antd';
 import './index.less';
 
 function Carousel({ images }) {
     const [currentImg, setCurrentImg] = useState(0);
     const [tempImg, setTempImg] = useState();
     const imgs = [
-        'http://p1.music.126.net/4c5V2FSe2bP8EkPKxZ4Nwg==/109951164140639152.jpg',
-        'http://p1.music.126.net/ZUPv1SQUv5lQjTisjtC2mw==/109951164138099719.jpg',
-        'http://p1.music.126.net/4c5V2FSe2bP8EkPKxZ4Nwg==/109951164140639152.jpg',
-        'http://p1.music.126.net/ZUPv1SQUv5lQjTisjtC2mw==/109951164138099719.jpg',
+        'http://p1.music.126.net/GgfqR6NUUJMlMepN8XLnLw==/109951164142807189.jpg',
+        'http://p1.music.126.net/jUEFisR1uze9UjLtal2bCw==/109951164142222205.jpg',
+        'http://p1.music.126.net/-jz-grk0DBozDTbF2orZtA==/109951164142634416.jpg',
+        'http://p1.music.126.net/6ph8Q-NtwgxynomxHinlUw==/109951164142187353.jpg',
+        'http://p1.music.126.net/FF7_YzO3CBEBokR-yU5FYw==/109951164143042788.jpg',
+        'http://p1.music.126.net/9isB89aPDDL9PnMpNUCdRQ==/109951164142178906.jpg',
+        'http://p1.music.126.net/Q9Evu3psIdR4bBGgCNUXiQ==/109951164140641587.jpg',
+        'http://p1.music.126.net/ZZQdj1w6N6FPlHgqSlpBJg==/109951164142095668.jpg',
+        'http://p1.music.126.net/j2-AO4zWp9EQfEc1gGzPHQ==/109951164142080545.jpg',
     ];
     useEffect(() => {
 
@@ -29,7 +35,9 @@ function Carousel({ images }) {
     }
     return (
         <div className='caroselWrapper'>
-            <div className='pre' onClick={() => preView()} />
+            <div className='pre' onClick={() => preView()}>
+                <Icon type="left" />
+            </div>
             {
                 currentImg === 0 && (
                     <div className='preImg'>
@@ -49,25 +57,16 @@ function Carousel({ images }) {
                 ))
             }
             {
-                 currentImg === imgs.length - 1 && (
+                currentImg === imgs.length - 1 && (
                     <div className='nextImg'>
                         <div className='mask' />
                         <img src={`${imgs[0]}?param=800y300`} alt={currentImg} />
                     </div>
                 )
             }
-            {/* <div className='preImg'>
-                <div className='mask' />
-                <img src={`${imgs[currentImg - 1 < 0 ? imgs.length - 1 : currentImg - 1]}?param=800y300`} alt={currentImg - 1} />
+            <div className='next' onClick={() => nextView()}>
+                <Icon type="right" />
             </div>
-            <div className='currentImg'><img src={`${imgs[currentImg]}?param=800y300`} alt={currentImg} /></div>
-            <div className='tempImg'><img src={`${imgs[currentImg]}?param=800y300`} alt={currentImg} /></div>
-            <div className='nextImg'>
-                <div className='mask' />
-                <img src={`${imgs[currentImg + 1 > imgs.length - 1 ? 0 : currentImg + 1]}?param=800y300`} alt={currentImg + 1} />
-            </div> */}
-
-            <div className='next' onClick={() => nextView()} />
         </div>
     )
 }
