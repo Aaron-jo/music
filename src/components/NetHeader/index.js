@@ -10,11 +10,10 @@ class Header extends Component {
     }
 
     componentWillMount() {
-        
+
     }
 
     componentDidMount() {
-
     }
 
     componentWillUnmount() {
@@ -52,7 +51,7 @@ class Header extends Component {
                         </div>
                     </div>
                 </div>
-                <div style={{borderBottom: '1px solid #e8e8e8'}}>
+                <div style={{ borderBottom: '1px solid #e8e8e8' }}>
                     <div className='userinfoMenu'>
                         <span><Icon type="customer-service" />会员中心</span>
                         <Icon type="right" className='righIcon' />
@@ -66,7 +65,7 @@ class Header extends Component {
                         <Icon type="right" className='righIcon' />
                     </div>
                 </div>
-                <div style={{borderBottom: '1px solid #e8e8e8'}}>
+                <div style={{ borderBottom: '1px solid #e8e8e8' }}>
                     <div className='userinfoMenu'>
                         <span><Icon type="setting" />个人信息设置</span>
                         <Icon type="right" className='righIcon' />
@@ -91,32 +90,38 @@ class Header extends Component {
         return (
             <Fragment>
                 <Row style={{ background: '#c62f2f', width: '100vw', height: 64 }}>
-                        <Col span={3} style={{fontFamily: 'Arial, Helvetica, sans-serif', fontWeight: 'bold', fontSize: 20, color: 'white', textAlign: 'center'}}>
-                            <img src={logo} alt='' style={{width: 40, height: 40, marginRight: 10}} />网易云音乐
+                    <Col span={3} style={{ fontFamily: 'Arial, Helvetica, sans-serif', fontWeight: 'bold', fontSize: 20, color: 'white', textAlign: 'center', cursor: 'pointer' }}
+                        onClick={() => {
+                            if (window.location.hash !== '#/Personalize') {
+                                window.location.hash = '/'
+                            }
+                        }}
+                    >
+                        <img src={logo} alt='' style={{ width: 40, height: 40, marginRight: 10 }} />网易云音乐
                         </Col>
-                        <Col span={21} className='headerRightCol'>
-                            <div>
-                                <Search
-                                    placeholder="搜索音乐，视频，歌词，电台"
-                                    onSearch={value => console.log(value)}
-                                    className='search'
-                                />
-                            </div>
-                            <div className='rightdiv'>
-                                <Avatar icon="user" className='avatar' />
-                                <Popover
-                                    overlayClassName='userinfoPop'
-                                    trigger='click'
-                                    content={this.getPopoverContent()}
-                                >
-                                    <span className='nickName'>Mr-Z提线木偶 <Icon type="caret-down" /></span>
-                                </Popover>
-                                <span><Icon type="skin" /></span>
-                                <span><Icon type="mail" /></span>
-                                <span><Icon type="setting" /></span>
-                            </div>
-                        </Col>
-                    </Row>
+                    <Col span={21} className='headerRightCol'>
+                        <div>
+                            <Search
+                                placeholder="搜索音乐，视频，歌词，电台"
+                                onSearch={value => console.log(value)}
+                                className='search'
+                            />
+                        </div>
+                        <div className='rightdiv'>
+                            <Avatar icon="user" className='avatar' />
+                            <Popover
+                                overlayClassName='userinfoPop'
+                                trigger='click'
+                                content={this.getPopoverContent()}
+                            >
+                                <span className='nickName'>Mr-Z提线木偶 <Icon type="caret-down" /></span>
+                            </Popover>
+                            <span><Icon type="skin" /></span>
+                            <span><Icon type="mail" /></span>
+                            <span><Icon type="setting" /></span>
+                        </div>
+                    </Col>
+                </Row>
             </Fragment>
         );
     }
