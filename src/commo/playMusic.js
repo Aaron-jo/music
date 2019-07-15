@@ -1,7 +1,7 @@
 import {message} from "antd";
 import axios from "../request";
 
-export default (id) => {
+const playMusic = (id) => {
     document.getElementById('anchor-point').style.animationName = 'play-loading';
     axios.get('/check/music', { params: { id: id } }).then(checked => {
         if (checked.data.success) {
@@ -10,6 +10,8 @@ export default (id) => {
             message.info(checked.data.message);
         }
     }).catch(error => {
-        console.log()
+        console.error(error)
     });
 }
+
+export default playMusic;

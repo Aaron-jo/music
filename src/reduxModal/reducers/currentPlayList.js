@@ -19,6 +19,8 @@ export default (state = initialState, action) => {
             };
         case actionType.SET_CURRENT_PLAY_INDEX:
             localStorage.setItem('currentPlayIndex', JSON.stringify(action.index));
+            // state.currentPlayIndex = action.index;
+            // return state;
             return {
                 ...state,
                 currentPlayIndex: action.index

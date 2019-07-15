@@ -1,8 +1,8 @@
 import React, {Component, Fragment} from 'react';
 import {Icon, Slider, message, Popover} from "antd";
 import {connect} from "react-redux";
-import {formatSecond} from '../../Utils';
-import playMusic from '../../commo/playMusic';
+import {formatSecond} from '@/Utils';
+import playMusic from '@/commo/playMusic';
 import PlayListContent from './playListContent';
 import {
     setCurrentPlayIndex,
@@ -10,9 +10,9 @@ import {
     setPlayWay,
     setIsPaused,
     setPlayedList,
-} from '../../reduxModal/actions/getCurrentPlayList';
+} from '@/reduxModal/actions/getCurrentPlayList';
 import _ from 'lodash';
-import '../../App.less';
+import '@/App.less';
 
 class NetFooter extends Component {
 
