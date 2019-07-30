@@ -1,32 +1,34 @@
-import React, { Component, Fragment } from 'react';
-import { Button, Popover, Icon, Radio, Row, Col, Tag, Spin, Card, Pagination } from "antd";
-import { connect } from 'react-redux';
+import React, {Component, Fragment} from 'react';
+import {Button, Popover, Icon, Radio, Row, Col, Tag, Spin, Card, Pagination} from "antd";
+import {connect} from 'react-redux';
 import axios from '../../request/index';
 import _ from 'lodash';
 import './index.less';
-import { setCurrentPlayIndex, setCurrentSongLit } from "../../reduxModal/actions/getCurrentPlayList";
-import playMusic from '../../commo/playMusic';
+import {setCurrentPlayIndex, setCurrentSongLit} from "../../reduxModal/actions/getCurrentPlayList";
+import playMusic from '@/commo/playMusic';
 import {createHashHistory} from 'history';
 
 const history = createHashHistory();
+
 class SongList extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            catlist: null,
-            hotTag: [],
-            hotTagChecked: [],
-            playlist: {},
-            limit: 48,
-            currentPage: 1,
-            spinning: false,
-            loadingMore: false,
-            loadTimes: 1,
-            category: undefined,
-            radioCurrentValue: '',
-            popoverVisible: false,
-        }
     }
+
+    state = {
+        catlist: null,
+        hotTag: [],
+        hotTagChecked: [],
+        playlist: {},
+        limit: 48,
+        currentPage: 1,
+        spinning: false,
+        loadingMore: false,
+        loadTimes: 1,
+        category: undefined,
+        radioCurrentValue: '',
+        popoverVisible: false,
+    };
 
     componentWillMount() {
 
@@ -114,7 +116,8 @@ class SongList extends Component {
         });
     }
 
-    play(payLoad) {
+    play(e, payLoad) {
+        e.stopPropagation();
         axios.get('/playlist/detail', { params: { id: payLoad.id } }).then(response => {
             const tracks = response.data.playlist.tracks;
             this.props.setCurrentSongLit(tracks);
@@ -122,10 +125,12 @@ class SongList extends Component {
             playMusic(tracks[0].id)
         });
     }
+
     // 点击进入歌单详情
     gotoSongListDetail(id) {
         history.push(`/SongListDetail?id=${id}`)
     }
+
     render() {
         const RadioButton = Radio.Button;
         const RadioGroup = Radio.Group;
@@ -140,13 +145,13 @@ class SongList extends Component {
             }
             return (
                 <RadioGroup name='categories' buttonStyle='solid' value={radioCurrentValue} defaultValue=''
-                    onChange={this.onRadioChange.bind(this)}>
+                            onChange={this.onRadioChange.bind(this)}>
                     <RadioButton value=''
-                        style={{
-                            borderRadius: 0,
-                            width: '100%',
-                            textAlign: 'center'
-                        }}>
+                                 style={{
+                                     borderRadius: 0,
+                                     width: '100%',
+                                     textAlign: 'center'
+                                 }}>
                         全部歌单
                     </RadioButton>
                     {
@@ -159,7 +164,7 @@ class SongList extends Component {
                                             catlist.sub.map((item, index) => (
                                                 item.category === categoryIndex ?
                                                     (<RadioButton key={item.name} className='categoryRadio'
-                                                        value={item.name}>
+                                                                  value={item.name}>
                                                         {item.name}
                                                     </RadioButton>) : ''
                                             ))
@@ -178,7 +183,7 @@ class SongList extends Component {
                 <Spin spinning={spinning} tip='加载中...'>
                     <Row id='categoryRow'>
                         <Popover content={getContent()} title="添加标签" trigger="click" overlayClassName='categoryPop'
-                            placement='bottomLeft' visible={popoverVisible}>
+                                 placement='bottomLeft' visible={popoverVisible}>
                             <Button
                                 onClick={() => {
                                     this.setState({
@@ -193,7 +198,7 @@ class SongList extends Component {
                                     }, 200)
                                 }}
                             >
-                                {radioCurrentValue || '全部歌单'} <Icon type="down" />
+                                {radioCurrentValue || '全部歌单'} <Icon type="down"/>
                             </Button>
                         </Popover>
                     </Row>
@@ -222,14 +227,14 @@ class SongList extends Component {
                                                 minHeight: 231,
                                                 border: '1px solid #e8e8e8'
                                             }}>
-                                                <img alt={item.name} src={`${item.coverImgUrl}?param=230y244`} />
+                                                <img alt={item.name} src={`${item.coverImgUrl}?param=230y244`}/>
                                                 <div className='cameraIconCotainer'>
-                                                    <Icon type="customer-service" />
+                                                    <Icon type="customer-service"/>
                                                     {item.playCount > 100000 ? _.round(item.playCount / 10000) + '万' : item.playCount}
                                                 </div>
                                                 <div className='playIconInImg' style={{ bottom: 15 }}
-                                                    onClick={this.play.bind(this, item)}>
-                                                    <Icon type="caret-right" />
+                                                     onClick={(e) => this.play(e, item)}>
+                                                    <Icon type="caret-right"/>
                                                 </div>
                                             </div>
                                         }
@@ -246,7 +251,7 @@ class SongList extends Component {
                     </Row>
                     <Row style={{ marginTop: 15, textAlign: 'center' }}>
                         <Pagination total={playlist.total} current={currentPage}
-                            onChange={this.onPaginationChange.bind(this)} />
+                                    onChange={this.onPaginationChange.bind(this)}/>
                     </Row>
                 </Spin>
             </Fragment>

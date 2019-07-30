@@ -18,6 +18,8 @@ class SongListDetail extends Component {
 
     constructor(props) {
         super(props);
+        this.songListCopy = undefined;
+        // 写在这里面是防止获得的id是上次的
         const history = createHashHistory();
         this.state = {
             id: getQueryString(history.location.search, 'id') || null,
@@ -63,7 +65,7 @@ class SongListDetail extends Component {
                 songList: this.songListCopy
             })
         }
-    }
+    };
 
     TabsChange = (activeKey) => {
         if (activeKey === 'comment') {
@@ -75,11 +77,59 @@ class SongListDetail extends Component {
                 hasSearch: true
             })
         }
-    }
+    };
 
     nicknameClick = (userId) => {
         console.log(userId)
-    }
+    };
+
+    // 专辑点击
+    alClick = (id) => {
+        console.log(id)
+    };
+
+    onTableRowDoubleClick = (record) => {
+        const playList = _.cloneDeep(this.props.list);
+        if (playList.length > 0) {
+            let isInPlayList = false, inPlayListIndex = 0;
+            playList.forEach((value, index) => {
+                if (value.id === record.id) {
+                    isInPlayList = true;
+                    inPlayListIndex = index;
+                }
+            });
+            if (isInPlayList) {
+                this.props.setCurrentPlayIndex(inPlayListIndex)
+            } else {
+                playList.splice(this.props.currentPlayIndex + 1, 0, record);
+                this.props.setCurrentSongLit(playList);
+                this.props.setCurrentPlayIndex(this.props.currentPlayIndex + 1);
+            }
+        } else {
+            playList.push(record);
+            this.props.setCurrentSongLit(playList);
+            this.props.setCurrentPlayIndex(0);
+        }
+        playMusic(record.id)
+    };
+
+    playAll = () => {
+        // console.log(this.songListCopy);
+        this.props.setCurrentSongLit(this.songListCopy);
+        this.props.setCurrentPlayIndex(0);
+        playMusic(this.songListCopy[0].id)
+    };
+
+    addToPlayList = () => {
+        if (this.props.list.length > 0) {
+            let playListLeft = this.props.list.slice(0, this.props.currentPlayIndex + 1) || [];
+            let playListRight = this.props.list.slice(this.props.currentPlayIndex) || [];
+            const uniqList = _.uniqBy([...playListLeft, ...this.songListCopy, ...playListRight], 'id');
+            this.props.setCurrentSongLit(uniqList)
+        }else {
+            this.props.setCurrentSongLit(this.songListCopy)
+        }
+    };
 
     render() {
         const { id, songList, songHeaderInfo, hasSearch } = this.state;
@@ -117,11 +167,15 @@ class SongListDetail extends Component {
             }, {
                 title: '歌手',
                 dataIndex: 'ar',
-                render: (value, row) => value.map(item => item.name).join('/')
+                render: (value) => value.map((item, index) => {
+                    return <span className='cursorPoint' key={item.id}
+                                 onClick={() => this.nicknameClick(item.id)}>{item.name}{index === value.length - 1 ? '' : '/'}</span>
+                })
             }, {
                 title: '专辑',
                 dataIndex: 'al',
-                render: (value, row) => value.name
+                render: (value) => <span className='cursorPoint'
+                                         onClick={() => this.alClick(value.id)}>{value.name}</span>
             }, {
                 title: '时长',
                 dataIndex: 'dt',
@@ -179,8 +233,10 @@ class SongListDetail extends Component {
                         <div style={{ margin: '20px 0' }}>
                             <ButtonGroup style={{ marginRight: 10 }}>
                                 <Button icon='play-circle'
+                                        onClick={() => this.playAll()}
                                         style={{ background: 'rgb(198,47,47)', color: 'white' }}>播放全部</Button>
-                                <Button icon='plus' style={{ background: 'rgb(198,47,47)', color: 'white' }}/>
+                                <Button onClick={() => this.addToPlayList()} icon='plus'
+                                        style={{ background: 'rgb(198,47,47)', color: 'white' }}/>
                             </ButtonGroup>
                             <Button style={{ marginRight: 10 }}
                                     icon='folder-add'>{songHeaderInfo.subscribed ? '已收藏' : '收藏'}({songHeaderInfo.subscribedCount})</Button>
@@ -204,28 +260,7 @@ class SongListDetail extends Component {
                                onRow={record => {
                                    return {
                                        onDoubleClick: () => {
-                                           const playList = _.cloneDeep(this.props.list);
-                                           if (playList.length > 0) {
-                                               let isInPlayList = false, inPlayListIndex = 0;
-                                               playList.forEach((value, index) => {
-                                                   if (value.id === record.id) {
-                                                       isInPlayList = true;
-                                                       inPlayListIndex = index;
-                                                   }
-                                               });
-                                               if (isInPlayList) {
-                                                   this.props.setCurrentPlayIndex(inPlayListIndex)
-                                               }else {
-                                                   playList.splice(this.props.currentPlayIndex + 1, 0, record);
-                                                   this.props.setCurrentSongLit(playList);
-                                                   this.props.setCurrentPlayIndex(this.props.currentPlayIndex + 1);
-                                               }
-                                           } else {
-                                               playList.push(record);
-                                               this.props.setCurrentSongLit(playList);
-                                               this.props.setCurrentPlayIndex(0);
-                                           }
-                                           playMusic(record.id)
+                                           this.onTableRowDoubleClick(record)
                                        },
                                    };
                                }}
