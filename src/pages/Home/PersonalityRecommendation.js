@@ -69,7 +69,8 @@ class PersonalityRecommendation extends Component {
 
     }
 
-    play(payLoad, index) {
+    play(e, payLoad, index) {
+        e.stopPropagation();
         switch (index) {
             case 0:
                 axios.get('/playlist/detail', { params: { id: payLoad } }).then((response) => {
@@ -144,7 +145,7 @@ class PersonalityRecommendation extends Component {
                                                              }}>
                                                             <img alt={item.name} src={`${item.picUrl}?param=228y225`}/>
                                                             <div className='playIconInImg' style={{ bottom: 13 }}
-                                                                 onClick={this.play.bind(this, item.id, 0)}>
+                                                                 onClick={(e) => this.play(e, item.id, 0)}>
                                                                 <Icon type="caret-right"/>
                                                             </div>
                                                             <div className='cameraIconCotainer'>
@@ -186,7 +187,7 @@ class PersonalityRecommendation extends Component {
                                                             {item.playCount > 100000 ? _.round(item.playCount / 10000) + '万' : item.playCount}
                                                         </div>
                                                         <div className='playIconInImg' style={{ bottom: 13 }}
-                                                             onClick={this.play.bind(this, item.id, 0)}>
+                                                             onClick={(e) => this.play(e, item.id, 0)}>
                                                             <Icon type="caret-right"/>
                                                         </div>
                                                     </div>
@@ -275,7 +276,7 @@ class PersonalityRecommendation extends Component {
                                                                             style={{ width: 48, height: 48 }} alt='图片'
                                                                             src={`${item.song.album.picUrl}?param=48y48&quality=100`}/>
                                                                             <div className='playIconInImg'
-                                                                                 onClick={this.play.bind(this, item.id, 2)}
+                                                                                 onClick={(e) => this.play(e, item.id, 0)}
                                                                                  style={{ top: 0, right: 13 }}>
                                                                                 <Icon type="caret-right"/>
                                                                             </div>
@@ -329,7 +330,7 @@ class PersonalityRecommendation extends Component {
                                                                             style={{ width: 48, height: 48 }} alt='图片'
                                                                             src={`${item.song.album.picUrl}?param=48y48&quality=100`}/>
                                                                             <div className='playIconInImg'
-                                                                                 onClick={this.play.bind(this, item.id, 2)}
+                                                                                 onClick={(e) => this.play(e, item.id, 0)}
                                                                                  style={{ top: 0, right: 13 }}>
                                                                                 <Icon type="caret-right"/>
                                                                             </div>
