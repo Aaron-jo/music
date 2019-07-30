@@ -5,7 +5,7 @@ import _ from 'lodash';
 import './index.less';
 import playMusic from "../../commo/playMusic";
 import {connect} from 'react-redux';
-import {setCurrentPlayIndex, setCurrentSongLit} from "../../reduxModal/actions/getCurrentPlayList";
+import {setCurrentPlayIndex, setCurrentSongList} from "../../reduxModal/actions/getCurrentPlayList";
 
 class TopList extends Component {
     constructor(props) {
@@ -44,7 +44,7 @@ class TopList extends Component {
     play(payLoad) {
         axios.get('/playlist/detail', { params: { id: payLoad.id } }).then(response => {
             const tracks = response.data.playlist.tracks;
-            this.props.setCurrentSongLit(tracks);
+            this.props.setCurrentSongList(tracks);
             this.props.setCurrentPlayIndex(0);
             playMusic(tracks[0].id)
         });
@@ -53,7 +53,7 @@ class TopList extends Component {
     playOfficialTrack(payLoad, index) {
         axios.get('/playlist/detail', { params: { id: payLoad.id } }).then(response => {
             const tracks = response.data.playlist.tracks;
-            this.props.setCurrentSongLit(tracks);
+            this.props.setCurrentSongList(tracks);
             this.props.setCurrentPlayIndex(index);
             playMusic(tracks[index].id)
         });
@@ -159,6 +159,6 @@ export default connect(
         ...state.currentPlayList
     }), {
         setCurrentPlayIndex,
-        setCurrentSongLit,
+        setCurrentSongList,
     }
 )(TopList);

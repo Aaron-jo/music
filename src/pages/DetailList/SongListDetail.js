@@ -9,7 +9,7 @@ import {formatSecond, convertToMillion} from "@/Utils/index";
 import playMusic from '@/commo/playMusic';
 import './index.less';
 import {connect} from "react-redux";
-import {setCurrentPlayIndex, setCurrentSongLit} from "@/reduxModal/actions/getCurrentPlayList";
+import {setCurrentPlayIndex, setCurrentSongList} from "@/reduxModal/actions/getCurrentPlayList";
 
 const SongListComments = lazy(() => import('./Components/SongListComments'));
 const SongListCollectors = lazy(() => import('./Components/SongListCollectors'));
@@ -102,12 +102,12 @@ class SongListDetail extends Component {
                 this.props.setCurrentPlayIndex(inPlayListIndex)
             } else {
                 playList.splice(this.props.currentPlayIndex + 1, 0, record);
-                this.props.setCurrentSongLit(playList);
+                this.props.setCurrentSongList(playList);
                 this.props.setCurrentPlayIndex(this.props.currentPlayIndex + 1);
             }
         } else {
             playList.push(record);
-            this.props.setCurrentSongLit(playList);
+            this.props.setCurrentSongList(playList);
             this.props.setCurrentPlayIndex(0);
         }
         playMusic(record.id)
@@ -115,7 +115,7 @@ class SongListDetail extends Component {
 
     playAll = () => {
         // console.log(this.songListCopy);
-        this.props.setCurrentSongLit(this.songListCopy);
+        this.props.setCurrentSongList(this.songListCopy);
         this.props.setCurrentPlayIndex(0);
         playMusic(this.songListCopy[0].id)
     };
@@ -125,9 +125,9 @@ class SongListDetail extends Component {
             let playListLeft = this.props.list.slice(0, this.props.currentPlayIndex + 1) || [];
             let playListRight = this.props.list.slice(this.props.currentPlayIndex) || [];
             const uniqList = _.uniqBy([...playListLeft, ...this.songListCopy, ...playListRight], 'id');
-            this.props.setCurrentSongLit(uniqList)
+            this.props.setCurrentSongList(uniqList)
         }else {
-            this.props.setCurrentSongLit(this.songListCopy)
+            this.props.setCurrentSongList(this.songListCopy)
         }
     };
 
@@ -286,7 +286,7 @@ export default connect(
     state => ({
         ...state.currentPlayList
     }), {
-        setCurrentSongLit,
+        setCurrentSongList,
         setCurrentPlayIndex
     }
 )(SongListDetail);

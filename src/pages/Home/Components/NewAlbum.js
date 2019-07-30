@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react';
 import {Row, Col, Spin, Card, Pagination, Icon} from "antd";
 import axios from '@/request/';
 import {connect} from 'react-redux';
-import {setCurrentSongLit, setCurrentPlayIndex} from '@/reduxModal/actions/getCurrentPlayList';
+import {setCurrentSongList, setCurrentPlayIndex} from '@/reduxModal/actions/getCurrentPlayList';
 import playMusic from '@/commo/playMusic';
 
 class NewAlbum extends Component {
@@ -54,7 +54,7 @@ class NewAlbum extends Component {
     play (id) {
         axios.get('/album', { params: { id: id } }).then((response) => {
             this.props.setCurrentPlayIndex(0);
-            this.props.setCurrentSongLit(response.data.songs);
+            this.props.setCurrentSongList(response.data.songs);
             playMusic(response.data.songs[0].id)
         })
     }
@@ -109,7 +109,7 @@ export default connect(
     state => ({
         currentSongList: state.currentPlayList,
     }), {
-        setCurrentSongLit,
+        setCurrentSongList,
         setCurrentPlayIndex
     }
 )(NewAlbum);

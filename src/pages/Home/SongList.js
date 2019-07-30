@@ -4,19 +4,15 @@ import {connect} from 'react-redux';
 import axios from '../../request/index';
 import _ from 'lodash';
 import './index.less';
-import {setCurrentPlayIndex, setCurrentSongLit} from "../../reduxModal/actions/getCurrentPlayList";
+import {setCurrentPlayIndex, setCurrentSongList} from "../../reduxModal/actions/getCurrentPlayList";
 import playMusic from '@/commo/playMusic';
 import {createHashHistory} from 'history';
 
 const history = createHashHistory();
 
 class SongList extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     state = {
-        catlist: null,
+        catList: null,
         hotTag: [],
         hotTagChecked: [],
         playlist: {},
@@ -40,7 +36,7 @@ class SongList extends Component {
         });
         axios.get('/playlist/catlist').then((response) => {
             this.setState({
-                catlist: response.data,
+                catList: response.data,
             })
         });
         axios.get('/playlist/hot').then((response) => {
@@ -120,7 +116,7 @@ class SongList extends Component {
         e.stopPropagation();
         axios.get('/playlist/detail', { params: { id: payLoad.id } }).then(response => {
             const tracks = response.data.playlist.tracks;
-            this.props.setCurrentSongLit(tracks);
+            this.props.setCurrentSongList(tracks);
             this.props.setCurrentPlayIndex(0);
             playMusic(tracks[0].id)
         });
@@ -135,13 +131,13 @@ class SongList extends Component {
         const RadioButton = Radio.Button;
         const RadioGroup = Radio.Group;
         const CheckableTag = Tag.CheckableTag;
-        const { catlist, hotTag, hotTagChecked, playlist, spinning, currentPage, radioCurrentValue, popoverVisible } = this.state;
+        const { catList, hotTag, hotTagChecked, playlist, spinning, currentPage, radioCurrentValue, popoverVisible } = this.state;
 
         const getContent = () => {
-            if (!catlist) return <div>全部歌单</div>;
+            if (!catList) return <div>全部歌单</div>;
             let categories = [];
-            for (let cate in catlist.categories) {
-                categories.push(catlist.categories[cate])
+            for (let cate in catList.categories) {
+                categories.push(catList.categories[cate])
             }
             return (
                 <RadioGroup name='categories' buttonStyle='solid' value={radioCurrentValue} defaultValue=''
@@ -161,7 +157,7 @@ class SongList extends Component {
                                     <Col span={4}>{category}</Col>
                                     <Col span={20}>
                                         {
-                                            catlist.sub.map((item, index) => (
+                                            catList.sub.map((item, index) => (
                                                 item.category === categoryIndex ?
                                                     (<RadioButton key={item.name} className='categoryRadio'
                                                                   value={item.name}>
@@ -264,6 +260,6 @@ export default connect(
         ...state.currentPlayList
     }), {
         setCurrentPlayIndex,
-        setCurrentSongLit,
+        setCurrentSongList,
     }
 )(SongList);

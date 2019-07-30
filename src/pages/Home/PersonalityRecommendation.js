@@ -5,7 +5,7 @@ import _ from 'lodash';
 import playMusic from '@/commo/playMusic';
 import axios from '@/request/index';
 import './index.less';
-import {setCurrentPlayIndex, setCurrentSongLit} from "@/reduxModal/actions/getCurrentPlayList";
+import {setCurrentPlayIndex, setCurrentSongList} from "@/reduxModal/actions/getCurrentPlayList";
 import {createHashHistory} from 'history';
 import Carousel from '@/components/Carousel/';
 
@@ -74,7 +74,7 @@ class PersonalityRecommendation extends Component {
         switch (index) {
             case 0:
                 axios.get('/playlist/detail', { params: { id: payLoad } }).then((response) => {
-                    this.props.setCurrentSongLit(response.data.playlist.tracks);
+                    this.props.setCurrentSongList(response.data.playlist.tracks);
                     this.props.setCurrentPlayIndex(0);
                     playMusic(response.data.playlist.tracks[0].id)
                 });
@@ -86,11 +86,11 @@ class PersonalityRecommendation extends Component {
                 axios.get('/song/detail', { params: { ids: payLoad } }).then(response => {
                     if (playList.length > 0) {
                         playList.splice(this.props.currentPlayIndex + 1, 0, response.data.songs[0]);
-                        this.props.setCurrentSongLit(playList);
+                        this.props.setCurrentSongList(playList);
                         this.props.setCurrentPlayIndex(this.props.currentPlayIndex + 1);
                     } else {
                         playList.push(response.data.songs[0]);
-                        this.props.setCurrentSongLit(playList);
+                        this.props.setCurrentSongList(playList);
                         this.props.setCurrentPlayIndex(0);
                     }
                     playMusic(payLoad);
@@ -430,7 +430,7 @@ export default connect(
     state => ({
         ...state.currentPlayList
     }), {
-        setCurrentSongLit,
+        setCurrentSongList,
         setCurrentPlayIndex
     }
 )(PersonalityRecommendation);
