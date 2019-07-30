@@ -1,9 +1,9 @@
 import React, {Component, Fragment} from 'react';
 import {Row, Col, Spin, Card, Pagination, Icon} from "antd";
-import axios from '../../../request/';
+import axios from '@/request/';
 import {connect} from 'react-redux';
-import {setCurrentSongLit, setCurrentPlayIndex} from '../../../reduxModal/actions/getCurrentPlayList';
-import playMusic from '../../../commo/playMusic';
+import {setCurrentSongLit, setCurrentPlayIndex} from '@/reduxModal/actions/getCurrentPlayList';
+import playMusic from '@/commo/playMusic';
 
 class NewAlbum extends Component {
     state = {

@@ -7,11 +7,12 @@ import * as serviceWorker from './serviceWorker';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware, compose} from 'redux';
 // import thunkMiddleware from 'redux-thunk';
-import createSagaMiddleware from 'redux-saga';  
+import createSagaMiddleware from 'redux-saga';
 import rootReducer from './reduxModal/reducers';
+import rootSaga from './reduxModal/saga/saga';
 
 let composeEnhancers = compose;
-const sagaMiddleware = createSagaMiddleware()
+const sagaMiddleware = createSagaMiddleware();
 
 if (process.env.NODE_ENV === 'development') {
     composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // eslint-disable-line
@@ -21,6 +22,8 @@ const store = createStore(
     rootReducer,
     composeEnhancers(applyMiddleware(sagaMiddleware))
 );
+
+sagaMiddleware.run(rootSaga);
 
 ReactDOM.render(
     <Provider store={store}>
