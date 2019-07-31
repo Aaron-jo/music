@@ -1,53 +1,56 @@
 import React, {Component, Fragment} from 'react';
 import {Icon, Row, Col, Tag, Spin, Card} from "antd";
-import axios from '../../request/index';
+import axios from '@/request/index';
+import {createHashHistory} from 'history';
 
 class Artist extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
-        this.state = {
-            spinning: false,
-            artists: [],
-            categoryChecked: 5001,
-            filterTagChecked: '',
-            pageNum: 0,
-            scrollHasMore: true,
-        };
         this.limit = 30;
         this.mainContent = document.querySelector('#mainContent');
-        this.loadMore = () => {
-            if (!this.state.scrollHasMore) return;
-            let scrollTop = this.mainContent.scrollTop;
-            if (this.mainContent.scrollHeight === this.mainContent.clientHeight + scrollTop) {
-                this.setState((perState, props) => ({ pageNum: perState.pageNum + 1, spinning: true }), () => {
-                    axios.get('artist/list', {
-                        params: {
-                            limit: this.limit,
-                            cat: this.state.categoryChecked,
-                            initial: this.state.filterTagChecked,
-                            offset: this.state.pageNum * 30
-                        }
-                    }).then(response => {
-                        this.setState({
-                            artists: this.state.artists.concat(response.data.artists),
-                            scrollHasMore: response.data.more,
-                            spinning: false
-                        })
+    }
+
+    state = {
+        spinning: false,
+        artists: [],
+        categoryChecked: 5001,
+        filterTagChecked: '',
+        pageNum: 0,
+        scrollHasMore: true,
+    };
+
+    componentWillMount() {
+    }
+
+    loadMore = () => {
+        if (!this.state.scrollHasMore) return;
+        let scrollTop = this.mainContent.scrollTop;
+        if (this.mainContent.scrollHeight === this.mainContent.clientHeight + scrollTop) {
+            this.setState((perState, props) => ({pageNum: perState.pageNum + 1, spinning: true}), () => {
+                axios.get('artist/list', {
+                    params: {
+                        limit: this.limit,
+                        cat: this.state.categoryChecked,
+                        initial: this.state.filterTagChecked,
+                        offset: this.state.pageNum * 30
+                    }
+                }).then(response => {
+                    this.setState({
+                        artists: this.state.artists.concat(response.data.artists),
+                        scrollHasMore: response.data.more,
+                        spinning: false
                     })
                 })
-            }
-        };
-    }
+            })
+        }
+    };
 
-    componentWillMount () {
-    }
-
-    componentDidMount () {
+    componentDidMount() {
         this.mainContent.addEventListener('scroll', this.loadMore);
         this.setState({
             spinning: true
         });
-        axios.get('artist/list', { params: { limit: this.limit, cat: this.state.categoryChecked } }).then(response => {
+        axios.get('artist/list', {params: {limit: this.limit, cat: this.state.categoryChecked}}).then(response => {
             this.setState({
                 artists: response.data.artists,
                 spinning: false,
@@ -56,11 +59,11 @@ class Artist extends Component {
         })
     }
 
-    componentWillUnmount () {
+    componentWillUnmount() {
         this.mainContent.removeEventListener('scroll', this.loadMore)
     }
 
-    handleCategoryTagChange (tag, checked) {
+    handleCategoryTagChange(tag, checked) {
         this.setState({
             spinning: true,
             pageNum: 0,
@@ -82,19 +85,19 @@ class Artist extends Component {
         })
     }
 
-    handleFilterTagChange (tag, checked) {
-        const filte = checked ? tag : undefined;
+    handleFilterTagChange(tag, checked) {
+        const filter = checked ? tag : undefined;
         this.setState({
             spinning: true,
             pageNum: 0,
-            filterTagChecked: filte
+            filterTagChecked: filter
         });
 
         axios.get('artist/list', {
             params: {
                 limit: this.limit,
                 cat: this.state.categoryChecked,
-                initial: filte
+                initial: filter
             }
         }).then(response => {
             this.setState({
@@ -105,13 +108,18 @@ class Artist extends Component {
         })
     }
 
-    accountClick (accountId) {
+    accountClick(accountId) {
         console.log(accountId)
     }
 
-    render () {
+    getArtistDetail(id) {
+        const history = createHashHistory();
+        history.push(`/ArtisteDetail?id=${id}`)
+    }
+
+    render() {
         const CheckableTag = Tag.CheckableTag;
-        const { spinning, categoryChecked, filterTagChecked, artists, scrollHasMore } = this.state;
+        const {spinning, categoryChecked, filterTagChecked, artists, scrollHasMore} = this.state;
         const category = [
             {
                 code: 5001,
@@ -174,16 +182,19 @@ class Artist extends Component {
                 <Col span={4} key={item.id}>
                     <Card
                         cover={
-                            <div style={{
-                                position: 'relative',
-                                minHeight: 231,
-                                border: '1px solid #e8e8e8'
-                            }}>
+                            <div
+                                style={{
+                                    position: 'relative',
+                                    minHeight: 231,
+                                    border: '1px solid #e8e8e8'
+                                }}
+                                onClick={(e) => this.getArtistDetail(item.id)}
+                            >
                                 <img alt={item.name} src={`${item.picUrl}?param=230y244`}/>
                             </div>
                         }
-                        bordered={false} bodyStyle={{ padding: '10px 0 10px 0' }}
-                        style={{ cursor: 'pointer', position: 'relative', marginBottom: '10px' }}
+                        bordered={false} bodyStyle={{padding: '10px 0 10px 0'}}
+                        style={{cursor: 'pointer', position: 'relative', marginBottom: '10px'}}
                         className='songListCard'
                     >
                         <span>{item.name}</span>
@@ -213,7 +224,7 @@ class Artist extends Component {
         };
         return (
             <Fragment>
-                <Row style={{ marginTop: 8 }}>
+                <Row style={{marginTop: 8}}>
                     <span>分类：</span>
                     {
                         category.map(item => (
@@ -230,7 +241,7 @@ class Artist extends Component {
                 </Row>
                 {
                     categoryChecked !== 5001 ? (
-                        <Row style={{ marginTop: 8 }}>
+                        <Row style={{marginTop: 8}}>
                             <span>筛选：</span>
                             {
                                 filter.map(item => (
@@ -247,7 +258,7 @@ class Artist extends Component {
                     ) : ''
                 }
                 <Spin spinning={spinning}>
-                    <Row type='flex' style={{ marginTop: 15 }} gutter={16}>
+                    <Row type='flex' style={{marginTop: 15}} gutter={16}>
                         {
                             getArtists()
                         }
@@ -255,7 +266,7 @@ class Artist extends Component {
                 </Spin>
                 {
                     !scrollHasMore && (
-                        <Row type='flex' style={{ justifyContent: 'center' }}>
+                        <Row type='flex' style={{justifyContent: 'center'}}>
                             <span>没有更多了</span>
                         </Row>
                     )

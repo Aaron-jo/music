@@ -1,4 +1,4 @@
-import React, {Component, Fragment, lazy, Suspense} from 'react';
+import  React, {Component, Fragment, lazy, Suspense} from 'react';
 import {getQueryString} from '@/Utils/index';
 import {Button, Avatar, Icon, Table, Spin, Tabs, Input} from 'antd';
 import axios from '@/request/index';
