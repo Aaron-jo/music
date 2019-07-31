@@ -26,4 +26,4 @@ export const convertToMillion = (number) => {
     } else {
         return 0
     }
-}
+};

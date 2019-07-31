@@ -1,10 +1,10 @@
 import React, {Component, Fragment} from 'react';
 import {Button, Popover, Icon, Radio, Row, Col, Tag, Spin, Card, Pagination} from "antd";
 import {connect} from 'react-redux';
-import axios from '../../request/index';
+import axios from '@/request/index';
 import _ from 'lodash';
 import './index.less';
-import {setCurrentPlayIndex, setCurrentSongList} from "../../reduxModal/actions/getCurrentPlayList";
+import {setCurrentPlayIndex, setCurrentSongList} from "@/reduxModal/actions/getCurrentPlayList";
 import playMusic from '@/commo/playMusic';
 import {createHashHistory} from 'history';
 

@@ -1,7 +1,7 @@
 import React, {Component, Fragment, lazy, Suspense} from 'react';
-import {getQueryString} from '@/Utils/';
+import {getQueryString} from '@/Utils/index';
 import {Button, Avatar, Icon, Table, Spin, Tabs, Input} from 'antd';
-import axios from '@/request/';
+import axios from '@/request/index';
 import _ from 'lodash';
 import moment from 'moment';
 import {createHashHistory} from 'history';
@@ -126,7 +126,7 @@ class SongListDetail extends Component {
             let playListRight = this.props.list.slice(this.props.currentPlayIndex) || [];
             const uniqList = _.uniqBy([...playListLeft, ...this.songListCopy, ...playListRight], 'id');
             this.props.setCurrentSongList(uniqList)
-        }else {
+        } else {
             this.props.setCurrentSongList(this.songListCopy)
         }
     };
