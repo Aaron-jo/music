@@ -1,4 +1,4 @@
-import  React, {Component, Fragment, lazy, Suspense} from 'react';
+import React, {Component, Fragment, lazy, Suspense} from 'react';
 import {getQueryString} from '@/Utils/index';
 import {Button, Avatar, Icon, Table, Spin, Tabs, Input} from 'antd';
 import axios from '@/request/index';
@@ -7,7 +7,7 @@ import moment from 'moment';
 import {createHashHistory} from 'history';
 import {formatSecond, convertToMillion} from "@/Utils/index";
 import playMusic from '@/commo/playMusic';
-import './index.less';
+import '../comm/index.less';
 import {connect} from "react-redux";
 import {setCurrentPlayIndex, setCurrentSongList} from "@/reduxModal/actions/getCurrentPlayList";
 
@@ -68,13 +68,13 @@ class SongListDetail extends Component {
     };
 
     TabsChange = (activeKey) => {
-        if (activeKey === 'comment') {
+        if (activeKey === 'song-list-table') {
             this.setState({
-                hasSearch: false
+                hasSearch: true
             });
         } else {
             this.setState({
-                hasSearch: true
+                hasSearch: false
             })
         }
     };
@@ -140,7 +140,7 @@ class SongListDetail extends Component {
         const operations = hasSearch ? (
             <Search
                 placeholder="搜索歌单音乐"
-                onSearch={this.tableSearch}
+                onChange={(e) => _.debounce(this.tableSearch, 500)(e.target.value)}
                 className='song-list-table-search'
             />
         ) : '';

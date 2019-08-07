@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from '@/request/';
-import '../index.less';
+import '../../comm/index.less';
 
 function SongListCollectors({ id }) {
     const [collectors, getCollectors] = useState([]);

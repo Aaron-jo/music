@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Button, Input } from 'antd';
 import axios from '@/request/';
-import Comments from '@/components/Comments/';
+import Comments from '@/components/Comments';
 import PropTypes from 'prop-types'
-import '../index.less';
+import '../../comm/index.less';
 
 function SongListComments({ id }) {
     const [comments, setComments] = useState([]);
@@ -18,7 +18,7 @@ function SongListComments({ id }) {
             setComments(response.data.comments);
             setHotComments(response.data.hotComments);
         })
-    }, [id])
+    }, [id]);
 
     const TextArea = Input.TextArea;
     return (
@@ -34,5 +34,5 @@ function SongListComments({ id }) {
 }
 SongListComments.propTypes = {
     id: PropTypes.string.isRequired
-}
+};
 export default SongListComments
