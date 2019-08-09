@@ -1,20 +1,26 @@
-import React, {useState, useEffect, Fragment, Suspense} from 'react'
+import React, {useState, useEffect, Fragment, Suspense, lazy} from 'react'
 import {Button, Spin, Tabs} from 'antd';
 import {getQueryString} from '@/Utils/index';
 import {createHashHistory} from 'history';
 import axios from '@/request/index';
 import '../comm/index.less';
 
+const AlbumCover = lazy(() => import('./Components/AlbumCover'));
+
 function ArtisteDetail() {
     const [artisteInfo, setArtisteInfo] = useState({});
+    const history = createHashHistory();
+    let artisteId = getQueryString(history.location.search, 'id');
+
     useEffect(() => {
-        const history = createHashHistory();
-        const artisteId = getQueryString(history.location.search, 'id');
-        axios.get(`/artists`, { params: { id: artisteId } }).then(response => {
-            console.log(response);
-            setArtisteInfo(response.data.artist)
-        });
-    }, []);
+        function getData() {
+            axios.get(`/artists`, { params: { id: artisteId } }).then(response => {
+                console.log(response);
+                setArtisteInfo(response.data.artist)
+            });
+        }
+        getData();
+    }, [artisteId]);
     const TabsChange = (key) => {
         console.log(key)
     };
@@ -64,11 +70,12 @@ function ArtisteDetail() {
             <Tabs onChange={TabsChange} className='net-ease-Tabs'
                   tabBarStyle={{ paddingLeft: 100, marginBottom: 0 }}>
                 <TabPane tab='歌曲列表' key='songList'>
-
+                    <Suspense fallback={<Spin tip='加载中...' spinning={true} className='suspense-loading'/>}>
+                        <AlbumCover artistId={artisteId}/>
+                    </Suspense>
                 </TabPane>
                 <TabPane tab='MV' key='mv'>
                     <Suspense fallback={<Spin tip='加载中...' spinning={true} className='suspense-loading'/>}>
-
                     </Suspense>
                 </TabPane>
                 <TabPane tab='歌手详情' key='artistDetail'>

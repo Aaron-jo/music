@@ -224,7 +224,7 @@ class SongList extends Component {
                                                 border: '1px solid #e8e8e8'
                                             }}>
                                                 <img alt={item.name} src={`${item.coverImgUrl}?param=230y244`}/>
-                                                <div className='cameraIconCotainer'>
+                                                <div className='cameraIconContainer'>
                                                     <Icon type="customer-service"/>
                                                     {item.playCount > 100000 ? _.round(item.playCount / 10000) + '万' : item.playCount}
                                                 </div>

@@ -144,7 +144,7 @@ class TopList extends Component {
                                                      onClick={(e) => this.play(e, item)}>
                                                     <Icon type="caret-right"/>
                                                 </div>
-                                                <div className='cameraIconCotainer'>
+                                                <div className='cameraIconContainer'>
                                                     <Icon type="customer-service"/>
                                                     {item.playCount > 100000 ? _.round(item.playCount / 10000) + '万' : item.playCount}
                                                 </div>

@@ -268,7 +268,7 @@ class NetFooter extends Component {
                         <div id='anchor-point' style={{
                             left: `${played}%`,
                             animationDuration: '1s',
-                            animationIterationCount: 15
+                            animationIterationCount: 150
                         }}/>
                     </div>
                     <div>{duration}</div>

@@ -300,6 +300,23 @@ main::-webkit-scrollbar-track {
     }
 }
 
+.cover-container {
+    .playIconInImg {
+        position: absolute;
+        border: 1px solid white;
+        bottom: 5px !important;
+        right: 5px;
+        width: 30px;
+        height: 30px;
+        opacity: 0;
+        transition: opacity 0.5s;
+        transition-delay: 0.2s;
+    }
+    &:hover .playIconInImg {
+        opacity: 1;
+    }
+}
+
 .suspense-loading {
     width: 100%;
     text-align: center;
