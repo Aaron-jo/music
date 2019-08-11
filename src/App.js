@@ -11,8 +11,8 @@ import './App.less';
 
 const {Header, Sider, Content, Footer} = Layout;
 const Home = lazy(() => import('./pages/Home/index'));
-const SongListDetail = lazy(() => import('./pages/DetailList/SongListDetail'));
-const ArtisteDetail = lazy(() => import('./pages/DetailList/ArtisteDetail'));
+const SongListDetail = lazy(() => import('./pages/DetailPages/SongList/SongListDetail'));
+const ArtisteDetail = lazy(() => import('./pages/DetailPages/ArtistPage/ArtisteDetail'));
 
 class App extends Component {
     state = {

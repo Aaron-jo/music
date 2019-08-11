@@ -148,7 +148,7 @@ class PersonalityRecommendation extends Component {
                                                                  onClick={(e) => this.play(e, item.id, 0)}>
                                                                 <Icon type="caret-right"/>
                                                             </div>
-                                                            <div className='cameraIconCotainer'>
+                                                            <div className='cameraIconContainer'>
                                                                 <Icon type="customer-service"/>
                                                                 {item.playCount > 100000 ? _.round(item.playCount / 10000) + '万' : item.playCount}
                                                             </div>
@@ -182,7 +182,7 @@ class PersonalityRecommendation extends Component {
                                                              border: '1px solid #e8e8e8'
                                                          }}>
                                                         <img alt={item.name} src={`${item.picUrl}?param=228y225`}/>
-                                                        <div className='cameraIconCotainer'>
+                                                        <div className='cameraIconContainer'>
                                                             <Icon type="customer-service"/>
                                                             {item.playCount > 100000 ? _.round(item.playCount / 10000) + '万' : item.playCount}
                                                         </div>
@@ -377,7 +377,7 @@ class PersonalityRecommendation extends Component {
                                                 border: '1px solid #e8e8e8'
                                             }}>
                                                 <img alt={item.name} src={`${item.picUrl}?param=352y212`}/>
-                                                <div className='cameraIconCotainer'>
+                                                <div className='cameraIconContainer'>
                                                     <Icon type="video-camera"/>
                                                     {item.playCount}
                                                 </div>
