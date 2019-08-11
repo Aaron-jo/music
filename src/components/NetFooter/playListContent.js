@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {Table, Icon, Divider, Radio, Dropdown, Menu} from 'antd';
 import {formatSecond} from '../../Utils';
 import playMusic from '../../commo/playMusic';
-import {setCurrentPlayIndex, setCurrentSongLit, setPlayedList} from '../../reduxModal/actions/getCurrentPlayList';
+import {setCurrentPlayIndex, setCurrentSongList, setPlayedList} from '../../reduxModal/actions/getCurrentPlayList';
 import _ from 'lodash';
 import './index.less';
 
@@ -49,7 +49,7 @@ class playListContent extends Component {
             if (doubleClickIndex === -1) { // 在播放列表中没有该歌曲，则插入
                 const list = _.cloneDeep(this.props.list);
                 list.splice(this.props.currentPlayIndex + 1, 0, record);
-                this.props.setCurrentSongLit(list);
+                this.props.setCurrentSongList(list);
                 this.props.setCurrentPlayIndex(this.props.currentPlayIndex + 1);
             } else { // 有该歌曲，则播放这首
                 this.props.setCurrentPlayIndex(doubleClickIndex)
@@ -66,7 +66,7 @@ class playListContent extends Component {
             this.props.setPlayedList([]);
             localStorage.removeItem('playedList');
         } else {
-            this.props.setCurrentSongLit([]);
+            this.props.setCurrentSongList([]);
             this.props.setCurrentPlayIndex(0);
             localStorage.removeItem('playingList');
             window.audio.src = '';
@@ -189,7 +189,7 @@ export default connect(
         ...state.currentPlayList
     }), {
         setCurrentPlayIndex,
-        setCurrentSongLit,
+        setCurrentSongList,
         setPlayedList,
     }
 )(playListContent);

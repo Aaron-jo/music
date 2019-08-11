@@ -3,7 +3,7 @@ import 'axios-response-logger';
 // import {message} from 'antd';
 
 const axiosInstans = axios.create({
-    baseURL: 'http://localhost:4000',
+    baseURL: 'http://localhost:3000',
     timeout: 5000,
 });
 

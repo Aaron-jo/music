@@ -6,5 +6,5 @@ export default {
     RESET_RANDOM_PLAYED_INDEX: 'RESET_RANDOM_PLAYED_INDEX', // 重置随机播放过的数组
     SET_PLAY_WAY: 'SET_PLAY_WAY', // 设置播放方式
     SET_IS_PAUSED: 'SET_IS_PAUSED', // 全局设置是否暂停
-
+    GET_SONG: 'GET_SONG', // saga监听的action
 }

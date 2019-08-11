@@ -1,30 +1,30 @@
 import React, {Component, Fragment} from 'react';
 import {Button, Popover, Icon, Radio, Row, Col, Tag, Spin, Card, Pagination} from "antd";
 import {connect} from 'react-redux';
-import axios from '../../request/index';
+import axios from '@/request/index';
 import _ from 'lodash';
 import './index.less';
-import {setCurrentPlayIndex, setCurrentSongLit} from "../../reduxModal/actions/getCurrentPlayList";
-import playMusic from '../../commo/playMusic';
+import {setCurrentPlayIndex, setCurrentSongList} from "@/reduxModal/actions/getCurrentPlayList";
+import playMusic from '@/commo/playMusic';
+import {createHashHistory} from 'history';
+
+const history = createHashHistory();
 
 class SongList extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            catlist: null,
-            hotTag: [],
-            hotTagChecked: [],
-            playlist: {},
-            limit: 48,
-            currentPage: 1,
-            spinning: false,
-            loadingMore: false,
-            loadTimes: 1,
-            category: undefined,
-            radioCurrentValue: '',
-            popoverVisible: false,
-        }
-    }
+    state = {
+        catList: null,
+        hotTag: [],
+        hotTagChecked: [],
+        playlist: {},
+        limit: 48,
+        currentPage: 1,
+        spinning: false,
+        loadingMore: false,
+        loadTimes: 1,
+        category: undefined,
+        radioCurrentValue: '',
+        popoverVisible: false,
+    };
 
     componentWillMount() {
 
@@ -36,7 +36,7 @@ class SongList extends Component {
         });
         axios.get('/playlist/catlist').then((response) => {
             this.setState({
-                catlist: response.data,
+                catList: response.data,
             })
         });
         axios.get('/playlist/hot').then((response) => {
@@ -112,26 +112,32 @@ class SongList extends Component {
         });
     }
 
-    play(payLoad) {
+    play(e, payLoad) {
+        e.stopPropagation();
         axios.get('/playlist/detail', { params: { id: payLoad.id } }).then(response => {
             const tracks = response.data.playlist.tracks;
-            this.props.setCurrentSongLit(tracks);
+            this.props.setCurrentSongList(tracks);
             this.props.setCurrentPlayIndex(0);
             playMusic(tracks[0].id)
         });
+    }
+
+    // 点击进入歌单详情
+    gotoSongListDetail(id) {
+        history.push(`/SongListDetail?id=${id}`)
     }
 
     render() {
         const RadioButton = Radio.Button;
         const RadioGroup = Radio.Group;
         const CheckableTag = Tag.CheckableTag;
-        const { catlist, hotTag, hotTagChecked, playlist, spinning, currentPage, radioCurrentValue, popoverVisible } = this.state;
+        const { catList, hotTag, hotTagChecked, playlist, spinning, currentPage, radioCurrentValue, popoverVisible } = this.state;
 
         const getContent = () => {
-            if (!catlist) return <div>全部歌单</div>;
+            if (!catList) return <div>全部歌单</div>;
             let categories = [];
-            for (let cate in catlist.categories) {
-                categories.push(catlist.categories[cate])
+            for (let cate in catList.categories) {
+                categories.push(catList.categories[cate])
             }
             return (
                 <RadioGroup name='categories' buttonStyle='solid' value={radioCurrentValue} defaultValue=''
@@ -151,7 +157,7 @@ class SongList extends Component {
                                     <Col span={4}>{category}</Col>
                                     <Col span={20}>
                                         {
-                                            catlist.sub.map((item, index) => (
+                                            catList.sub.map((item, index) => (
                                                 item.category === categoryIndex ?
                                                     (<RadioButton key={item.name} className='categoryRadio'
                                                                   value={item.name}>
@@ -218,12 +224,12 @@ class SongList extends Component {
                                                 border: '1px solid #e8e8e8'
                                             }}>
                                                 <img alt={item.name} src={`${item.coverImgUrl}?param=230y244`}/>
-                                                <div className='cameraIconCotainer'>
+                                                <div className='cameraIconContainer'>
                                                     <Icon type="customer-service"/>
                                                     {item.playCount > 100000 ? _.round(item.playCount / 10000) + '万' : item.playCount}
                                                 </div>
                                                 <div className='playIconInImg' style={{ bottom: 15 }}
-                                                     onClick={this.play.bind(this, item)}>
+                                                     onClick={(e) => this.play(e, item)}>
                                                     <Icon type="caret-right"/>
                                                 </div>
                                             </div>
@@ -231,6 +237,7 @@ class SongList extends Component {
                                         bordered={false} bodyStyle={{ padding: '10px 0 10px 0' }}
                                         style={{ cursor: 'pointer', position: 'relative' }}
                                         className='songListCard'
+                                        onClick={this.gotoSongListDetail.bind(this, item.id)}
                                     >
                                         {item.name}
                                     </Card>
@@ -253,6 +260,6 @@ export default connect(
         ...state.currentPlayList
     }), {
         setCurrentPlayIndex,
-        setCurrentSongLit,
+        setCurrentSongList,
     }
 )(SongList);

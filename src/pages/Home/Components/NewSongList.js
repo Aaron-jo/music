@@ -2,9 +2,9 @@ import React, {Component, Fragment} from 'react';
 import {Button, Col, Icon, Row, Spin} from "antd";
 import axios from "../../../request";
 import {connect} from 'react-redux';
-import {setCurrentPlayIndex, setCurrentSongLit} from "../../../reduxModal/actions/getCurrentPlayList";
+import {setCurrentPlayIndex, setCurrentSongList} from "@/reduxModal/actions/getCurrentPlayList";
 import _ from "lodash";
-import playMusic from "../../../commo/playMusic";
+import playMusic from "@/commo/playMusic";
 
 class NewSongList extends Component {
     constructor(props) {
@@ -53,10 +53,10 @@ class NewSongList extends Component {
                 if (this.props.list.length !== 0) {
                     const list = _.cloneDeep(this.props.list);
                     list.splice(this.props.currentPlayIndex + 1, 0, song);
-                    this.props.setCurrentSongLit(list);
+                    this.props.setCurrentSongList(list);
                     this.props.setCurrentPlayIndex(this.props.currentPlayIndex + 1);
                 }else {
-                    this.props.setCurrentSongLit([song]);
+                    this.props.setCurrentSongList([song]);
                 }
             } else { // 有该歌曲，则播放这首
                 this.props.setCurrentPlayIndex(doubleClickIndex)
@@ -67,7 +67,7 @@ class NewSongList extends Component {
 
     playAll() {
         axios.get('/song/detail', { params: { ids: this.state.newSong.map(item => item.id).join(',') } }).then(response => {
-            this.props.setCurrentSongLit(response.data.songs);
+            this.props.setCurrentSongList(response.data.songs);
             this.props.setCurrentPlayIndex(0);
             playMusic(response.data.songs[0].id);
         })
@@ -149,6 +149,6 @@ export default connect(
         ...state.currentPlayList
     }), {
         setCurrentPlayIndex,
-        setCurrentSongLit,
+        setCurrentSongList,
     }
 )(NewSongList);

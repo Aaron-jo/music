@@ -1,20 +1,21 @@
 import React, {Component, Fragment} from 'react';
-import axios from '../../request/';
+import axios from '@/request/';
 import {Card, Col, Icon, Row, Spin} from "antd";
 import _ from 'lodash';
 import './index.less';
-import playMusic from "../../commo/playMusic";
+import playMusic from "@/commo/playMusic";
 import {connect} from 'react-redux';
-import {setCurrentPlayIndex, setCurrentSongLit} from "../../reduxModal/actions/getCurrentPlayList";
+import {setCurrentPlayIndex, setCurrentSongList} from "@/reduxModal/actions/getCurrentPlayList";
+import {createHashHistory} from 'history';
+
+const history = createHashHistory();
 
 class TopList extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            officialTopList: null,
-            globalTopList: null,
-        }
-    }
+
+    state = {
+        officialTopList: null,
+        globalTopList: null,
+    };
 
     componentWillMount() {
         axios.get('/toplist/detail').then((response) => {
@@ -41,10 +42,11 @@ class TopList extends Component {
 
     }
 
-    play(payLoad) {
+    play(e, payLoad) {
+        e.stopPropagation();
         axios.get('/playlist/detail', { params: { id: payLoad.id } }).then(response => {
             const tracks = response.data.playlist.tracks;
-            this.props.setCurrentSongLit(tracks);
+            this.props.setCurrentSongList(tracks);
             this.props.setCurrentPlayIndex(0);
             playMusic(tracks[0].id)
         });
@@ -53,11 +55,15 @@ class TopList extends Component {
     playOfficialTrack(payLoad, index) {
         axios.get('/playlist/detail', { params: { id: payLoad.id } }).then(response => {
             const tracks = response.data.playlist.tracks;
-            this.props.setCurrentSongLit(tracks);
+            this.props.setCurrentSongList(tracks);
             this.props.setCurrentPlayIndex(index);
             playMusic(tracks[index].id)
         });
     }
+
+    getDetailList = (item) => {
+        history.push(`/SongListDetail?id=${item.id}`)
+    };
 
     render() {
         const { officialTopList, globalTopList } = this.state;
@@ -71,10 +77,12 @@ class TopList extends Component {
                             officialTopList.map((item, index) => (
                                 <Col key={item.name} span={8}>
                                     <Card cover={
-                                        <div className='cover-container' style={{ position: 'relative' }}>
+                                        <div className='cover-container' style={{ position: 'relative' }}
+                                             onClick={() => this.getDetailList(item)}
+                                        >
                                             <img alt={item.name} src={`${item.coverImgUrl}?param=476y200`}/>
                                             <div className='playIconInImg' style={{ bottom: 15, width: 40, height: 40 }}
-                                                 onClick={this.play.bind(this, item)}>
+                                                 onClick={(e) => this.play(e, item)}>
                                                 <Icon type="caret-right" style={{ fontSize: '20px' }}/>
                                             </div>
                                         </div>
@@ -105,6 +113,7 @@ class TopList extends Component {
                                                 ))
                                             }
                                             <div className='officialTrack'
+                                                 onClick={() => this.getDetailList(item)}
                                                  style={{ textAlign: 'right', color: '#b7b9bb' }}>查看全部 >
                                             </div>
                                         </div>
@@ -122,17 +131,20 @@ class TopList extends Component {
                                 <Col span={4} key={index}>
                                     <Card
                                         cover={
-                                            <div className='cover-container' style={{
-                                                position: 'relative',
-                                                Height: 231,
-                                                border: '1px solid #e8e8e8'
-                                            }}>
+                                            <div className='cover-container'
+                                                 onClick={() => this.getDetailList(item)}
+                                                 style={{
+                                                     position: 'relative',
+                                                     Height: 231,
+                                                     border: '1px solid #e8e8e8'
+                                                 }}
+                                            >
                                                 <img alt={item.name} src={`${item.coverImgUrl}?param=230y244`}/>
                                                 <div className='playIconInImg' style={{ bottom: 15 }}
-                                                     onClick={this.play.bind(this, item)}>
+                                                     onClick={(e) => this.play(e, item)}>
                                                     <Icon type="caret-right"/>
                                                 </div>
-                                                <div className='cameraIconCotainer'>
+                                                <div className='cameraIconContainer'>
                                                     <Icon type="customer-service"/>
                                                     {item.playCount > 100000 ? _.round(item.playCount / 10000) + '万' : item.playCount}
                                                 </div>
@@ -159,6 +171,6 @@ export default connect(
         ...state.currentPlayList
     }), {
         setCurrentPlayIndex,
-        setCurrentSongLit,
+        setCurrentSongList,
     }
 )(TopList);

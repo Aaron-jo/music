@@ -1,6 +1,6 @@
 import actionType from '../action-type/index';
 
-export const setCurrentSongLit = songList => ({
+export const setCurrentSongList = songList => ({
     type: actionType.SET_CURRENT_SONG_LIST,
     songList
 });

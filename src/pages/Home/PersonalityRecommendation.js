@@ -1,12 +1,13 @@
 import React, {Component, Fragment} from 'react';
-import {Carousel, Card, Row, Col, List, Icon, Spin} from "antd";
+import {Card, Row, Col, List, Icon, Spin} from "antd";
 import {connect} from 'react-redux';
 import _ from 'lodash';
-import playMusic from '../../commo/playMusic';
-import axios from '../../request/index';
+import playMusic from '@/commo/playMusic';
+import axios from '@/request/index';
 import './index.less';
-import {setCurrentPlayIndex, setCurrentSongLit} from "../../reduxModal/actions/getCurrentPlayList";
+import {setCurrentPlayIndex, setCurrentSongList} from "@/reduxModal/actions/getCurrentPlayList";
 import {createHashHistory} from 'history';
+import Carousel from '@/components/Carousel/';
 
 const history = createHashHistory();
 
@@ -64,31 +65,16 @@ class PersonalityRecommendation extends Component {
         });
     }
 
-    // componentWillReceiveProps (nextProps) {
-    //
-    // }
-
-    // shouldComponentUpdate(nextProps, nextState) {
-
-    // }
-
-    // componentWillUpdate (nextProps, nextState) {
-    //
-    // }
-    //
-    // componentDidUpdate (prevProps, prevState) {
-    //
-    // }
-
     componentWillUnmount() {
 
     }
 
-    play(payLoad, index) {
+    play(e, payLoad, index) {
+        e.stopPropagation();
         switch (index) {
             case 0:
                 axios.get('/playlist/detail', { params: { id: payLoad } }).then((response) => {
-                    this.props.setCurrentSongLit(response.data.playlist.tracks);
+                    this.props.setCurrentSongList(response.data.playlist.tracks);
                     this.props.setCurrentPlayIndex(0);
                     playMusic(response.data.playlist.tracks[0].id)
                 });
@@ -100,11 +86,11 @@ class PersonalityRecommendation extends Component {
                 axios.get('/song/detail', { params: { ids: payLoad } }).then(response => {
                     if (playList.length > 0) {
                         playList.splice(this.props.currentPlayIndex + 1, 0, response.data.songs[0]);
-                        this.props.setCurrentSongLit(playList);
+                        this.props.setCurrentSongList(playList);
                         this.props.setCurrentPlayIndex(this.props.currentPlayIndex + 1);
                     } else {
                         playList.push(response.data.songs[0]);
-                        this.props.setCurrentSongLit(playList);
+                        this.props.setCurrentSongList(playList);
                         this.props.setCurrentPlayIndex(0);
                     }
                     playMusic(payLoad);
@@ -126,13 +112,7 @@ class PersonalityRecommendation extends Component {
             <Fragment>
                 <Spin spinning={spinning} tip='加载中...'>
                     <div style={{ width: '100%', textAlign: 'center' }}>
-                        <Carousel autoplay={false}>
-                            {
-                                banners.map((banner, index) => (
-                                    <div key={banner.imageUrl}><img src={banner.imageUrl} alt={banner.typeTitle}/></div>
-                                ))
-                            }
-                        </Carousel>
+                        <Carousel images={banners || []}/>
                     </div>
                     <div style={{ marginTop: 20 }}>
                         <Card title="推荐歌单" bordered={false} headStyle={{ padding: 0 }}
@@ -165,10 +145,10 @@ class PersonalityRecommendation extends Component {
                                                              }}>
                                                             <img alt={item.name} src={`${item.picUrl}?param=228y225`}/>
                                                             <div className='playIconInImg' style={{ bottom: 13 }}
-                                                                 onClick={this.play.bind(this, item.id, 0)}>
+                                                                 onClick={(e) => this.play(e, item.id, 0)}>
                                                                 <Icon type="caret-right"/>
                                                             </div>
-                                                            <div className='cameraIconCotainer'>
+                                                            <div className='cameraIconContainer'>
                                                                 <Icon type="customer-service"/>
                                                                 {item.playCount > 100000 ? _.round(item.playCount / 10000) + '万' : item.playCount}
                                                             </div>
@@ -202,12 +182,12 @@ class PersonalityRecommendation extends Component {
                                                              border: '1px solid #e8e8e8'
                                                          }}>
                                                         <img alt={item.name} src={`${item.picUrl}?param=228y225`}/>
-                                                        <div className='cameraIconCotainer'>
+                                                        <div className='cameraIconContainer'>
                                                             <Icon type="customer-service"/>
                                                             {item.playCount > 100000 ? _.round(item.playCount / 10000) + '万' : item.playCount}
                                                         </div>
                                                         <div className='playIconInImg' style={{ bottom: 13 }}
-                                                             onClick={this.play.bind(this, item.id, 0)}>
+                                                             onClick={(e) => this.play(e, item.id, 0)}>
                                                             <Icon type="caret-right"/>
                                                         </div>
                                                     </div>
@@ -215,6 +195,7 @@ class PersonalityRecommendation extends Component {
                                                       bordered={false} bodyStyle={{ padding: '10px 0 0 0' }}
                                                       style={{ cursor: 'pointer', position: 'relative' }}
                                                       className='songListCard'
+                                                      onClick={this.gotoSongListDetail.bind(this, item.id)}
                                                 >
                                                     <div className='hangInfo'>
                                                         {item.copywriter}
@@ -295,7 +276,7 @@ class PersonalityRecommendation extends Component {
                                                                             style={{ width: 48, height: 48 }} alt='图片'
                                                                             src={`${item.song.album.picUrl}?param=48y48&quality=100`}/>
                                                                             <div className='playIconInImg'
-                                                                                 onClick={this.play.bind(this, item.id, 2)}
+                                                                                 onClick={(e) => this.play(e, item.id, 0)}
                                                                                  style={{ top: 0, right: 13 }}>
                                                                                 <Icon type="caret-right"/>
                                                                             </div>
@@ -349,7 +330,7 @@ class PersonalityRecommendation extends Component {
                                                                             style={{ width: 48, height: 48 }} alt='图片'
                                                                             src={`${item.song.album.picUrl}?param=48y48&quality=100`}/>
                                                                             <div className='playIconInImg'
-                                                                                 onClick={this.play.bind(this, item.id, 2)}
+                                                                                 onClick={(e) => this.play(e, item.id, 0)}
                                                                                  style={{ top: 0, right: 13 }}>
                                                                                 <Icon type="caret-right"/>
                                                                             </div>
@@ -396,7 +377,7 @@ class PersonalityRecommendation extends Component {
                                                 border: '1px solid #e8e8e8'
                                             }}>
                                                 <img alt={item.name} src={`${item.picUrl}?param=352y212`}/>
-                                                <div className='cameraIconCotainer'>
+                                                <div className='cameraIconContainer'>
                                                     <Icon type="video-camera"/>
                                                     {item.playCount}
                                                 </div>
@@ -449,7 +430,7 @@ export default connect(
     state => ({
         ...state.currentPlayList
     }), {
-        setCurrentSongLit,
+        setCurrentSongList,
         setCurrentPlayIndex
     }
 )(PersonalityRecommendation);
